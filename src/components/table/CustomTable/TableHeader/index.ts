@@ -1,0 +1,1 @@
+export { getDefaultColumnHeader } from './defaultTableHeader';
