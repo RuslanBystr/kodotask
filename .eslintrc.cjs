@@ -1,0 +1,67 @@
+module.exports = {
+  root: true,
+  env: { browser: true, es2020: true },
+  extends: [
+    'airbnb',
+    'airbnb-typescript',
+    'airbnb/hooks',
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+    'eslint-config-prettier',
+  ],
+  ignorePatterns: ['dist', '.eslintrc.cjs', 'vite.config.ts'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['react', '@typescript-eslint', 'simple-import-sort', 'import', 'react-refresh', 'prettier'],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+    'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    },
+    'import/resolver': {
+      typescript: {},
+      node: {
+        paths: ['node_modules', 'src'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+      'eslint-import-resolver-custom-alias': {
+        alias: {
+          '@': 'src',
+        },
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
+  },
+  rules: {
+    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    'simple-import-sort/imports': 'warn',
+    'simple-import-sort/exports': 'warn',
+    'react/react-in-jsx-scope': 0,
+    'react/jsx-no-useless-fragment': ['warn', { allowSingleChild: true }],
+    '@typescript-eslint/no-empty-interface': 'warn',
+    'import/prefer-default-export': 0,
+    'import/extension': 'off',
+    'no-param-reassign': 'off',
+    'react/require-default-props': 'off',
+    'react/function-component-definition': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    'react/no-unused-prop-types': 'warn',
+    'react/display-name': 'off',
+    'import/no-cycle': 'off',
+    'react/self-closing-comp': 'warn',
+    'react/prop-types': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off',
+    'import/no-extraneous-dependencies': 'off',
+  },
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json'],
+    tsconfigRootDir: __dirname,
+  },
+};
