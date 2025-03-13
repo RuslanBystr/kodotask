@@ -2,7 +2,6 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
 import { AvatarCell } from '@/pages/Users/MainUserPage/сells/AvatarCell';
-import { IsBlockedCell } from '@/pages/Users/MainUserPage/сells/IsBlockedCell';
 import { OptionsCell } from '@/pages/Users/MainUserPage/сells/OptionsCell';
 import { IUserResponse } from '@/types/responses/IUserResponse';
 

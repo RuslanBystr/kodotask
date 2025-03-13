@@ -19,10 +19,11 @@ export const useMainChatsPage = () => {
 
   const { page, rowsPerPage: limit } = paginateParams;
   const userData = useSelector(selectAuthenticatedUserSelector);
+  const userId = userData?.id.toString() ?? '';
   const { data: chats, isLoading } = useGetUserChatsQuery({
     limit,
     page: page + 1,
-    userId: userData?.id,
+    userId,
     sortBy,
     order: isOrderByAsc ? SortingOrderEnum.ASC : SortingOrderEnum.DESC,
     ...filters,
