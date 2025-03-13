@@ -148,7 +148,6 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <p>Rows per page</p>
         <div className="space-x-2 flex flex-row">
           <Select
             value={`${meta?.itemsPerPage}`}

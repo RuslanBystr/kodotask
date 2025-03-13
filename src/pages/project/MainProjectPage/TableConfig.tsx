@@ -1,7 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
-import { OptionsCell } from '@/pages/project/MainProjectPage/сells/OptionsCell';
 import { IProjectResponse } from '@/types/responses/IProjectResponse';
 
 import { IconCell } from './сells/IconCell';
@@ -25,17 +24,13 @@ export const columns: ColumnDef<IProjectResponse>[] = [
     cell: ({ row }) => (row.original.tasks).length,
   },
   {
-    accessorKey: 'description',
-    header: getDefaultColumnHeader({ name: 'Description', sort: false, search: false }),
-  },
-  {
     accessorKey: 'createdAt',
     header: getDefaultColumnHeader({ name: 'Created', search: false }),
     cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString(),
   },
-  {
-    accessorKey: 'options',
-    header: () => <div />,
-    cell: ({ row }) => <OptionsCell row={row} />,
-  },
+  // {
+  //   accessorKey: 'options',
+  //   header: () => <div />,
+  //   cell: ({ row }) => <OptionsCell row={row} />,
+  // },
 ];

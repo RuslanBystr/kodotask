@@ -91,11 +91,10 @@ export default function TaskInfoPage() {
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-      <div className="p-0">
-        <div className="flex justify-between h-[85vh]">
-          <div className="w-full border-r">
-            <div className="h-[16em]">
-              <div className="h-[60vh] w-full bg-muted/20">
+      <div className="p-0 w-full h-auto max-h-screen overflow-y-auto custom-scrollbar">
+        <div className="w-full grid md:grid-cols-3 h-auto md:h-[93vh]">
+          <div className="w-full border-r row-span-1 md:col-span-2 flex flex-col max-h-[93vh]">
+              <div className="h-auto w-full bg-muted/20">
                 <div className="flex space-x-2 p-2">
                   {tabs.map((tab) => (
                     <Button
@@ -115,17 +114,20 @@ export default function TaskInfoPage() {
                   <div className="p-4 text-center">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
                 </div>
               </div>
-              <Label>Notes</Label>
+              <Label className='my-2 ml-2'>Notes</Label>
               <Textarea
                 className="h-full border-none rounded-none bg-muted/20"
                 value={description}
                 onChange={handleDescChange}
+                rows={6}
               />
-            </div>
           </div>
-          {data && <TaskDiagram data={data} chartData={chartData} />}
+          <div className="w-full mb-16">
+            {data && <TaskDiagram data={data} chartData={chartData} />}
+          </div>
         </div>
       </div>
+
     </div>
   );
 }
