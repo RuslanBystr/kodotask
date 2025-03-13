@@ -3,12 +3,14 @@ import { baseApi } from '@/services/base';
 import { IChatRequestParams, IResponse } from '@/types';
 import { IChatResponse } from '@/types/responses/IChatResponse';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
+import { IRequestParams } from '@/types/requests/IRequestParams';
 
 export const messagesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getUserChats: builder.query<IResponse<IChatResponse>, unknown>({
-      query: () => ({
+    getUserChats: builder.query<IResponse<IChatResponse>, IRequestParams>({
+      query: (params: IRequestParams & {userId: string}) => ({
         url: `${API_ROUTES.CHATS}`,
+        params
       }),
       providesTags: (result) =>
         result

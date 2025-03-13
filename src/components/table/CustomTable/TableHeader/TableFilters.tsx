@@ -30,6 +30,6 @@ export const FilterInput = <T,>({ column, placeholder }: { column: Column<T>; pl
     placeholder={placeholder}
     value={(column.getFilterValue() as string) ?? ''}
     onChange={(event) => column.setFilterValue(event.target.value)}
-    className="max-w-sm my-1 focus-visible:border-b-2 focus-visible:border-b-gray-400"
+    className="max-w-sm my-1 text-[10px] md:text-[14px] focus-visible:border-b-2 focus-visible:border-b-gray-400"
   />
 );

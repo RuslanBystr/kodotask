@@ -90,8 +90,8 @@ const MainChatPage: React.FC = () => {
       </header>
 
       <div className="flex h-[calc(100vh-72px)]">
-        <div className="flex gap-1 w-[13em] flex-col border-r p-2 bg-muted/10">
-          <Input placeholder="Search" onChange={filterChats} />
+        <div className="flex gap-1 w-min-content flex-col border-r pr-1 pt-2 md:p-2 bg-muted/10">
+          <Input className='w-[5em] md:w-max text-[10px]' placeholder="Search" onChange={filterChats} />
 
           {filteredChats?.map((chat) => {
             // const lastMessage = chat?.lastMessage || {};
@@ -113,7 +113,7 @@ const MainChatPage: React.FC = () => {
               <SidebarMenuButton
                 key={chat.id}
                 className={clsx(
-                  "h-[3em] w-[13em] hover:bg-muted rounded-none border-b",
+                  "h-[3em] hover:bg-muted rounded-none border-b",
                   {
                     "border-b-2 rounded border- bg-card/50 shadow":
                       activeChat?.id === chat.id,
@@ -137,7 +137,7 @@ const MainChatPage: React.FC = () => {
                   )}
                 </Avatar>
 
-                <div className="w-full">
+                <div className="hidden md:block w-full">
                   <div className="flex justify-between w-full">
                     <p>{chatName}</p>
                     {/* <p className="text-[10px] text-popover"> */}

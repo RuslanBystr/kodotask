@@ -16,7 +16,7 @@ const TaskStatus = ({ id, defaultStatus }: { id: string, defaultStatus: TaskStat
   };
 
   return (
-    <div className="w-full h-[40vh] max-w-sm lg:max-w-full p-4 flex items-center justify-between gap-x-6">
+    <div className="w-full h-[40vh] max-w-sm lg:max-w-full p-4 flex items-center justify-between">
       <Button className="w-[8em] bg-transparent flex items-center space-x-1 cursor-pointer"
               onClick={() => handleStatusChange(TaskStatusEnum.TODO)}>
         {status === TaskStatusEnum.TODO || status === TaskStatusEnum.IN_PROGRESS || status === TaskStatusEnum.DONE ? (

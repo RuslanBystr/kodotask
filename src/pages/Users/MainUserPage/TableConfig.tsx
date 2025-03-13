@@ -31,11 +31,11 @@ export const columns: ColumnDef<IUserResponse>[] = [
     accessorKey: 'email',
     header: getDefaultColumnHeader({ name: 'Email' }),
   },
-  {
-    accessorKey: 'isBlocked',
-    header: getDefaultColumnHeader({ name: 'Blocked', search: false }),
-    cell: ({ row }) => <IsBlockedCell row={row} />,
-  },
+  // {
+  //   accessorKey: 'isBlocked',
+  //   header: getDefaultColumnHeader({ name: 'Blocked', search: false }),
+  //   cell: ({ row }) => <IsBlockedCell row={row} />,
+  // },
   {
     accessorKey: 'createdAt',
     header: getDefaultColumnHeader({ name: 'Created', search: false }),

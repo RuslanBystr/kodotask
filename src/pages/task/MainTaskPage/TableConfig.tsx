@@ -8,13 +8,14 @@ import { Task } from '@/types/responses/IProjectResponse';
 
 export const columns: ColumnDef<Task>[] = [
   {
-    accessorKey: 'image',
-    header: getDefaultColumnHeader({ name: '', sort: false, search: false }),
-    cell: ({ row }) => <IconCell row={row} />,
-  },
-  {
     accessorKey: 'project.name',
     header: getDefaultColumnHeader({ name: 'Project' }),
+    cell: ({ row }) => (
+      <div className="flex">
+        <IconCell row={row} />
+        <p className="ml-1">{row.original.project.name}</p>
+      </div>
+    ),
   },
   {
     accessorKey: 'title',
