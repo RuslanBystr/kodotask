@@ -15,11 +15,15 @@ export interface Task {
   remaining: number;
   done: number;
   author: string;
+  project: {
+    id: string;
+    name: string;
+  };
   assignedUser: {
     id: number;
     firstName: string;
     lastName: string;
-  }
+  };
   createdAt: string;
 }
 
@@ -36,6 +40,10 @@ export interface ITaskResponse {
   remaining: number;
   done: number;
   author: string;
+  project: {
+    id: string;
+    name: string;
+  };
   assignedUser: {
     id: number;
     firstName: string;

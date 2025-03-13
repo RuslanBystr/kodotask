@@ -8,8 +8,10 @@ export interface IRequestParams {
 }
 
 export interface IChatRequestParams extends IRequestParams {
-  chatId: string;
+  chatId?: string;
+  userId?: string;
 }
+
 export interface IMetadataRequestParams extends IRequestParams {
   url?: string;
   title?: string;
