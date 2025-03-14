@@ -24,6 +24,7 @@ import {
 import { PrivateChat } from "@/pages/chat/PrivateChat/PrivateChat";
 import { selectAuthenticatedUserSelector } from "@/store";
 import { IChatResponse } from '@/types/responses/IChatResponse';
+import { Loading } from '@/ui-kit/loading/Loading';
 import { getEnv } from "@/utils";
 
 import { useMainChatsPage } from "./useMainChatsPage";
@@ -92,8 +93,8 @@ const MainChatPage: React.FC = () => {
       <div className="flex h-[calc(100vh-72px)]">
         <div className="flex gap-1 w-min-content flex-col border-r pr-1 pt-2 md:p-2 bg-muted/10">
           <Input className='w-[5em] md:w-max text-[10px]' placeholder="Search" onChange={filterChats} />
-
-          {filteredChats?.map((chat) => {
+          
+          {!filteredChats ? (<div className='w-full h-full flex justify-center'><Loading size={32}/></div>) : filteredChats.map((chat) => {
             // const lastMessage = chat?.lastMessage || {};
             // const formattedDate = lastMessage?.createdAt
             //   ? new Date(lastMessage.createdAt).toLocaleTimeString(
