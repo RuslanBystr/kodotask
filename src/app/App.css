@@ -75,14 +75,14 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(66, 131, 218, 0.2) 0%, transparent 70%),
-    radial-gradient(circle, rgba(218, 132, 211, 0.2) 0%, transparent 70%),
-    radial-gradient(circle, rgba(106, 243, 106, 0.2) 0%, transparent 70%);
-    animation: moveBackground 20s linear infinite;
-    filter: blur(100px);
+    background: radial-gradient(circle, rgba(66, 131, 218, 0.22) 10%, transparent 70%),
+    radial-gradient(circle, rgba(230, 149, 224, 0.15) 10%, transparent 70%),
+    radial-gradient(circle, rgba(107, 243, 107, 0.22) 10%, transparent 70%);
+    animation: moveBackground 30s ease-in-out infinite;
+    filter: blur(50px);
     z-index: -1;
+    will-change: transform;
   }
-
   .neon {
     background-color: rgba(173, 173, 173, 0.23);
   }

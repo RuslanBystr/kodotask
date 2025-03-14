@@ -24,11 +24,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PaginationParams } from '@/hooks/usePagination';
 import { IMetaResponse } from '@/types';
+import { Loading } from '@/ui-kit/loading/Loading';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   meta: IMetaResponse | undefined;
+  isLoading: boolean;
   sorting: React.ComponentState;
   setSorting: React.Dispatch<React.SetStateAction<SortingState>>;
   columnFilters: React.ComponentState;
@@ -41,6 +43,7 @@ interface DataTableProps<TData, TValue> {
 export function CustomDataTable<TData extends { id: number | string }, TValue>({
   columns,
   data,
+  isLoading,
   meta,
   sorting,
   setSorting,
@@ -140,9 +143,16 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  {isLoading ? (
+                    <div className="flex justify-center">
+                      <Loading size={32} />
+                    </div>
+                  ) : (
+                    'No results.'
+                  )}
                 </TableCell>
               </TableRow>
+
             )}
           </TableBody>
         </Table>

@@ -1,5 +1,12 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { CheckCheckIcon } from 'lucide-react';
+import {
+  CheckCheckIcon,
+  ChevronDown,
+  ChevronUp,
+  CircleIcon,
+  LoaderCircle,
+  SeparatorHorizontal,
+} from 'lucide-react';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
 import { AvatarCell } from '@/pages/task/MainTaskPage/сells/AvatarCell';
@@ -24,32 +31,58 @@ export const columns: ColumnDef<Task>[] = [
   {
     accessorKey: 'assignedTo',
     header: getDefaultColumnHeader({ name: 'Assignee' }),
-    cell: ({row}) => (
-      <div className="flex items-center">
-        <AvatarCell row={row} />
-        <span className="ml-2">{row.original.assignedUser.firstName} {row.original.assignedUser.lastName}</span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const { assignedUser } = row.original;
+      return (
+        <div className="flex items-center">
+          <AvatarCell row={row} />
+          <span className="ml-2">{assignedUser.firstName} {assignedUser.lastName}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'priority',
     header: getDefaultColumnHeader({ name: 'Priority', search: false }),
+    cell: ({ row }) => {
+      const priorities = {
+        Low: { icon: ChevronDown, color: 'text-green-200' },
+        High: { icon: ChevronUp, color: 'text-orange-400' },
+        Medium: { icon: SeparatorHorizontal, color: 'text-blue-300' },
+      };
+
+      const { icon: Icon, color } = priorities[row.original.priority] || priorities.Medium;
+
+      return (
+        <div className="flex justify-center">
+          <Icon className={color} />
+          <p className={color}>{row.original.priority}</p>
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'status',
     header: getDefaultColumnHeader({ name: 'Status', sort: false, search: false }),
-    cell: ({row}) => (
-      <div className="flex items-center">
-          {row.original.status === 'DONE'
-            ? <CheckCheckIcon className="text-green-400" />
-            : row.original.status
-          }
-      </div>
-    ),
+    cell: ({ row }) => {
+      const statuses = {
+        DONE: { icon: CheckCheckIcon, color: 'text-green-400' },
+        TODO: { icon: CircleIcon, color: 'text-gray-600' },
+        IN_PROGRESS: { icon: LoaderCircle, color: 'text-blue-400' },
+      };
+
+      const { icon: Icon, color } = statuses[row.original.status] || statuses.IN_PROGRESS;
+
+      return (
+        <div className="flex items-center">
+          <Icon className={color} />
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'createdAt',
     header: getDefaultColumnHeader({ name: 'Created', search: false }),
     cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString(),
-  }
+  },
 ];

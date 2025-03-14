@@ -14,7 +14,7 @@ import { selectAuthenticatedUserSelector } from '@/store';
 import { columns } from './TableConfig';
 
 const MainTaskPage: React.FC = () => {
-  const { tasks, goToCreateTaskPage, sorting, setSorting, columnFilters, setColumnFilters, paginateParams, meta } =
+  const { tasks, goToCreateTaskPage, sorting, isLoading, setSorting, columnFilters, setColumnFilters, paginateParams, meta } =
     useMainTaskPage();
 
   const admin = useSelector(selectAuthenticatedUserSelector);
@@ -42,6 +42,7 @@ const MainTaskPage: React.FC = () => {
         <CustomDataTable
           columns={columns}
           data={tasks?.items || []}
+          isLoading={isLoading}
           meta={meta}
           sorting={sorting}
           setSorting={setSorting}

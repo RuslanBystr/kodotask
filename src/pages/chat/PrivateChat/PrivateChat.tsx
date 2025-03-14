@@ -10,6 +10,7 @@ import Messages from '@/pages/chat/common/Messages';
 import { useGetMessagesQuery } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
+import { Loading } from '@/ui-kit/loading/Loading';
 import { getEnv } from '@/utils';
 
 const { api } = getEnv();
@@ -23,7 +24,7 @@ export function PrivateChat() {
   const [ newMessage, setNewMessage ] = useState<string>('');
   const [ page, setPage ] = useState(1);
   const [ messages, setMessages ] = useState<IMessageResponse[]>([]);
-  const { data: initialMessages, refetch } = useGetMessagesQuery({ chatId, page, limit: 20 });
+  const { data: initialMessages, isLoading, refetch } = useGetMessagesQuery({ chatId, page, limit: 20 });
 
   useEffect(() => {
 
@@ -112,10 +113,9 @@ export function PrivateChat() {
           <Messages messageDetails={messages} fetchMoreMessages={fetchMoreMessages} />
         ) : (
           <div className="flex flex-col p-2 w-full justify-center h-[calc(100vh-142px)]">
-            <p className="text-center text-gray-400">No messages yet</p>
+            {isLoading ? (<div className='flex justify-center'><Loading /></div>) : (<p className="text-center text-gray-400">No messages yet</p>)}
           </div>
         )}
-
         <div className="flex items-center gap-2 border-t p-4">
           <Input
             className="flex-1"
