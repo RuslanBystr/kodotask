@@ -15,6 +15,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
 import { TaskStatusEnum } from '@/constants/enums/task-status.enum';
 import { TaskDiagram } from '@/pages/task/TaskInfo/Radar';
+import { SpendTime } from '@/pages/task/TaskInfo/SpendTime';
 import { TaskActivity } from '@/pages/task/TaskInfo/TaskActivity';
 import TaskStatus from '@/pages/task/TaskInfo/TaskStatusBlock';
 import { useEditTaskMutation, useGetTaskByIdQuery } from '@/services/task';
@@ -22,7 +23,7 @@ import { useEditTaskMutation, useGetTaskByIdQuery } from '@/services/task';
 export default function TaskInfoPage() {
   const { id } = useParams<string>();
   const taskId = id ?? '';
-  const { data, isLoading } = useGetTaskByIdQuery(taskId);
+  const { data, isLoading, refetch } = useGetTaskByIdQuery(taskId);
   const [editTask] = useEditTaskMutation();
   const [activeTab, setActiveTab] = useState('tab1');
   const [description, setDescription] = useState('');
@@ -47,7 +48,7 @@ export default function TaskInfoPage() {
   ];
 
   const tabs = [
-    { id: 'tab1', label: 'Time', content: '' },
+    { id: 'tab1', label: 'Time', content: <SpendTime logs={data?.timeLogger} refreshTask={refetch} /> },
     {
       id: 'tab2',
       label: 'Status',
@@ -94,40 +95,37 @@ export default function TaskInfoPage() {
       <div className="p-0 w-full h-auto max-h-screen overflow-y-auto custom-scrollbar">
         <div className="w-full grid md:grid-cols-3 h-auto md:h-[93vh]">
           <div className="w-full border-r row-span-1 md:col-span-2 flex flex-col max-h-[93vh]">
-              <div className="h-auto w-full bg-muted/20">
-                <div className="flex space-x-2 p-2">
-                  {tabs.map((tab) => (
-                    <Button
-                      key={tab.id}
-                      className={
-                        activeTab === tab.id
-                          ? 'bg-accent/20 border-b-2 rounded-b-none shadow'
-                          : 'bg-transparent border-b-2 rounded-b-none shadow'
-                      }
-                      onClick={() => setActiveTab(tab.id)}
-                    >
-                      {tab.label}
-                    </Button>
-                  ))}
-                </div>
-                <div>
-                  <div className="p-4 text-center">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
-                </div>
+            <div className="h-auto w-full bg-muted/20">
+              <div className="flex space-x-2 p-2">
+                {tabs.map((tab) => (
+                  <Button
+                    key={tab.id}
+                    className={
+                      activeTab === tab.id
+                        ? 'bg-accent/20 border-b-2 rounded-b-none shadow'
+                        : 'bg-transparent border-b-2 rounded-b-none shadow'
+                    }
+                    onClick={() => setActiveTab(tab.id)}
+                  >
+                    {tab.label}
+                  </Button>
+                ))}
               </div>
-              <Label className='my-2 ml-2'>Notes</Label>
-              <Textarea
-                className="h-full border-none rounded-none bg-muted/20"
-                value={description}
-                onChange={handleDescChange}
-                rows={6}
-              />
+              <div>
+                <div className="p-4 text-center">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
+              </div>
+            </div>
+            <Label className="my-2 ml-2">Notes</Label>
+            <Textarea
+              className="h-full border-none rounded-none bg-muted/20"
+              value={description}
+              onChange={handleDescChange}
+              rows={6}
+            />
           </div>
-          <div className="w-full mb-16">
-            {data && <TaskDiagram data={data} chartData={chartData} />}
-          </div>
+          <div className="w-full mb-16">{data && <TaskDiagram data={data} chartData={chartData} />}</div>
         </div>
       </div>
-
     </div>
   );
 }

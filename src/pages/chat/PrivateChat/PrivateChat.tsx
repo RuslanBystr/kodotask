@@ -20,27 +20,24 @@ const socket: Socket = io(api, { autoConnect: false });
 export function PrivateChat() {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const { id } = useParams();
-  const chatId  = id ?? '';
-  const [ newMessage, setNewMessage ] = useState<string>('');
-  const [ page, setPage ] = useState(1);
-  const [ messages, setMessages ] = useState<IMessageResponse[]>([]);
+  const chatId = id ?? '';
+  const [newMessage, setNewMessage] = useState<string>('');
+  const [page, setPage] = useState(1);
+  const [messages, setMessages] = useState<IMessageResponse[]>([]);
   const { data: initialMessages, isLoading, refetch } = useGetMessagesQuery({ chatId, page, limit: 20 });
 
   useEffect(() => {
-
     setMessages([]);
     setPage(1);
 
-    refetch()
-      .then((response) => {
-        if (response.data?.items) {
-          setMessages(response.data.items);
-        }
-      })
+    refetch().then((response) => {
+      if (response.data?.items) {
+        setMessages(response.data.items);
+      }
+    });
   }, [chatId, refetch]);
 
   useEffect(() => {
-
     if (!socket.connected) {
       socket.connect();
     }
@@ -66,9 +63,7 @@ export function PrivateChat() {
     if (initialMessages?.items) {
       setMessages((prevMessages) => {
         // Prevent duplicate messages
-        const newMessages = initialMessages.items.filter(
-          (msg) => !prevMessages.some((prev) => prev.id === msg.id)
-        );
+        const newMessages = initialMessages.items.filter((msg) => !prevMessages.some((prev) => prev.id === msg.id));
         return [...newMessages, ...prevMessages];
       });
     }
@@ -79,17 +74,15 @@ export function PrivateChat() {
   }, []);
 
   useEffect(() => {
-    refetch()
-      .then((response) => {
-        if (response.data?.items.length) {
-          setMessages((prevMessages) => {
-            const newMessages = response?.data?.items.filter(
-              (msg) => !prevMessages.some((prev) => prev.id === msg.id)
-            ) || [];
-            return [...newMessages, ...prevMessages];
-          });
-        }
-      });
+    refetch().then((response) => {
+      if (response.data?.items.length) {
+        setMessages((prevMessages) => {
+          const newMessages =
+            response?.data?.items.filter((msg) => !prevMessages.some((prev) => prev.id === msg.id)) || [];
+          return [...newMessages, ...prevMessages];
+        });
+      }
+    });
   }, [page, refetch]);
 
   const sendMessage = () => {
@@ -113,7 +106,13 @@ export function PrivateChat() {
           <Messages messageDetails={messages} fetchMoreMessages={fetchMoreMessages} />
         ) : (
           <div className="flex flex-col p-2 w-full justify-center h-[calc(100vh-142px)]">
-            {isLoading ? (<div className='flex justify-center'><Loading /></div>) : (<p className="text-center text-gray-400">No messages yet</p>)}
+            {isLoading ? (
+              <div className="flex justify-center">
+                <Loading />
+              </div>
+            ) : (
+              <p className="text-center text-gray-400">No messages yet</p>
+            )}
           </div>
         )}
         <div className="flex items-center gap-2 border-t p-4">

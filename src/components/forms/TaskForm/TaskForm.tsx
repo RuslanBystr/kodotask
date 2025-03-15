@@ -15,7 +15,6 @@ import type { IFormProps } from '@/types';
 import { IProjectResponse } from '@/types/responses/IProjectResponse';
 import { IUserResponse } from '@/types/responses/IUserResponse';
 
-
 export interface ITaskFormParams {
   id?: string;
   title: string;
@@ -34,8 +33,8 @@ const TaskForm: React.FC<IFormProps<ITaskFormParams>> = ({
   onSubmit,
   initialValues = defaultInitialValue,
 }) => {
-  const { data: users, isLoading: isLoadingUsers } = useGetUsersQuery({limit: 20, page: 1});
-  const { data: projects, isLoading: isLoadingProjects } = useGetProjectsQuery({limit: 20, page: 1});
+  const { data: users, isLoading: isLoadingUsers } = useGetUsersQuery({ limit: 20, page: 1 });
+  const { data: projects, isLoading: isLoadingProjects } = useGetProjectsQuery({ limit: 20, page: 1 });
 
   const form = useForm({
     defaultValues: initialValues,
@@ -84,6 +83,26 @@ const TaskForm: React.FC<IFormProps<ITaskFormParams>> = ({
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="estimate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Estimated Time (minutes)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Enter estimated time"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="priority"
@@ -93,13 +112,13 @@ const TaskForm: React.FC<IFormProps<ITaskFormParams>> = ({
                   <SelectValue placeholder="Priority" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem key='low' value='Low'>
-                      Low
-                    </SelectItem>
-                  <SelectItem key='medium' value='Medium'>
+                  <SelectItem key="low" value="Low">
+                    Low
+                  </SelectItem>
+                  <SelectItem key="medium" value="Medium">
                     Medium
                   </SelectItem>
-                  <SelectItem key='high' value='High'>
+                  <SelectItem key="high" value="High">
                     High
                   </SelectItem>
                 </SelectContent>

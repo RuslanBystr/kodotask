@@ -34,7 +34,7 @@ const ProjectForm: React.FC<IFormProps<IProjectFormParams>> = ({
     handleSubmit,
     reset,
     formState: { isDirty },
-    setValue
+    setValue,
   } = form;
 
   const [projectImage, setProjectImage] = useState<File | null>(null);

@@ -14,12 +14,12 @@ export const projectsApi = baseApi.injectEndpoints({
       providesTags: (result) =>
         result
           ? [
-            ...result.items.map(({ id }) => ({
-              type: 'Projects' as const,
-              id,
-            })),
-            { type: 'Projects', id: 'LIST' },
-          ]
+              ...result.items.map(({ id }) => ({
+                type: 'Projects' as const,
+                id,
+              })),
+              { type: 'Projects', id: 'LIST' },
+            ]
           : [{ type: 'Projects', id: 'LIST' }],
       keepUnusedDataFor: 1,
     }),

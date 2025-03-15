@@ -21,7 +21,7 @@ export const useEditProjectPage = () => {
     [project],
   );
 
-  const onProjectSubmit  = useCallback(
+  const onProjectSubmit = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-shadow
     ({ ...params }: IProjectFormParams) => {
       editProject({

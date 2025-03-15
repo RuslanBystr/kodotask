@@ -88,7 +88,7 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
         {
           path: `${ROUTES.CHATS}/user/:id`,
           element: <MainChatPage />,
-        }
+        },
       ],
     },
     { path: '404', element: '' },

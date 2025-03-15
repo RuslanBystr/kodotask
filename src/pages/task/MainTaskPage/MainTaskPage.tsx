@@ -14,8 +14,17 @@ import { selectAuthenticatedUserSelector } from '@/store';
 import { columns } from './TableConfig';
 
 const MainTaskPage: React.FC = () => {
-  const { tasks, goToCreateTaskPage, sorting, isLoading, setSorting, columnFilters, setColumnFilters, paginateParams, meta } =
-    useMainTaskPage();
+  const {
+    tasks,
+    goToCreateTaskPage,
+    sorting,
+    isLoading,
+    setSorting,
+    columnFilters,
+    setColumnFilters,
+    paginateParams,
+    meta,
+  } = useMainTaskPage();
 
   const admin = useSelector(selectAuthenticatedUserSelector);
 

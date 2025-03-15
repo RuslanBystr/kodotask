@@ -1,7 +1,6 @@
 import { TaskPriorityEnum } from '@/constants/enums/task-priority.enum';
 import { TaskStatusEnum } from '@/constants/enums/task-status.enum';
 
-
 export interface Task {
   id: string;
   title: string;
@@ -13,7 +12,6 @@ export interface Task {
   estimate: number;
   spentTime: number;
   remaining: number;
-  done: number;
   author: string;
   project: {
     id: string;
@@ -27,6 +25,11 @@ export interface Task {
   createdAt: string;
 }
 
+export interface ITaskLog {
+  duration: number;
+  loggedAt: string;
+}
+
 export interface ITaskResponse {
   id: string;
   title: string;
@@ -38,8 +41,8 @@ export interface ITaskResponse {
   estimate: number;
   spentTime: number;
   remaining: number;
-  done: number;
   author: string;
+  timeLogger: ITaskLog[];
   project: {
     id: string;
     name: string;
@@ -48,7 +51,7 @@ export interface ITaskResponse {
     id: number;
     firstName: string;
     lastName: string;
-  }
+  };
   createdAt: string;
 }
 

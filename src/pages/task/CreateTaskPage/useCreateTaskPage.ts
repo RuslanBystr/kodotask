@@ -9,7 +9,7 @@ import { useToastMessageRequest } from '@/hooks';
 import { useCreateTaskMutation } from '@/services/task';
 import type { IFormProps } from '@/types';
 
-export const useCreateTaskPage = ():IFormProps<ITaskFormParams> => {
+export const useCreateTaskPage = (): IFormProps<ITaskFormParams> => {
   const validationSchema = taskCreateFormSchema;
 
   const [createTask, { isLoading, isSuccess, ...requestParams }] = useCreateTaskMutation();

@@ -1,4 +1,3 @@
-
 export const defaultInitialValue = {
   avatar: '',
   email: '',
@@ -7,5 +6,5 @@ export const defaultInitialValue = {
   password: '',
   confirmPassword: '',
   isBlocked: false,
-  phone: ''
+  phone: '',
 };

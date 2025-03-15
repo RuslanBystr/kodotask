@@ -21,7 +21,7 @@ export const columns: ColumnDef<IProjectResponse>[] = [
   {
     accessorKey: 'tasks',
     header: getDefaultColumnHeader({ name: 'Tasks', sort: false, search: false }),
-    cell: ({ row }) => (row.original.tasks).length,
+    cell: ({ row }) => row.original.tasks.length,
   },
   {
     accessorKey: 'createdAt',

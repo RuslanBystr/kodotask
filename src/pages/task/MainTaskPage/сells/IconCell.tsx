@@ -1,14 +1,13 @@
-import {
-  Avatar,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { getEnv } from '@/utils';
 
 const { api } = getEnv();
 
-export function IconCell({row}: {
+export function IconCell({
+  row,
+}: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  row: any
+  row: any;
 }) {
   const task = row.original;
   return (
@@ -17,5 +16,5 @@ export function IconCell({row}: {
         <AvatarImage src={`${api}/file/${task?.project?.image}`} alt="file" />
       </Avatar>
     </div>
-  )
+  );
 }

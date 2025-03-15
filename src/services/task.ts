@@ -2,7 +2,7 @@ import { ITaskFormParams } from '@/components/forms/TaskForm/TaskForm';
 import { API_ROUTES } from '@/constants/apiRoutes';
 import { baseApi } from '@/services/base';
 import { IRequestParams, IResponse } from '@/types';
-import { ITaskResponse } from '@/types/responses/IProjectResponse';
+import { ITaskLog, ITaskResponse } from '@/types/responses/IProjectResponse';
 
 export const tasksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,12 +14,12 @@ export const tasksApi = baseApi.injectEndpoints({
       providesTags: (result) =>
         result
           ? [
-            ...result.items.map(({ id }) => ({
-              type: 'Tasks' as const,
-              id,
-            })),
-            { type: 'Tasks', id: 'LIST' },
-          ]
+              ...result.items.map(({ id }) => ({
+                type: 'Tasks' as const,
+                id,
+              })),
+              { type: 'Tasks', id: 'LIST' },
+            ]
           : [{ type: 'Tasks', id: 'LIST' }],
       keepUnusedDataFor: 1,
     }),
@@ -52,6 +52,13 @@ export const tasksApi = baseApi.injectEndpoints({
         method: 'POST',
       }),
     }),
+    spendTime: builder.mutation<ITaskResponse, { id: string; body: Partial<ITaskLog> }>({
+      query: ({ id, body }: { id: string; body: Partial<ITaskLog> }) => ({
+        url: `${API_ROUTES.TASK}/spend/${id}`,
+        method: 'PUT',
+        body,
+      }),
+    }),
   }),
 });
 
@@ -61,4 +68,5 @@ export const {
   useGetTaskByIdQuery,
   useEditTaskMutation,
   useCreateTaskMutation,
+  useSpendTimeMutation,
 } = tasksApi;

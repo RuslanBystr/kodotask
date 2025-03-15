@@ -1,12 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  CheckCheckIcon,
-  ChevronDown,
-  ChevronUp,
-  CircleIcon,
-  LoaderCircle,
-  SeparatorHorizontal,
-} from 'lucide-react';
+import { CheckCheckIcon, ChevronDown, ChevronUp, CircleIcon, LoaderCircle, SeparatorHorizontal } from 'lucide-react';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
 import { AvatarCell } from '@/pages/task/MainTaskPage/сells/AvatarCell';
@@ -27,6 +20,11 @@ export const columns: ColumnDef<Task>[] = [
   {
     accessorKey: 'title',
     header: getDefaultColumnHeader({ name: 'Task' }),
+    cell: ({ row }) => (
+      <div className="min-w-[300px]">
+        <span className="ml-2">{row.original.title}</span>
+      </div>
+    ),
   },
   {
     accessorKey: 'assignedTo',
@@ -36,7 +34,9 @@ export const columns: ColumnDef<Task>[] = [
       return (
         <div className="flex items-center">
           <AvatarCell row={row} />
-          <span className="ml-2">{assignedUser.firstName} {assignedUser.lastName}</span>
+          <span className="ml-2">
+            {assignedUser.firstName} {assignedUser.lastName}
+          </span>
         </div>
       );
     },

@@ -1,4 +1,3 @@
-
 export const defaultInitialValue = {
   title: '',
   description: '',
@@ -6,4 +5,5 @@ export const defaultInitialValue = {
   projectId: '',
   avatar: '',
   priority: '',
+  estimate: 0,
 };

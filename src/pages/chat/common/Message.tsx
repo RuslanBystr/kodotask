@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 
-export const Message = ({ message }: { message: IMessageResponse; }) => {
+export const Message = ({ message }: { message: IMessageResponse }) => {
   const userData = useSelector(selectAuthenticatedUserSelector);
 
   const isSender = userData?.id === message?.sender.id || userData?.id === message.sender;
