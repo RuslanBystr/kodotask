@@ -76,8 +76,8 @@
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, rgba(66, 131, 218, 0.22) 10%, transparent 70%),
-    radial-gradient(circle, rgba(230, 149, 224, 0.15) 10%, transparent 70%),
-    radial-gradient(circle, rgba(107, 243, 107, 0.22) 10%, transparent 70%);
+      radial-gradient(circle, rgba(230, 149, 224, 0.15) 10%, transparent 70%),
+      radial-gradient(circle, rgba(107, 243, 107, 0.22) 10%, transparent 70%);
     animation: moveBackground 30s ease-in-out infinite;
     filter: blur(50px);
     z-index: -1;
@@ -109,13 +109,13 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #00FFFF26; /* Indigo thumb */
+    background-color: #00ffff26; /* Indigo thumb */
     border-radius: 4px;
     border: 2px solid #425b5e; /* Padding around thumb */
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #00FFFF26; /* Lighter on hover */
+    background-color: #00ffff26; /* Lighter on hover */
   }
   @keyframes particlesMove {
     from {

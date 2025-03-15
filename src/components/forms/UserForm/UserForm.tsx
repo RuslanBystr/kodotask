@@ -32,7 +32,6 @@ const UserForm: React.FC<IFormProps<IUserFormParams>> = ({
   onSubmit,
   initialValues = defaultInitialValue,
 }) => {
-
   const form = useForm({
     defaultValues: initialValues,
     reValidateMode: 'onSubmit',
@@ -43,7 +42,7 @@ const UserForm: React.FC<IFormProps<IUserFormParams>> = ({
     handleSubmit,
     reset,
     formState: { isDirty },
-    setValue
+    setValue,
   } = form;
 
   const [productImage, setProductImage] = useState<File | null>(null);
@@ -133,7 +132,7 @@ const UserForm: React.FC<IFormProps<IUserFormParams>> = ({
                     autoFocus={false}
                     autoComplete="off"
                     readOnly
-                    onFocus={(e) => e.target.removeAttribute("readOnly")}
+                    onFocus={(e) => e.target.removeAttribute('readOnly')}
                     {...field}
                   />
                 </FormControl>

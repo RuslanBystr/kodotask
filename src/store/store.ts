@@ -19,11 +19,7 @@ export const setupStore = () =>
   configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([
-        baseApi.middleware,
-        fileUploadApi.middleware,
-        usersApi.middleware,
-      ]),
+      getDefaultMiddleware().concat([baseApi.middleware, fileUploadApi.middleware, usersApi.middleware]),
   });
 
 export type RootState = ReturnType<typeof rootReducer>;

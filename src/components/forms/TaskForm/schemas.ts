@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { text } from '@/constants';
+import { number, text } from '@/constants';
 
 export const taskCreateFormSchema = z
   .object({
@@ -9,6 +9,7 @@ export const taskCreateFormSchema = z
     assignedUserId: text,
     projectId: text,
     priority: text,
+    estimate: number,
   })
   .required();
 
@@ -19,5 +20,6 @@ export const taskEditFormSchema = z
     assignedUserId: text,
     projectId: text,
     priority: text,
+    estimate: number,
   })
   .required();

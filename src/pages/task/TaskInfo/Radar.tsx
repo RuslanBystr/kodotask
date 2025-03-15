@@ -1,39 +1,33 @@
-"use client"
+'use client';
 
-import { TrendingUp } from "lucide-react"
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts"
+import { TrendingUp } from 'lucide-react';
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Progress } from '@/components/ui/progress';
 import { ITaskResponse } from '@/types/responses/IProjectResponse';
 
 const chartConfig = {
   value: {
-    label: "Task Metrics",
-    color: "hsl(var(--chart-1))",
+    label: 'Task Metrics',
+    color: 'hsl(var(--chart-1))',
   },
-} satisfies ChartConfig
-
+} satisfies ChartConfig;
 
 interface IChartData {
   metric: string;
   value: number;
 }
 
-export function TaskDiagram({data, chartData}: { data: ITaskResponse, chartData: IChartData[]} ) {
+const calculateProgress = (spentTime: number, estimate: number) => {
+  if (estimate === 0) return 0;
+  return Math.min((spentTime / estimate) * 100, 100);
+};
+
+export function TaskDiagram({ data, chartData }: { data: ITaskResponse; chartData: IChartData[] }) {
+  const progress = calculateProgress(data.spentTime, data.estimate);
+
   return (
     <Card className="flex flex-col bg-transparent border-none shadow-none">
       <CardHeader className="items-center py-4">
@@ -104,8 +98,10 @@ export function TaskDiagram({data, chartData}: { data: ITaskResponse, chartData:
               <p>{data.estimate}m</p>
               <p>{data.spentTime}m</p>
               <p>{data.remaining}m</p>
-              <Progress className='' value={data.done} />
-              <p>{data.assignedUser.firstName} {data.assignedUser.lastName}</p>
+              <Progress className="" value={progress || 0} />
+              <p>
+                {data.assignedUser.firstName} {data.assignedUser.lastName}
+              </p>
               <p>{data.author}</p>
             </div>
           </div>

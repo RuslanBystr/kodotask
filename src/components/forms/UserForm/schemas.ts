@@ -9,7 +9,7 @@ export const userCreateFormSchema = z
     email,
     password: initialPassword,
     confirmPassword: initialPassword,
-    avatar: text
+    avatar: text,
   })
   .required()
   .refine((data) => data.password === data.confirmPassword, {
@@ -23,6 +23,6 @@ export const userEditFormSchema = z
     lastName,
     email,
     password: editPassword,
-    avatar: text
+    avatar: text,
   })
   .required();

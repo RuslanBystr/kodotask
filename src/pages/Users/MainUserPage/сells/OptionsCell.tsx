@@ -15,10 +15,10 @@ import { selectAuthenticatedUserSelector } from '@/store';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const OptionsCell = ({ row }: { row: any }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const userId = row.original?.id;
-  const [ createPrivateChat ] = useCreatePrivateChatMutation()
-  const [ deleteUser ] = useDeleteUserMutation()
+  const [createPrivateChat] = useCreatePrivateChatMutation();
+  const [deleteUser] = useDeleteUserMutation();
   const userData = useSelector(selectAuthenticatedUserSelector);
 
   // eslint-disable-next-line consistent-return
@@ -26,7 +26,7 @@ export const OptionsCell = ({ row }: { row: any }) => {
     try {
       await createPrivateChat({
         user1Id: userId,
-        user2Id: userData?.id
+        user2Id: userData?.id,
       }).unwrap();
 
       navigate(`/chats/user/${userId}`);
@@ -44,24 +44,24 @@ export const OptionsCell = ({ row }: { row: any }) => {
 
   const handleEdit = () => {
     navigate(`/users/edit/${userId}`);
-  }
+  };
 
   const handleDelete = () => {
-    deleteUser(userId)
-  }
+    deleteUser(userId);
+  };
   return (
     <div className="flex justify-end">
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <EllipsisVerticalIcon />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={openChat}>Message</DropdownMenuItem>
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <EllipsisVerticalIcon />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={openChat}>Message</DropdownMenuItem>
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };

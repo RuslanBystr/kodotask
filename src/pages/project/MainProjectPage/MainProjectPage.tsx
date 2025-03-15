@@ -14,8 +14,17 @@ import { selectAuthenticatedUserSelector } from '@/store';
 import { columns } from './TableConfig';
 
 const MainProjectPage: React.FC = () => {
-  const { projects, goToCreateProjectPage, isLoading, sorting, setSorting, columnFilters, setColumnFilters, paginateParams, meta } =
-    useMainProjectPage();
+  const {
+    projects,
+    goToCreateProjectPage,
+    isLoading,
+    sorting,
+    setSorting,
+    columnFilters,
+    setColumnFilters,
+    paginateParams,
+    meta,
+  } = useMainProjectPage();
 
   const admin = useSelector(selectAuthenticatedUserSelector);
 
@@ -41,18 +50,18 @@ const MainProjectPage: React.FC = () => {
         </div>
       )}
       <div className="flex justify-center">
-          <CustomDataTable
-            columns={columns}
-            data={projects?.items || []}
-            isLoading={isLoading}
-            meta={meta}
-            sorting={sorting}
-            setSorting={setSorting}
-            columnFilters={columnFilters}
-            setColumnFilters={setColumnFilters}
-            paginateParams={paginateParams}
-            selectColumns={false}
-          />
+        <CustomDataTable
+          columns={columns}
+          data={projects?.items || []}
+          isLoading={isLoading}
+          meta={meta}
+          sorting={sorting}
+          setSorting={setSorting}
+          columnFilters={columnFilters}
+          setColumnFilters={setColumnFilters}
+          paginateParams={paginateParams}
+          selectColumns={false}
+        />
       </div>
     </div>
   );

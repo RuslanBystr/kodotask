@@ -124,7 +124,10 @@ const SidebarProvider = React.forwardRef<
               ...style,
             } as React.CSSProperties
           }
-          className={cn('group/sidebar-wrapper flex min-h-svh w-full w overflow-hidden has-[[data-variant=inset]]:bg-sidebar animated-bg', className)}
+          className={cn(
+            'group/sidebar-wrapper flex min-h-svh w-full w overflow-hidden has-[[data-variant=inset]]:bg-sidebar animated-bg',
+            className,
+          )}
           ref={ref}
           {...props}
         >
@@ -310,7 +313,12 @@ const SidebarInput = React.forwardRef<React.ElementRef<typeof Input>, React.Comp
 SidebarInput.displayName = 'SidebarInput';
 
 const SidebarHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(({ className, ...props }, ref) => (
-  <div ref={ref} data-sidebar="header" className={cn('flex flex-col h-16 shrink-0 items-center gap-2 border-b m-2', className)} {...props} />
+  <div
+    ref={ref}
+    data-sidebar="header"
+    className={cn('flex flex-col h-16 shrink-0 items-center gap-2 border-b m-2', className)}
+    {...props}
+  />
 ));
 SidebarHeader.displayName = 'SidebarHeader';
 

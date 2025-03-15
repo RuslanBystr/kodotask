@@ -16,7 +16,7 @@ export const OptionsCell = ({ row }: { row: any }) => {
 
   const handleEdit = () => {
     navigate(`/projects/edit/${project.id}`);
-  }
+  };
 
   return (
     <div className="flex justify-end">

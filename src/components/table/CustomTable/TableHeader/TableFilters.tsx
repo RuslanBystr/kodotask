@@ -18,7 +18,11 @@ export const SortingButton = <T,>({ column, title }: { column: Column<T>; title?
   };
 
   return (
-    <Button variant="ghost" className="flex justify-start" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+    <Button
+      variant="ghost"
+      className="flex justify-start"
+      onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+    >
       {title}
       {getSortIcon(column.getIsSorted())}
     </Button>

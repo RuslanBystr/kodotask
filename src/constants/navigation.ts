@@ -1,9 +1,4 @@
-import {
-  FileCheckIcon,
-  FolderCodeIcon, KanbanIcon,
-  MessageSquareIcon,
-  UsersIcon,
-} from 'lucide-react';
+import { FileCheckIcon, FolderCodeIcon, KanbanIcon, MessageSquareIcon, UsersIcon } from 'lucide-react';
 
 import { ROUTES } from '@/router';
 

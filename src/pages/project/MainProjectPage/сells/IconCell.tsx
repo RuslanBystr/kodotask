@@ -1,15 +1,14 @@
-import {
-  Avatar,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { IProjectResponse } from '@/types/responses/IProjectResponse';
 import { getEnv } from '@/utils';
 
 const { api } = getEnv();
 
-export function IconCell({row}: {
+export function IconCell({
+  row,
+}: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  row: any
+  row: any;
 }) {
   const project: IProjectResponse = row.original;
   return (
@@ -18,5 +17,5 @@ export function IconCell({row}: {
         <AvatarImage src={`${api}/file/${project?.image}`} alt="file" />
       </Avatar>
     </div>
-  )
+  );
 }

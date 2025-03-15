@@ -80,30 +80,30 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
   return (
     <div className="w-full my-2">
       {selectColumns && (
-      <div className="flex items-center justify-end py-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+        <div className="flex items-center justify-end py-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       )}
       <div className="rounded-lg border overflow-x-auto w-auto">
         <Table>
@@ -133,9 +133,7 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
                     }}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                     ))}
                   </TableRow>
                 );
@@ -152,7 +150,6 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
                   )}
                 </TableCell>
               </TableRow>
-
             )}
           </TableBody>
         </Table>
@@ -186,8 +183,9 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
           <Button
             variant="ghost"
             size="sm"
-            onClick={(e) => onPageChange(e, page - 1)} disabled={page === 0}
-            className='select-none'
+            onClick={(e) => onPageChange(e, page - 1)}
+            disabled={page === 0}
+            className="select-none"
           >
             <ArrowLeft />
             Previous
@@ -197,7 +195,7 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
             size="sm"
             onClick={(e) => onPageChange(e, page + 1)}
             disabled={meta && page + 1 >= meta?.totalPages}
-            className='select-none'
+            className="select-none"
           >
             Next
             <ArrowRight />

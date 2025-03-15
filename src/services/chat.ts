@@ -9,17 +9,17 @@ export const messagesApi = baseApi.injectEndpoints({
     getUserChats: builder.query<IResponse<IChatResponse>, IChatRequestParams>({
       query: (params: IChatRequestParams) => ({
         url: `${API_ROUTES.CHATS}`,
-        params
+        params,
       }),
       providesTags: (result) =>
         result
           ? [
-            ...result.items.map(({ id }) => ({
-              type: 'Chats' as const,
-              id,
-            })),
-            { type: 'Chats', id: 'LIST' },
-          ]
+              ...result.items.map(({ id }) => ({
+                type: 'Chats' as const,
+                id,
+              })),
+              { type: 'Chats', id: 'LIST' },
+            ]
           : [{ type: 'Chats', id: 'LIST' }],
       keepUnusedDataFor: 1,
     }),
@@ -33,17 +33,17 @@ export const messagesApi = baseApi.injectEndpoints({
     getMessages: builder.query<IResponse<IMessageResponse>, IChatRequestParams>({
       query: (params) => ({
         url: `${API_ROUTES.MESSAGES}`,
-        params
+        params,
       }),
       providesTags: (result) =>
         result
           ? [
-            ...result.items.map(({ id }) => ({
-              type: 'Messages' as const,
-              id,
-            })),
-            { type: 'Messages', id: 'LIST' },
-          ]
+              ...result.items.map(({ id }) => ({
+                type: 'Messages' as const,
+                id,
+              })),
+              { type: 'Messages', id: 'LIST' },
+            ]
           : [{ type: 'Messages', id: 'LIST' }],
       keepUnusedDataFor: 1,
     }),
