@@ -1,5 +1,12 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { CheckCheckIcon, ChevronDown, ChevronUp, CircleIcon, LoaderCircle, SeparatorHorizontal } from 'lucide-react';
+import {
+  CheckCheckIcon,
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  CircleIcon,
+  LoaderCircle,
+} from 'lucide-react';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
 import { AvatarCell } from '@/pages/task/MainTaskPage/сells/AvatarCell';
@@ -48,7 +55,7 @@ export const columns: ColumnDef<Task>[] = [
       const priorities = {
         Low: { icon: ChevronDown, color: 'text-green-200' },
         High: { icon: ChevronUp, color: 'text-orange-400' },
-        Medium: { icon: SeparatorHorizontal, color: 'text-blue-300' },
+        Medium: { icon: ChevronRight, color: 'text-blue-300' },
       };
 
       const { icon: Icon, color } = priorities[row.original.priority] || priorities.Medium;

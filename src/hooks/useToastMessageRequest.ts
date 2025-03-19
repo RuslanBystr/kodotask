@@ -42,7 +42,24 @@ const useToastMessageRequest = (
       return;
     }
     if (isSuccess) {
-      toast.success(defaultSuccessMessage);
+      toast.success(defaultSuccessMessage, {
+        style: {
+          backgroundColor: 'rgba(53,71,101,0.8)',
+          color: '#ffffff',
+          fontSize: '16px',
+          borderRadius: '0px',
+          clipPath: `polygon(
+            10px 0%,  
+            calc(100% - 10px) 0%, 
+            100% 10px,  
+            100% calc(100% - 10px), 
+            calc(100% - 10px) 100%, 
+            10px 100%, 
+            0% calc(100% - 10px), 
+            0% 10px
+          )`,
+        },
+      });
     }
     if (isError) {
       const serverError = error as IResponseHttpError;

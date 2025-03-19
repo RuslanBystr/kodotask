@@ -5,44 +5,27 @@ import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-
-const chartData = [
-  { date: '2024-04-01', review: 12, development: 30 },
-  { date: '2024-04-02', review: 15, development: 25 },
-  { date: '2024-04-03', review: 10, development: 40 },
-  { date: '2024-04-04', review: 20, development: 35 },
-  { date: '2024-04-05', review: 18, development: 28 },
-  { date: '2024-04-06', review: 25, development: 50 },
-  { date: '2024-04-07', review: 30, development: 45 },
-  { date: '2024-04-08', review: 22, development: 38 },
-  { date: '2024-04-09', review: 17, development: 33 },
-  { date: '2024-04-10', review: 19, development: 42 },
-  { date: '2024-04-11', review: 27, development: 39 },
-  { date: '2024-04-12', review: 14, development: 31 },
-  { date: '2024-04-13', review: 21, development: 37 },
-  { date: '2024-04-14', review: 29, development: 48 },
-];
+import { ITaskLog } from '@/types/responses/IProjectResponse';
 
 const chartConfig = {
-  review: {
-    label: 'Code Reviews',
+  duration: {
+    label: 'Total time',
     color: 'hsl(var(--chart-1))',
   },
-  development: {
-    label: 'Development Tasks',
-    color: 'hsl(var(--chart-2))',
-  },
+  // loggedAt: {
+  //   label: 'Development Tasks',
+  //   color: 'hsl(var(--chart-2))',
+  // },
 } satisfies ChartConfig;
 
-export function TaskActivity() {
-  const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>('development');
+export function TaskActivity({data}: {data: ITaskLog[]}) {
+  const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>('duration');
 
   const total = React.useMemo(
     () => ({
-      review: chartData.reduce((acc, curr) => acc + curr.review, 0),
-      development: chartData.reduce((acc, curr) => acc + curr.development, 0),
+      duration: data.reduce((acc, curr) => acc + curr.duration, 0),
     }),
-    [],
+    [data],
   );
 
   return (
@@ -53,7 +36,7 @@ export function TaskActivity() {
           <CardDescription>Tracking tasks completed over the last 2 weeks</CardDescription>
         </div>
         <div className="flex">
-          {['review', 'development'].map((key) => {
+          {['duration'].map((key) => {
             const chart = key as keyof typeof chartConfig;
             return (
               // eslint-disable-next-line react/button-has-type
@@ -76,7 +59,7 @@ export function TaskActivity() {
         <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={data}
             margin={{
               left: 12,
               right: 12,
@@ -84,7 +67,7 @@ export function TaskActivity() {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="date"
+              dataKey="duration"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -101,7 +84,7 @@ export function TaskActivity() {
               content={
                 <ChartTooltipContent
                   className="w-[150px]"
-                  nameKey="tasks"
+                  nameKey="loggedAt"
                   labelFormatter={(value) =>
                     new Date(value).toLocaleDateString('en-US', {
                       month: 'short',

@@ -1,5 +1,6 @@
 import { Trash } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -13,19 +14,23 @@ import {
 } from '@/components/ui/dialog';
 import { useDeleteTaskMutation } from '@/services/task';
 
-export function DeleteTaskDialog({ userId }: { userId: string }) {
+export function DeleteTaskDialog({ taskId }: { taskId: string }) {
+  const navigate = useNavigate();
   const [deleteTask] = useDeleteTaskMutation();
   const [open, setOpen] = useState(false);
 
   const onDelete = async () => {
-    deleteTask(userId);
+    deleteTask(taskId).then(() => {navigate(`/tasks`)});
     setOpen(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={() => setOpen(true)}>
+        <Button
+          className="rounded-none bg-transparent hover:bg-[#88aabb] cut-bottom-left-5"
+          onClick={() => setOpen(true)}
+        >
           <Trash />
         </Button>
       </DialogTrigger>

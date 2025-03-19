@@ -3,6 +3,7 @@ import React from 'react';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ActivityChart } from '@/pages/activity/BarChart';
 
 const ActivityPage: React.FC = () => (
   <div className="p-2">
@@ -17,6 +18,9 @@ const ActivityPage: React.FC = () => (
         </BreadcrumbList>
       </Breadcrumb>
     </header>
+    <div className="md:w-[40vw] h-[30vh]">
+      <ActivityChart />
+    </div>
   </div>
 );
 

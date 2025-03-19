@@ -125,6 +125,21 @@
       background-position: 1000px 1000px;
     }
   }
+  audio::-webkit-media-controls-panel {
+    background-color: transparent;
+  }
+}
+
+
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 .rsc .rs__control {

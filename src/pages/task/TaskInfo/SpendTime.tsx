@@ -1,10 +1,12 @@
 import { QueryActionCreatorResult, QueryDefinition } from '@reduxjs/toolkit/query';
+import { TrashIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useSpendTimeMutation } from '@/services/task';
+import useToastMessageRequest from '@/hooks/useToastMessageRequest';
+import { useDeleteTaskLogMutation, useSpendTimeMutation } from '@/services/task';
 import { ITaskLog } from '@/types/responses/IProjectResponse';
 
 export const SpendTime = ({
@@ -19,7 +21,9 @@ export const SpendTime = ({
   const taskId = id ?? '';
 
   const [time, setTime] = useState('');
-  const [spendTime] = useSpendTimeMutation();
+  const [spendTime, { isSuccess: isSpendSuccess, isError: isSpendError, error: spendError }] = useSpendTimeMutation();
+  const [deleteTaskLog, { isSuccess: isDeleteSuccess, isError: isDeleteError, error: deleteError }] =
+    useDeleteTaskLogMutation();
   const logContainerRef = useRef<HTMLDivElement | null>(null);
 
   const timeFormat = (minutes: number) => {
@@ -48,21 +52,42 @@ export const SpendTime = ({
     }
   }, [logs?.length]);
 
-  const handleSubmit = async () => {
+  useToastMessageRequest({ isSuccess: isSpendSuccess, isError: isSpendError, error: spendError });
+  useToastMessageRequest({ isSuccess: isDeleteSuccess, isError: isDeleteError, error: deleteError });
+
+  const handleSubmit = () => {
     if (!time || Number.isNaN(Number(time))) return;
-    await spendTime({ id: taskId, body: { duration: Number(time) } });
-    setTime('');
-    refreshTask();
+    spendTime({ id: taskId, body: { duration: Number(time) } }).then(() => {
+      setTime('');
+      refreshTask();
+    });
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
+  const handleDeleteTime = async (logId: string) => {
+    await deleteTaskLog(logId);
+    refreshTask();
+  }
 
   return (
     <div className="h-[40vh] flex flex-col justify-between max-w-[720px]">
-      <div ref={logContainerRef} className="flex-1 overflow-y-auto bg-muted/20 rounded-lg p-2">
+      <div ref={logContainerRef} className="flex-1 overflow-y-auto bg-muted/20 rounded-lg p-2 rounded-none">
         {logs.length > 0 ? (
           logs.map((log) => (
-            <div key={`task-log-${log.loggedAt}`} className="flex justify-between border-b border-gray-500 py-1 md:px-4">
+            <div key={`task-log-${log.loggedAt}`} className="flex justify-between items-center border-b border-gray-500 py-1 md:px-4">
               <div>{timeFormat(log.duration)}</div>
-              <div>{dateFormat(log.loggedAt)}</div>
+              <div className='text-[12px]'>{dateFormat(log.loggedAt)}</div>
+              <div>
+                <Button variant='ghost' className='rounded-none cut cut-top-5 cut-bottom-5' onClick={() => handleDeleteTime(log.id)}>
+                  <TrashIcon/>
+                </Button>
+              </div>
             </div>
           ))
         ) : (
@@ -70,12 +95,14 @@ export const SpendTime = ({
         )}
       </div>
 
-      <div className="flex items-center gap-2 mt-4">
+      <div className="flex items-center gap-2 mt-4 bg-muted/20">
         <Input
           type="number"
           value={time}
           onChange={(e) => setTime(e.target.value)}
           placeholder="Enter time in minutes"
+          onKeyDown={handleKeyDown}
+          className='rounded-none'
         />
         <Button className="bg-card hover:bg-card/30 rounded-none" onClick={handleSubmit}>
           Log Time
