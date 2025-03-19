@@ -22,7 +22,7 @@ export const authSlice = createSlice({
       state,
       action: PayloadAction<{
         token: string | null;
-        admin: IUserResponse;
+        admin: IUserResponse | null;
       }>,
     ) {
       setAccessTokenToStorage(action?.payload?.token as string);

@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin');
+
 module.exports = {
   darkMode: ['class'],
   content: ['./src/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
@@ -57,6 +59,41 @@ module.exports = {
     },
   },
   plugins: [
+    plugin(({ addUtilities }) => {
+      const values = [5, 10, 15, 20, 25, 30];
+
+      const clipPathUtilities = values.reduce((acc, px) => {
+        acc[`.cut-top-left-${px}`] = { '--cut-top-left': `${px}px` };
+        acc[`.cut-top-right-${px}`] = { '--cut-top-right': `${px}px` };
+        acc[`.cut-bottom-left-${px}`] = { '--cut-bottom-left': `${px}px` };
+        acc[`.cut-bottom-right-${px}`] = { '--cut-bottom-right': `${px}px` };
+
+        acc[`.cut-top-${px}`] = { '--cut-top-left': `${px}px`, '--cut-top-right': `${px}px` };
+        acc[`.cut-bottom-${px}`] = { '--cut-bottom-left': `${px}px`, '--cut-bottom-right': `${px}px` };
+        acc[`.cut-left-${px}`] = { '--cut-top-left': `${px}px`, '--cut-bottom-left': `${px}px` };
+        acc[`.cut-right-${px}`] = { '--cut-top-right': `${px}px`, '--cut-bottom-right': `${px}px` };
+
+        return acc;
+      }, {});
+
+      addUtilities({
+        ...clipPathUtilities,
+        '.cut': {
+          clipPath: `
+            polygon(
+              var(--cut-top-left, 0px) 0%,
+              calc(100% - var(--cut-top-right, 0px)) 0%,
+              100% var(--cut-top-right, 0px),
+              100% calc(100% - var(--cut-bottom-right, 0px)),
+              calc(100% - var(--cut-bottom-right, 0px)) 100%,
+              var(--cut-bottom-left, 0px) 100%,
+              0% calc(100% - var(--cut-bottom-left, 0px)),
+              0% var(--cut-top-left, 0px)
+            )
+          `,
+        },
+      });
+    }),
     require('tailwindcss-animate'), // eslint-disable-line global-require
   ],
 };

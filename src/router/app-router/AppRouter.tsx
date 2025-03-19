@@ -4,6 +4,7 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import { AuthGuard, GuestGuard } from '@/guards';
 import { AuthLayout, MainLayout } from '@/layouts';
 import ActivityPage from '@/pages/activity/Activity';
+import AuthSuccess from '@/pages/auth-success/AuthSuccess';
 import MainChatPage from '@/pages/chat/MainChatPage/MainChatPage';
 import { CreateProjectPage } from '@/pages/project/CreateProjectPage';
 import { EditProjectPage } from '@/pages/project/EditProjectPage';
@@ -30,6 +31,10 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
           path: ROUTES.AUTH.ROOT,
           element: <SignIn />,
         },
+        {
+          path: `${ROUTES.AUTH.SUCCESS}`,
+          element: <AuthSuccess />
+        }
       ],
     },
     {

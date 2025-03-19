@@ -59,7 +59,13 @@ export const tasksApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-  }),
+    deleteTaskLog: builder.mutation<void, string | undefined>({
+      query: (id) => ({
+        url: `${API_ROUTES.TASK}/logs/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'Tasks', id: 'LIST' }],
+    }),  }),
 });
 
 export const {
@@ -69,4 +75,5 @@ export const {
   useEditTaskMutation,
   useCreateTaskMutation,
   useSpendTimeMutation,
+  useDeleteTaskLogMutation,
 } = tasksApi;

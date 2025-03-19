@@ -58,10 +58,14 @@ export function NavMain({
                   <SidebarMenuButton
                     tooltip={item.title}
                     onClick={() => menuButtonHandler(item)}
-                    className={clsx(' hover:bg-muted/50 shadow', {
-                      'font-bold bg-muted/50 border-b-2': isActiveItem,
-                    })}
+                    className={clsx(
+                      'py-4 hover:bg-gray border-gray-600 border-2 transition-all duration-200 ease-in-out transform hover:bg-gray-800',
+                      {
+                        'font-bold bg-gray-700 border-gray-400': isActiveItem,
+                      }
+                    )}
                   >
+
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
                     {item.items && (

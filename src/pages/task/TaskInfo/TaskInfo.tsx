@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { DeleteTaskDialog } from '@/components/modals/TaskModal';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -54,7 +55,7 @@ export default function TaskInfoPage() {
       label: 'Status',
       content: <TaskStatus id={taskId} defaultStatus={data?.status || TaskStatusEnum.TODO} />,
     },
-    { id: 'tab3', label: 'Activity', content: <TaskActivity /> },
+    { id: 'tab3', label: 'Activity', content: <TaskActivity data={data?.timeLogger || []}/> },
   ];
 
   if (isLoading) {
@@ -100,11 +101,9 @@ export default function TaskInfoPage() {
                 {tabs.map((tab) => (
                   <Button
                     key={tab.id}
-                    className={
-                      activeTab === tab.id
-                        ? 'bg-accent/20 border-b-2 rounded-b-none shadow'
-                        : 'bg-transparent border-b-2 rounded-b-none shadow'
-                    }
+                    className={`border-b-2 rounded-none cut cut-top-right-5 cut-top-left-5 hover:bg-accent/20 ${
+                      activeTab === tab.id ? 'bg-accent' : 'bg-transparent'
+                    }`}
                     onClick={() => setActiveTab(tab.id)}
                   >
                     {tab.label}
@@ -123,7 +122,12 @@ export default function TaskInfoPage() {
               rows={6}
             />
           </div>
-          <div className="w-full mb-16">{data && <TaskDiagram data={data} chartData={chartData} />}</div>
+          <div className="w-full mb-16">
+            <div className='flex justify-end'>
+              {id && <DeleteTaskDialog taskId={id} />}
+            </div>
+            {data && <TaskDiagram data={data} chartData={chartData} />}
+          </div>
         </div>
       </div>
     </div>

@@ -47,7 +47,7 @@ const MainTaskPage: React.FC = () => {
           Add Task
         </Button>
       )}
-      <div className="flex justify-center">
+      <div className="flex border-b">
         <CustomDataTable
           columns={columns}
           data={tasks?.items || []}
@@ -61,6 +61,9 @@ const MainTaskPage: React.FC = () => {
           selectColumns={false}
           rowClickNavigateId
         />
+        <div className='border-l ml-2 w-[20vw]'>
+          <Button className='w-full rounded-none bg-transparent/10 hover:bg-transparent/20'>Project 1</Button>
+        </div>
       </div>
     </div>
   );

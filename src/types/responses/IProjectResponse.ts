@@ -26,6 +26,7 @@ export interface Task {
 }
 
 export interface ITaskLog {
+  id: string;
   duration: number;
   loggedAt: string;
 }
