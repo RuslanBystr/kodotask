@@ -77,7 +77,7 @@ const MainChatPage: React.FC = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="flex gap-1 w-16 md:w-[18em] flex-col pr-1 pt-2 md:p-2 bg-muted/10">
+        <div className="flex gap-1 w-14 md:w-[14em] flex-col pr-2 pt-2 md:p-2 bg-muted/10">
           <Input className="w-[5em] md:w-max text-[10px]" placeholder="Search" onChange={filterChats} />
 
           {!filteredChats ? (
@@ -125,11 +125,11 @@ const MainChatPage: React.FC = () => {
                     </div>
                     <p className="text-accent">
                       {/* eslint-disable-next-line no-nested-ternary */}
-                      {lastMessage?.content === null ? 'Voice Message' :
-                        lastMessage?.content?.length > 15
-                        ? `${lastMessage.content.slice(0, 18)}...`
-                        : lastMessage?.content
-                      }
+                      {lastMessage?.content === null
+                        ? 'Voice Message'
+                        : lastMessage?.content?.length > 15
+                          ? `${lastMessage.content.slice(0, 18)}...`
+                          : lastMessage?.content}
                     </p>
                   </div>
                 </SidebarMenuButton>
@@ -140,9 +140,9 @@ const MainChatPage: React.FC = () => {
       </div>
 
       <div className="flex flex-col w-full">
-        <div className='w-full min-h-16 pl-6 border-b'>
+        <div className="w-full min-h-16 pl-6 border-b">
           <p>{activeChat?.userChats[1]?.name}</p>
-          <p className='text-[11px]'>
+          <p className="text-[11px]">
             {activeChat && (onlineUsers.includes(activeChat.userChats[1].id) ? 'Online' : 'Offline')}
           </p>
         </div>

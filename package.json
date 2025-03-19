@@ -12,9 +12,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^43.1.0",
-    "@ckeditor/ckeditor5-react": "^9.2.0",
-    "@ckeditor/ckeditor5-upload": "^43.1.0",
     "@hookform/resolvers": "~3.3.4",
     "@originjs/vite-plugin-commonjs": "~1.0.3",
     "@radix-ui/react-avatar": "^1.1.2",
@@ -34,7 +31,6 @@
     "@shadcn/ui": "^0.0.4",
     "@tanstack/react-table": "^8.20.6",
     "@types/node": "~20.12.7",
-    "ckeditor5": "^43.3.1",
     "class-variance-authority": "^0.7.1",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
@@ -45,7 +41,6 @@
     "react": "~18.2.0",
     "react-dom": "~18.2.0",
     "react-hook-form": "~7.51.3",
-    "react-mic": "^12.4.6",
     "react-redux": "~9.1.1",
     "react-router-dom": "~6.23.0",
     "react-select": "^5.10.0",
