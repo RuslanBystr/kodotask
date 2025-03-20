@@ -32,16 +32,17 @@ const MainChatPage: React.FC = () => {
 
   useEffect(() => {
     if (!userId) return;
+
     socket.connect();
     socket.emit('userConnected', userId);
 
-    socket.on('onlineUsers', (users: string[]) => {
-      setOnlineUsers(users);
-    });
+    const handleOnlineUsers = (users: string[]) => setOnlineUsers(users);
+
+    socket.on('onlineUsers', handleOnlineUsers);
 
     // eslint-disable-next-line consistent-return
     return () => {
-      socket.off('onlineUsers');
+      socket.off('onlineUsers', handleOnlineUsers);
       socket.disconnect();
     };
   }, [userId]);
