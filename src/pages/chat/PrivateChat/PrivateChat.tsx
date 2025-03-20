@@ -95,7 +95,7 @@ export function PrivateChat() {
   }, [page, refetch]);
 
   const sendMessage = useCallback(() => {
-    if (newMessage === null && newVoiceMessage === null) return;
+    if (newMessage === '' && newVoiceMessage === null) return;
 
     if (newVoiceMessage !== null) {
       setNewMessage('');
@@ -127,7 +127,7 @@ export function PrivateChat() {
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
       <div className="relative col-span-3 lg:col-span-2 flex flex-col h-[calc(100vh-72px)] w-full">
         {messages.length > 0 ? (
-          <Messages messageDetails={messages} fetchMoreMessages={fetchMoreMessages} />
+          <Messages messageDetails={messages} setMessages={setMessages} fetchMoreMessages={fetchMoreMessages} />
         ) : (
           <div className="flex flex-col p-2 w-full justify-center h-[calc(100vh-72px)]">
             {isLoading ? (
@@ -147,7 +147,7 @@ export function PrivateChat() {
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
           />
-          <div className="">
+          <div className="hidden md:block">
             <Button className="bg-[#336677] w-10 rounded-full" onClick={() => setShowPicker(!showPicker)}>
               <SmileIcon />
             </Button>
