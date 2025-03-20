@@ -41,28 +41,30 @@ const MainTaskPage: React.FC = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-      {admin?.role !== AdminRoleEnum.VIEWER && (
-        <Button className="mt-5" variant="outline" onClick={goToCreateTaskPage}>
-          <PlusIcon />
-          Add Task
-        </Button>
-      )}
-      <div className="flex border-b">
-        <CustomDataTable
-          columns={columns}
-          data={tasks?.items || []}
-          isLoading={isLoading}
-          meta={meta}
-          sorting={sorting}
-          setSorting={setSorting}
-          columnFilters={columnFilters}
-          setColumnFilters={setColumnFilters}
-          paginateParams={paginateParams}
-          selectColumns={false}
-          rowClickNavigateId
-        />
-        <div className='border-l ml-2 w-[20vw]'>
-          <Button className='w-full rounded-none bg-transparent/10 hover:bg-transparent/20'>Project 1</Button>
+      <div className="h-[calc(100vh-72px)] overflow-y-auto">
+        {admin?.role !== AdminRoleEnum.VIEWER && (
+          <Button className="mt-5" variant="outline" onClick={goToCreateTaskPage}>
+            <PlusIcon />
+            Add Task
+          </Button>
+        )}
+        <div className="flex border-b">
+          <CustomDataTable
+            columns={columns}
+            data={tasks?.items || []}
+            isLoading={isLoading}
+            meta={meta}
+            sorting={sorting}
+            setSorting={setSorting}
+            columnFilters={columnFilters}
+            setColumnFilters={setColumnFilters}
+            paginateParams={paginateParams}
+            selectColumns={false}
+            rowClickNavigateId
+          />
+          <div className="hidden md:block border-l ml-2 w-[20vw]">
+            <Button className="w-full rounded-none bg-transparent/10 hover:bg-transparent/20">Project 1</Button>
+          </div>
         </div>
       </div>
     </div>
