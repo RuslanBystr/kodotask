@@ -89,10 +89,9 @@ export const Message = ({ message, onDelete }: { message: IMessageResponse; onDe
           <p className="text-sm break-all">{message.content}</p>
           {message.voiceMessage !== null && (
             // eslint-disable-next-line jsx-a11y/media-has-caption
-            <audio controls className="audio">
-              <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/webm" />
+            <audio controls className="audio" onContextMenu={(e) => e.stopPropagation()}>
               <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/mp3" />
-              <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/mp4" />
+              <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/webm" />
               Your browser does not support the audio element.
             </audio>
           )}
