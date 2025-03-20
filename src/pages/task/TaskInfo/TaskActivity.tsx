@@ -18,7 +18,7 @@ const chartConfig = {
   // },
 } satisfies ChartConfig;
 
-export function TaskActivity({data}: {data: ITaskLog[]}) {
+export function TaskActivity({ data }: { data: ITaskLog[] }) {
   const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>('duration');
 
   const total = React.useMemo(

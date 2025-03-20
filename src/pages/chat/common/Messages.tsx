@@ -88,10 +88,6 @@ function Messages({ messageDetails, setMessages, fetchMoreMessages }: MessagesPr
     return () => observer.disconnect();
   }, [messageDetails]);
 
-  const handleDeleteMessage = (id: number) => {
-    setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== id));
-  };
-
   return (
     <div
       ref={messagesContainerRef}
@@ -110,7 +106,7 @@ function Messages({ messageDetails, setMessages, fetchMoreMessages }: MessagesPr
       )}
 
       {messageDetails.map((message) => (
-        <Message message={message} onDelete={handleDeleteMessage} key={`${message.id}-${message.createdAt}`} />
+        <Message message={message} setMessages={setMessages} key={`${message.id}-${message.createdAt}`} />
       ))}
     </div>
   );

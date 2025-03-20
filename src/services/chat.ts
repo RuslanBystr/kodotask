@@ -60,6 +60,13 @@ export const messagesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Messages', id: 'LIST' }],
     }),
+    addReaction: builder.mutation<IMessageResponse, unknown>({
+      query: ({ id, reaction }) => ({
+        url: `${API_ROUTES.MESSAGES}/${id}`,
+        body: { reaction },
+        method: 'PUT',
+      }),
+    }),
     createMessage: builder.mutation<IMessageResponse, unknown>({
       query: (body) => ({
         url: `${API_ROUTES.MESSAGES}`,
@@ -77,4 +84,5 @@ export const {
   useDeleteMessageMutation,
   useGetMessageByIdQuery,
   useCreateMessageMutation,
+  useAddReactionMutation,
 } = messagesApi;

@@ -62,10 +62,9 @@ export function NavMain({
                       'py-4 hover:bg-gray border-gray-600 border-2 transition-all duration-200 ease-in-out transform hover:bg-gray-800',
                       {
                         'font-bold bg-gray-700 border-gray-400': isActiveItem,
-                      }
+                      },
                     )}
                   >
-
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
                     {item.items && (

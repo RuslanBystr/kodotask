@@ -55,7 +55,7 @@ export default function TaskInfoPage() {
       label: 'Status',
       content: <TaskStatus id={taskId} defaultStatus={data?.status || TaskStatusEnum.TODO} />,
     },
-    { id: 'tab3', label: 'Activity', content: <TaskActivity data={data?.timeLogger || []}/> },
+    { id: 'tab3', label: 'Activity', content: <TaskActivity data={data?.timeLogger || []} /> },
   ];
 
   if (isLoading) {
@@ -123,9 +123,7 @@ export default function TaskInfoPage() {
             />
           </div>
           <div className="w-full mb-16">
-            <div className='flex justify-end'>
-              {id && <DeleteTaskDialog taskId={id} />}
-            </div>
+            <div className="flex justify-end">{id && <DeleteTaskDialog taskId={id} />}</div>
             {data && <TaskDiagram data={data} chartData={chartData} />}
           </div>
         </div>
