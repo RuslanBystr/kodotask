@@ -1,5 +1,6 @@
 import { clsx } from 'clsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import * as React from 'react';
 
 import LoadingIcon from '@/assets/icons/LoadingIcon';
 import { Message } from '@/pages/chat/common/Message';
@@ -8,9 +9,10 @@ import { IMessageResponse } from '@/types/responses/IMessageResponse';
 interface MessagesProps {
   messageDetails: IMessageResponse[];
   fetchMoreMessages: () => void;
+  setMessages: React.Dispatch<React.SetStateAction<IMessageResponse[]>>;
 }
 
-function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
+function Messages({ messageDetails, setMessages, fetchMoreMessages }: MessagesProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeight = useRef<number>(0);
   const [loading, setLoading] = useState(false);
@@ -53,6 +55,10 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
     }
   }, [messageDetails]);
 
+  const handleDeleteMessage = (id: number) => {
+    setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== id));
+  };
+
   return (
     <div
       ref={messagesContainerRef}
@@ -71,7 +77,7 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
       )}
 
       {messageDetails.map((message) => (
-        <Message message={message} key={`${message.id}-${message.createdAt}`} />
+        <Message message={message} onDelete={handleDeleteMessage} key={`${message.id}-${message.createdAt}`} />
       ))}
     </div>
   );
