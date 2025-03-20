@@ -16,17 +16,16 @@ import { socket } from '@/utils/socket';
 
 import { useChatMicro } from './useChatMicro';
 
-
 export function PrivateChat() {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const { id } = useParams();
-  const [newMessage, setNewMessage] = useState<string>("");
+  const [newMessage, setNewMessage] = useState<string>('');
   const [newVoiceMessage, setNewVoiceMessage] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [messages, setMessages] = useState<IMessageResponse[]>([]);
   const { data: initialMessages, isLoading, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 20 });
   const [showPicker, setShowPicker] = useState(false);
-  const [recording, startRecording, stopRecording] = useChatMicro({setNewVoiceMessage})
+  const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
 
   const handleEmojiClick: MouseDownEvent = (emojiObject) => {
     setNewMessage((prev) => prev + emojiObject.emoji);
@@ -99,18 +98,18 @@ export function PrivateChat() {
     if (newMessage === null && newVoiceMessage === null) return;
 
     if (newVoiceMessage !== null) {
-      setNewMessage("");
+      setNewMessage('');
     }
 
     const messageData = {
       senderId: userData?.id,
       chatId: id,
-      content: newMessage.trim() === "" ? null : newMessage.trim(),
+      content: newMessage.trim() === '' ? null : newMessage.trim(),
       voiceMessage: newVoiceMessage,
     };
 
     socket.emit('sendMessage', messageData);
-    setNewMessage("");
+    setNewMessage('');
     setNewVoiceMessage(null);
   }, [newMessage, newVoiceMessage, userData, id]);
 
@@ -119,7 +118,6 @@ export function PrivateChat() {
       sendMessage();
     }
   }, [newVoiceMessage, sendMessage]);
-
 
   const handleStopRecording = async () => {
     stopRecording();
@@ -143,15 +141,15 @@ export function PrivateChat() {
         )}
         <div className="flex items-center gap-2 border-t pl-2 pt-4 md:p-4">
           <Input
-            className="flex-1"
+            className="flex-1 rounded-full text-[12px] md:text-[14px]"
             placeholder="Type your message..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
           />
-          <div className=''>
-            <Button className='bg-[#336677] w-10 rounded-full' onClick={() => setShowPicker(!showPicker)}>
-              <SmileIcon/>
+          <div className="">
+            <Button className="bg-[#336677] w-10 rounded-full" onClick={() => setShowPicker(!showPicker)}>
+              <SmileIcon />
             </Button>
             {showPicker && (
               <div className="absolute bottom-20 right-0 mt-2">
@@ -162,13 +160,13 @@ export function PrivateChat() {
           <div>
             <Button
               onClick={recording ? handleStopRecording : startRecording}
-              className="w-10 rounded-full transition duration-300 ease-in-out"
+              className="bg-[#336677] w-10 rounded-full transition duration-300 ease-in-out"
             >
               {recording ? <Square size={24} /> : <Mic size={24} />}
             </Button>
           </div>
 
-          <Button className="bg-card w-10 rounded-full" onClick={sendMessage}>
+          <Button className="bg-[#668899] w-10 rounded-full" onClick={sendMessage}>
             <SendHorizonalIcon />
           </Button>
         </div>

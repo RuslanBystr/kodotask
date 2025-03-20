@@ -51,7 +51,7 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
         behavior: 'instant',
       });
     }
-  }, []);
+  }, [messageDetails]);
 
   return (
     <div

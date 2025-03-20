@@ -77,8 +77,8 @@ const MainChatPage: React.FC = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="flex gap-1 w-14 md:w-[14em] flex-col pr-2 pt-2 md:p-2 bg-muted/10">
-          <Input className="w-[5em] md:w-max text-[10px]" placeholder="Search" onChange={filterChats} />
+        <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col pr-2 pt-2 md:p-2 bg-muted/10">
+          <Input className="md:w-[14em] p-2 text-[10px]" placeholder="Search" onChange={filterChats} />
 
           {!filteredChats ? (
             <div className="w-full h-full flex justify-center">

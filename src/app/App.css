@@ -125,9 +125,6 @@
       background-position: 1000px 1000px;
     }
   }
-  audio::-webkit-media-controls-panel {
-    background-color: transparent;
-  }
 }
 
 
