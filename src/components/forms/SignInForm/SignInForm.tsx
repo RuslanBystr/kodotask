@@ -69,7 +69,7 @@ export const SignInForm = () => {
 
   return (
     <div className={cn('flex flex-col gap-6')}>
-      <Card className='bg-transparent/30 shadow-md p-2'>
+      <Card className="bg-transparent/30 shadow-md p-2">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
         </CardHeader>

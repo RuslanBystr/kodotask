@@ -33,8 +33,8 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
         },
         {
           path: `${ROUTES.AUTH.SUCCESS}`,
-          element: <AuthSuccess />
-        }
+          element: <AuthSuccess />,
+        },
       ],
     },
     {

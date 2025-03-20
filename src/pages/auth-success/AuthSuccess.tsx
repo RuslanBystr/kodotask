@@ -1,26 +1,29 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useToastMessageRequest } from '@/hooks';
-import { ROUTES } from "@/router";
+import { ROUTES } from '@/router';
 import { useGetProfileQuery } from '@/services/auth';
-import { authSlice, useAppDispatch } from "@/store";
+import { authSlice, useAppDispatch } from '@/store';
 
 const AuthSuccess = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const params = new URLSearchParams(window.location.search);
-  const token = params.get("token");
-  const { data: admin, isLoading, ...otherMethods } = useGetProfileQuery(token || '', {
+  const token = params.get('token');
+  const {
+    data: admin,
+    isLoading,
+    ...otherMethods
+  } = useGetProfileQuery(token || '', {
     skip: !token,
   });
 
   useToastMessageRequest(otherMethods);
 
   useEffect(() => {
-
     if (token && token.trim()) {
-      if ( admin) {
+      if (admin) {
         dispatch(authSlice.actions.setAccessToken({ token, admin }));
 
         setTimeout(() => {

@@ -65,7 +65,8 @@ export const tasksApi = baseApi.injectEndpoints({
         method: 'DELETE',
       }),
       invalidatesTags: [{ type: 'Tasks', id: 'LIST' }],
-    }),  }),
+    }),
+  }),
 });
 
 export const {

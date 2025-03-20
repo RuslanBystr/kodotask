@@ -1,12 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  CheckCheckIcon,
-  ChevronDown,
-  ChevronRight,
-  ChevronUp,
-  CircleIcon,
-  LoaderCircle,
-} from 'lucide-react';
+import { CheckCheckIcon, ChevronDown, ChevronRight, ChevronUp, CircleIcon, LoaderCircle } from 'lucide-react';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
 import { AvatarCell } from '@/pages/task/MainTaskPage/сells/AvatarCell';

@@ -64,7 +64,7 @@ export const SpendTime = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       handleSubmit();
     }
@@ -73,19 +73,26 @@ export const SpendTime = ({
   const handleDeleteTime = async (logId: string) => {
     await deleteTaskLog(logId);
     refreshTask();
-  }
+  };
 
   return (
     <div className="h-[40vh] flex flex-col justify-between max-w-[720px]">
       <div ref={logContainerRef} className="flex-1 overflow-y-auto bg-muted/20 rounded-lg p-2 rounded-none">
         {logs.length > 0 ? (
           logs.map((log) => (
-            <div key={`task-log-${log.loggedAt}`} className="flex justify-between items-center border-b border-gray-500 py-1 md:px-4">
+            <div
+              key={`task-log-${log.loggedAt}`}
+              className="flex justify-between items-center border-b border-gray-500 py-1 md:px-4"
+            >
               <div>{timeFormat(log.duration)}</div>
-              <div className='text-[12px]'>{dateFormat(log.loggedAt)}</div>
+              <div className="text-[12px]">{dateFormat(log.loggedAt)}</div>
               <div>
-                <Button variant='ghost' className='rounded-none cut cut-top-5 cut-bottom-5' onClick={() => handleDeleteTime(log.id)}>
-                  <TrashIcon/>
+                <Button
+                  variant="ghost"
+                  className="rounded-none cut cut-top-5 cut-bottom-5"
+                  onClick={() => handleDeleteTime(log.id)}
+                >
+                  <TrashIcon />
                 </Button>
               </div>
             </div>
@@ -102,7 +109,7 @@ export const SpendTime = ({
           onChange={(e) => setTime(e.target.value)}
           placeholder="Enter time in minutes"
           onKeyDown={handleKeyDown}
-          className='rounded-none'
+          className="rounded-none"
         />
         <Button className="bg-card hover:bg-card/30 rounded-none" onClick={handleSubmit}>
           Log Time

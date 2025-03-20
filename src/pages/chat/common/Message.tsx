@@ -1,8 +1,10 @@
 import { CopyCheckIcon, CopyIcon, TrashIcon } from 'lucide-react';
 import { useRef } from 'react';
+import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
+import { Button } from '@/components/ui/button';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -10,15 +12,22 @@ import {
   ContextMenuShortcut,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { useDeleteMessageMutation } from '@/services/chat';
+import { useAddReactionMutation, useDeleteMessageMutation } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { getEnv } from '@/utils';
 
 const { api } = getEnv();
 
-export const Message = ({ message, onDelete }: { message: IMessageResponse; onDelete: (id: number) => void }) => {
+export const Message = ({
+  message,
+  setMessages,
+}: {
+  message: IMessageResponse;
+  setMessages: React.Dispatch<React.SetStateAction<IMessageResponse[]>>;
+}) => {
   const userData = useSelector(selectAuthenticatedUserSelector);
+  const [addReaction] = useAddReactionMutation();
   const [deleteMessage] = useDeleteMessageMutation();
   const isSender = userData?.id === message?.sender.id || userData?.id === message.sender;
 
@@ -60,14 +69,29 @@ export const Message = ({ message, onDelete }: { message: IMessageResponse; onDe
     );
   };
 
+  const handleReaction = async (reaction: string | null) => {
+    try {
+      const updatedMessage = await addReaction({ id: message.id, reaction }).unwrap();
+
+      if (updatedMessage) {
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) => (msg.id === message.id ? { ...msg, reaction: updatedMessage.reaction } : msg)),
+        );
+      }
+    } catch (error) {
+      toast.error('Failed to add reaction');
+    }
+  };
+
   const handleDeleteMessage = async () => {
     await deleteMessage(message.id).unwrap();
-    onDelete(message.id);
+    setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== message.id));
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     timeoutRef.current = setTimeout(() => {
       if (!(e.target as HTMLElement).closest('audio')) {
+        e.preventDefault();
         document.dispatchEvent(new Event('contextmenu'));
       }
     }, 500);
@@ -83,24 +107,41 @@ export const Message = ({ message, onDelete }: { message: IMessageResponse; onDe
     <ContextMenu>
       <div className={`flex ${isSender ? 'justify-end' : 'justify-start'}`}>
         <ContextMenuTrigger
-          className={`p-2 max-w-[75%] rounded-[12px] border border-gray-500 shadow-md text-white flex cursor-pointer hover:bg-gray-600 select-none 
+          className={`p-2 max-w-[75%] rounded-[17px] border border-gray-500 shadow-md text-white flex cursor-pointer hover:bg-gray-600 select-none 
             ${isSender ? 'bg-accent/20 rounded-tr-[8px] rounded-br-[2px]' : 'bg-[#354050] rounded-tl-[8px] rounded-bl-[2px]'}`}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          <p className="text-sm break-all">{message.content}</p>
-          {message.voiceMessage !== null && (
-            // eslint-disable-next-line jsx-a11y/media-has-caption
-            <audio controls className="audio" onContextMenu={(e) => e.stopPropagation()}>
-              <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/webm" />
-              <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/mp3" />
-              Your browser does not support the audio element.
-            </audio>
-          )}
-          <span className="text-[10px] text-gray-300 block mt-1 float-right pl-2 select-none">{messageTime}</span>
+          <div className="flex flex-col">
+            <p className="text-sm break-all">{message.content}</p>
+            {message.voiceMessage !== null && (
+              // eslint-disable-next-line jsx-a11y/media-has-caption
+              <audio controls className="audio h-10 max-w-[100%]" onContextMenu={(e) => e.stopPropagation()}>
+                <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/webm" />
+                <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/mp3" />
+                Your browser does not support the audio element.
+              </audio>
+            )}
+            {message.reaction && (
+              <Button
+                onClick={() => handleReaction(null)}
+                className="mt-2 pl-1 w-[3em] text-[16px] border border-gray-400 -bottom-5 rounded-full bg-[#556677]"
+              >
+                {message.reaction}
+              </Button>
+            )}
+          </div>
+          <div className="w-auto h-full flex flex-col justify-end">
+            <span className="text-[12px] text-gray-300 block pl-2 select-none">{messageTime}</span>
+          </div>
         </ContextMenuTrigger>
       </div>
       <ContextMenuContent className="w-32 bg-card">
+        <div className="flex">
+          <ContextMenuItem onClick={() => handleReaction('👍')}>👍</ContextMenuItem>
+          <ContextMenuItem onClick={() => handleReaction('😂')}>😂</ContextMenuItem>
+          <ContextMenuItem onClick={() => handleReaction('🔥')}>🔥</ContextMenuItem>
+        </div>
         {message?.content?.length > 0 && (
           <ContextMenuItem inset onClick={handleCopyMessage}>
             Copy

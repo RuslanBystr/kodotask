@@ -20,7 +20,9 @@ export function DeleteTaskDialog({ taskId }: { taskId: string }) {
   const [open, setOpen] = useState(false);
 
   const onDelete = async () => {
-    deleteTask(taskId).then(() => {navigate(`/tasks`)});
+    deleteTask(taskId).then(() => {
+      navigate(`/tasks`);
+    });
     setOpen(false);
   };
 
