@@ -18,41 +18,74 @@ function Messages({ messageDetails, setMessages, fetchMoreMessages }: MessagesPr
   const [loading, setLoading] = useState(false);
   const isFetching = useRef(false);
 
-  const fetchMessages = useCallback(async () => {
+  const fetchMessages = useCallback(() => {
     if (isFetching.current) return;
-
     isFetching.current = true;
     setLoading(true);
+
     const container = messagesContainerRef.current;
     if (!container) return;
+
+    prevScrollHeight.current = container.scrollHeight;
+    const previousScrollTop = container.scrollTop;
 
     fetchMoreMessages();
 
     setLoading(false);
     isFetching.current = false;
 
-    if (container) {
-      container.scrollTop = container.scrollHeight - prevScrollHeight.current;
-    }
-    prevScrollHeight.current = container.scrollHeight;
+    const observer = new MutationObserver(() => {
+      if (container) {
+        const newScrollHeight = container.scrollHeight;
+        container.scrollTop = previousScrollTop + (newScrollHeight - prevScrollHeight.current);
+        prevScrollHeight.current = newScrollHeight;
+      }
+      observer.disconnect();
+    });
+
+    observer.observe(container, { childList: true, subtree: true });
   }, [fetchMoreMessages]);
 
-  const handleScroll = useCallback(async () => {
+  const handleScroll = useCallback(() => {
     const container = messagesContainerRef.current;
     if (!container || isFetching.current || loading) return;
 
     if (container.scrollTop === 0) {
-      await fetchMessages();
+      fetchMessages();
     }
   }, [fetchMessages, loading]);
 
   useEffect(() => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTo({
-        top: messagesContainerRef.current.scrollHeight,
-        behavior: 'instant',
-      });
-    }
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: 'smooth',
+    });
+  }, []);
+
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const observer = new ResizeObserver(() => {
+      const isAtBottom = container.scrollHeight - (container.scrollTop + container.clientHeight) <= 200;
+
+      if (isAtBottom) {
+        requestAnimationFrame(() => {
+          container.scrollTo({
+            top: container.scrollHeight,
+            behavior: 'smooth',
+          });
+        });
+      }
+    });
+
+    observer.observe(container);
+
+    // eslint-disable-next-line consistent-return
+    return () => observer.disconnect();
   }, [messageDetails]);
 
   const handleDeleteMessage = (id: number) => {
@@ -69,7 +102,7 @@ function Messages({ messageDetails, setMessages, fetchMoreMessages }: MessagesPr
         <div className="flex justify-center text-center text-gray-400 p-2">
           Load more
           <LoadingIcon
-            className={clsx(`ml-[13px] h-[14px] w-[15px]`, {
+            className={clsx('ml-[13px] h-[14px] w-[15px]', {
               'animate-spin': loading,
             })}
           />

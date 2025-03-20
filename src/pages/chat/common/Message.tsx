@@ -65,9 +65,11 @@ export const Message = ({ message, onDelete }: { message: IMessageResponse; onDe
     onDelete(message.id);
   };
 
-  const handleTouchStart = () => {
+  const handleTouchStart = (e: React.TouchEvent) => {
     timeoutRef.current = setTimeout(() => {
-      document.dispatchEvent(new Event('contextmenu'));
+      if (!(e.target as HTMLElement).closest('audio')) {
+        document.dispatchEvent(new Event('contextmenu'));
+      }
     }, 500);
   };
 
@@ -90,8 +92,8 @@ export const Message = ({ message, onDelete }: { message: IMessageResponse; onDe
           {message.voiceMessage !== null && (
             // eslint-disable-next-line jsx-a11y/media-has-caption
             <audio controls className="audio" onContextMenu={(e) => e.stopPropagation()}>
-              <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/mp3" />
               <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/webm" />
+              <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/mp3" />
               Your browser does not support the audio element.
             </audio>
           )}
