@@ -1,7 +1,7 @@
 import EmojiPicker from 'emoji-picker-react';
 import { MouseDownEvent } from 'emoji-picker-react/dist/config/config';
 import { Mic, SendHorizonalIcon, SmileIcon, Square } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
@@ -123,6 +123,10 @@ export function PrivateChat() {
     stopRecording();
   };
 
+  const handleChangeMessage = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(e.target.value);
+  };
+
   return id ? (
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
       <div className="relative col-span-3 lg:col-span-2 flex flex-col h-[calc(100vh-72px)] w-full">
@@ -130,12 +134,10 @@ export function PrivateChat() {
           <Messages messageDetails={messages} setMessages={setMessages} fetchMoreMessages={fetchMoreMessages} />
         ) : (
           <div className="flex flex-col p-2 w-full justify-center h-[calc(100vh-72px)]">
-            {isLoading ? (
+            {isLoading && (
               <div className="flex justify-center">
                 <Loading />
               </div>
-            ) : (
-              <p className="text-center text-gray-400">No messages yet</p>
             )}
           </div>
         )}
@@ -144,7 +146,7 @@ export function PrivateChat() {
             className="flex-1 rounded-full text-[12px] md:text-[14px]"
             placeholder="Type your message..."
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={(e) => handleChangeMessage(e)}
             onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
           />
           <div className="hidden md:block">

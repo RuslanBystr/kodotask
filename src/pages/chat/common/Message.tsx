@@ -116,12 +116,13 @@ export const Message = ({
           </div>
         )}
         <ContextMenuTrigger
-          className={`p-2 max-w-[75%] rounded-[17px] border border-gray-500 shadow-md text-white flex cursor-pointer hover:bg-gray-600 select-none 
+          className={`p-2 max-w-[75%] rounded-[17px] border border-gray-500 shadow-md text-white flex cursor-pointer hover:bg-[#445566] select-none 
             ${isSender ? 'bg-accent/20 rounded-tr-[8px] rounded-br-[2px]' : 'bg-[#354050] rounded-tl-[8px] rounded-bl-[2px]'}`}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
           <div className="flex flex-col">
+            {!isSender && <p className="text-[12px] text-green-100">{message.sender.firstName}</p>}
             <p className="text-sm break-all">{message.content}</p>
             {message.voiceMessage !== null && (
               // eslint-disable-next-line jsx-a11y/media-has-caption
@@ -134,7 +135,7 @@ export const Message = ({
             {message.reaction && (
               <Button
                 onClick={() => handleReaction(null)}
-                className="mt-2 pl-1 w-[3em] text-[16px] border border-gray-400 -bottom-5 rounded-full bg-[#556677]"
+                className="mt-2 pl-1 h-6 w-[3em] text-[16px] border border-gray-400 -bottom-5 rounded-full bg-[#556677]"
               >
                 {message.reaction}
               </Button>
@@ -145,8 +146,8 @@ export const Message = ({
           </div>
         </ContextMenuTrigger>
       </div>
-      <ContextMenuContent className="w-32 bg-card">
-        <div className="flex">
+      <ContextMenuContent className="w-32 bg-card/90 rounded-none cut border-none cut-left-10 cut-right-10">
+        <div className="flex border-b">
           <ContextMenuItem onClick={() => handleReaction('👍')}>👍</ContextMenuItem>
           <ContextMenuItem onClick={() => handleReaction('😂')}>😂</ContextMenuItem>
           <ContextMenuItem onClick={() => handleReaction('🔥')}>🔥</ContextMenuItem>
