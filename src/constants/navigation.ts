@@ -1,4 +1,11 @@
-import { FileCheckIcon, FolderCodeIcon, KanbanIcon, MessageSquareIcon, UsersIcon } from 'lucide-react';
+import {
+  FileCheckIcon,
+  FolderCodeIcon,
+  KanbanIcon,
+  MessageCircleCodeIcon,
+  MessageSquareIcon,
+  UsersIcon,
+} from 'lucide-react';
 
 import { ROUTES } from '@/router';
 
@@ -22,6 +29,11 @@ export const navigationList = [
     title: 'Chats',
     icon: MessageSquareIcon,
     url: ROUTES.CHATS,
+  },
+  {
+    title: 'Groups',
+    icon: MessageCircleCodeIcon,
+    url: ROUTES.GROUPS,
   },
   {
     title: 'Peoples ',
