@@ -51,7 +51,7 @@ function Messages({ messageDetails, setMessages, fetchMoreMessages }: MessagesPr
     if (!container || isFetching.current || loading) return;
 
     if (container.scrollTop === 0) {
-      fetchMessages();
+      setTimeout(fetchMessages, 200);
     }
   }, [fetchMessages, loading]);
 
@@ -84,8 +84,7 @@ function Messages({ messageDetails, setMessages, fetchMoreMessages }: MessagesPr
 
     observer.observe(container);
 
-    // eslint-disable-next-line consistent-return
-    return () => observer.disconnect();
+    setTimeout(() => observer.disconnect(), 500);
   }, [messageDetails]);
 
   return (
