@@ -101,9 +101,12 @@ const MainChatPage: React.FC = () => {
               return (
                 <SidebarMenuButton
                   key={chat.id}
-                  className={clsx('h-[3em] hover:bg-muted rounded-none border-b', {
-                    'border-b-2 rounded border- bg-card/50 shadow': activeChat?.id === chat.id,
-                  })}
+                  className={clsx(
+                    'h-[3em] hover:bg-[#557080] rounded-none border-b transition-all active:scale-95 active:bg-[#557080] shadow-md cut cut-right-5 cut-left-5',
+                    {
+                      'bg-[#557080]': activeChat?.id === chat.id,
+                    },
+                  )}
                   onClick={() => handleSelectedChat(chat)}
                 >
                   <div className="relative">
@@ -124,7 +127,7 @@ const MainChatPage: React.FC = () => {
                       <p>{chatName}</p>
                       <p className="text-[10px]">{formattedDate}</p>
                     </div>
-                    <p className="text-accent">
+                    <p className="text-accent h-6">
                       {/* eslint-disable-next-line no-nested-ternary */}
                       {lastMessage?.content === null
                         ? 'Voice Message'

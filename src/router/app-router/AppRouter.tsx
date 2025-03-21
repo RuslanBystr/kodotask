@@ -6,6 +6,7 @@ import { AuthLayout, MainLayout } from '@/layouts';
 import ActivityPage from '@/pages/activity/Activity';
 import AuthSuccess from '@/pages/auth-success/AuthSuccess';
 import MainChatPage from '@/pages/chat/MainChatPage/MainChatPage';
+import MainGroupChatPage from '@/pages/chat/MainGroupChatPage/MainChatPage';
 import { CreateProjectPage } from '@/pages/project/CreateProjectPage';
 import { EditProjectPage } from '@/pages/project/EditProjectPage';
 import MainProjectPage from '@/pages/project/MainProjectPage/MainProjectPage';
@@ -93,6 +94,14 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
         {
           path: `${ROUTES.CHATS}/user/:id`,
           element: <MainChatPage />,
+        },
+        {
+          path: `${ROUTES.GROUPS}`,
+          element: <MainGroupChatPage />,
+        },
+        {
+          path: `${ROUTES.GROUPS}/:id`,
+          element: <MainGroupChatPage />,
         },
       ],
     },

@@ -11,4 +11,5 @@ export const ROUTES = {
   ACTIVITY: '/activity',
   PROJECTS: '/projects',
   CHATS: '/chats',
+  GROUPS: '/groups',
 };

@@ -23,6 +23,24 @@ export const messagesApi = baseApi.injectEndpoints({
           : [{ type: 'Chats', id: 'LIST' }],
       keepUnusedDataFor: 1,
     }),
+    getUserGroupChats: builder.query<IResponse<IChatResponse>, IChatRequestParams>({
+      query: (params: IChatRequestParams) => ({
+        url: `${API_ROUTES.CHATS}/groups`,
+        params,
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.items.map(({ id }) => ({
+                type: 'Chats' as const,
+                id,
+              })),
+              { type: 'Chats', id: 'LIST' },
+            ]
+          : [{ type: 'Chats', id: 'LIST' }],
+      keepUnusedDataFor: 1,
+    }),
+
     createPrivateChat: builder.mutation<IChatResponse, unknown>({
       query: ({ user1Id, user2Id }) => ({
         url: `chats/private`,
@@ -30,6 +48,7 @@ export const messagesApi = baseApi.injectEndpoints({
         method: 'POST',
       }),
     }),
+
     getMessages: builder.query<IResponse<IMessageResponse>, IChatRequestParams>({
       query: (params) => ({
         url: `${API_ROUTES.MESSAGES}`,
@@ -79,6 +98,7 @@ export const messagesApi = baseApi.injectEndpoints({
 
 export const {
   useGetUserChatsQuery,
+  useGetUserGroupChatsQuery,
   useCreatePrivateChatMutation,
   useGetMessagesQuery,
   useDeleteMessageMutation,

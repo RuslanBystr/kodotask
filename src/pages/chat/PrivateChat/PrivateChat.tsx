@@ -14,7 +14,7 @@ import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { socket } from '@/utils/socket';
 
-import { useChatMicro } from './useChatMicro';
+import { useChatMicro } from '../hooks/useChatMicro';
 
 export function PrivateChat() {
   const userData = useSelector(selectAuthenticatedUserSelector);

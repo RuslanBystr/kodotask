@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   ContextMenu,
@@ -106,6 +107,14 @@ export const Message = ({
   return (
     <ContextMenu>
       <div className={`flex ${isSender ? 'justify-end' : 'justify-start'}`}>
+        {!isSender && (
+          <div className="flex items-end mr-1">
+            <Avatar className="size-9">
+              <AvatarImage src={`${api}/file/${message.sender.avatar}`} alt={userData?.firstName} />
+              <AvatarFallback>{message?.sender?.firstName?.[0] || 'U'}</AvatarFallback>
+            </Avatar>
+          </div>
+        )}
         <ContextMenuTrigger
           className={`p-2 max-w-[75%] rounded-[17px] border border-gray-500 shadow-md text-white flex cursor-pointer hover:bg-gray-600 select-none 
             ${isSender ? 'bg-accent/20 rounded-tr-[8px] rounded-br-[2px]' : 'bg-[#354050] rounded-tl-[8px] rounded-bl-[2px]'}`}
