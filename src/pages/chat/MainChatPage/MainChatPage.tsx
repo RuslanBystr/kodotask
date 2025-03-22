@@ -8,7 +8,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/co
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarMenuButton, SidebarTrigger } from '@/components/ui/sidebar';
-import { PrivateChat } from '@/pages/chat/PrivateChat/PrivateChat';
+import { PrivateChat } from '@/pages/chat/private-chat/PrivateChat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IChatResponse, IUserChat } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
@@ -35,7 +35,6 @@ const MainChatPage: React.FC = () => {
   useEffect(() => {
     if (!userId) return;
 
-    socket.connect();
     socket.emit('userConnected', userId);
 
     const handleOnlineUsers = (users: string[]) => setOnlineUsers(users);
@@ -45,7 +44,6 @@ const MainChatPage: React.FC = () => {
     // eslint-disable-next-line consistent-return
     return () => {
       socket.off('onlineUsers', handleOnlineUsers);
-      socket.disconnect();
     };
   }, [userId]);
 

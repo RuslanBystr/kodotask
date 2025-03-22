@@ -62,7 +62,11 @@ export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateA
 
     const updateMessageHandler = (updateMessage: IMessageResponse) => {
       setMessages((prevMessages) =>
-        prevMessages.map((msg) => (msg.id === updateMessage.id ? { ...msg, reaction: updateMessage.reaction } : msg)),
+        prevMessages.map((msg) =>
+          msg.id === updateMessage.id
+            ? { ...msg, isRead: updateMessage.isRead, reaction: updateMessage.reaction }
+            : msg,
+        ),
       );
     };
     const removeMessageHandler = (removedMessage: IMessageResponse) => {
@@ -85,17 +89,20 @@ export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateA
     socket.off('updateMessage', updateMessageHandler);
     socket.off('newMessage', handleNewMessage);
     socket.off('cleanMessage', removeMessageHandler);
+    socket.off('messageRead', updateMessageHandler);
 
     socket.on('updateMessage', updateMessageHandler);
     socket.on('cleanMessage', removeMessageHandler);
     socket.on('newMessage', handleNewMessage);
     socket.on('typing', handleTyping);
+    socket.on('messageRead', updateMessageHandler);
 
     // eslint-disable-next-line consistent-return
     return () => {
       socket.off('newMessage', handleNewMessage);
       socket.off('updateMessage', updateMessageHandler);
       socket.off('cleanMessage', removeMessageHandler);
+      socket.off('messageRead', updateMessageHandler);
       socket.off('typing', handleTyping);
       socket.emit('leaveChat', id);
     };

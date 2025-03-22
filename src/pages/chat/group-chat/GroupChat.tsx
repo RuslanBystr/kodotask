@@ -1,7 +1,7 @@
 import EmojiPicker from 'emoji-picker-react';
 import { MouseDownEvent } from 'emoji-picker-react/dist/config/config';
 import { Mic, SendHorizonalIcon, SmileIcon, Square } from 'lucide-react';
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
@@ -26,6 +26,7 @@ export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAct
   const { data: initialMessages, isLoading, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 20 });
   const [showPicker, setShowPicker] = useState(false);
   const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleEmojiClick: MouseDownEvent = (emojiObject) => {
     setNewMessage((prev) => prev + emojiObject.emoji);
@@ -65,22 +66,27 @@ export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAct
 
     const updateMessageHandler = (updateMessage: IMessageResponse) => {
       setMessages((prevMessages) =>
-        prevMessages.map((msg) => (msg.id === updateMessage.id ? { ...msg, reaction: updateMessage.reaction } : msg)),
+        prevMessages.map((msg) =>
+          msg.id === updateMessage.id
+            ? { ...msg, isRead: updateMessage.isRead, reaction: updateMessage.reaction }
+            : msg,
+        ),
       );
     };
     const removeMessageHandler = (removedMessage: IMessageResponse) => {
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.createdAt !== removedMessage.createdAt));
     };
-    let typingTimeout: NodeJS.Timeout;
 
     const handleTyping = (userId: string) => {
       if (userData?.id !== Number(userId)) {
         changeStatus(`typing`);
       }
 
-      clearTimeout(typingTimeout);
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
 
-      typingTimeout = setTimeout(() => {
+      typingTimeoutRef.current = setTimeout(() => {
         changeStatus('');
       }, 2000);
     };
@@ -88,17 +94,20 @@ export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAct
     socket.off('updateMessage', updateMessageHandler);
     socket.off('newMessage', handleNewMessage);
     socket.off('cleanMessage', removeMessageHandler);
+    socket.off('messageRead', updateMessageHandler);
 
     socket.on('updateMessage', updateMessageHandler);
     socket.on('cleanMessage', removeMessageHandler);
     socket.on('newMessage', handleNewMessage);
     socket.on('typing', handleTyping);
+    socket.on('messageRead', updateMessageHandler);
 
     // eslint-disable-next-line consistent-return
     return () => {
       socket.off('newMessage', handleNewMessage);
       socket.off('updateMessage', updateMessageHandler);
       socket.off('cleanMessage', removeMessageHandler);
+      socket.off('messageRead', updateMessageHandler);
       socket.off('typing', handleTyping);
       socket.emit('leaveChat', id);
     };

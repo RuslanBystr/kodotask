@@ -1,5 +1,5 @@
-import { CopyCheckIcon, CopyIcon, TrashIcon } from 'lucide-react';
-import { useCallback, useRef } from 'react';
+import { CheckCheckIcon, CopyCheckIcon, CopyIcon, TrashIcon } from 'lucide-react';
+import { useCallback, useEffect, useRef } from 'react';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -26,6 +26,26 @@ export const Message = ({ message }: { message: IMessageResponse }) => {
   const isSender = userData?.id === message?.sender.id || userData?.id === message.sender;
   const { id: chatId } = useParams();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const messageRef = useRef(null);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (!message.isRead && !isSender && chatId && message.id) {
+      const observer = new IntersectionObserver(
+        ([entry], obs) => {
+          if (entry.isIntersecting) {
+            socket.emit('markMessageAsRead', { chatId, id: message.id });
+            obs.disconnect();
+          }
+        },
+        { threshold: 0.8 },
+      );
+
+      if (messageRef.current) observer.observe(messageRef.current);
+
+      return () => observer.disconnect();
+    }
+  }, [chatId, isSender, message]);
 
   const messageTime = new Date(message.createdAt).toLocaleTimeString([], {
     hour: '2-digit',
@@ -67,9 +87,6 @@ export const Message = ({ message }: { message: IMessageResponse }) => {
     async (reaction: string | null) => {
       if (!chatId || !message.id) return;
 
-      if (!socket.connected) {
-        socket.connect();
-      }
       socket.emit('reaction', { chatId, id: message.id, reaction });
     },
     [chatId, message.id],
@@ -111,7 +128,8 @@ export const Message = ({ message }: { message: IMessageResponse }) => {
           </div>
         )}
         <ContextMenuTrigger
-          className={`p-2 max-w-[75%] rounded-[17px] border border-gray-500 shadow-md text-white flex cursor-pointer hover:bg-[#445566] select-none 
+          ref={messageRef}
+          className={`relative p-2 max-w-[75%] rounded-[17px] border border-gray-500 shadow-md text-white flex cursor-pointer hover:bg-[#445566] select-none 
             ${isSender ? 'bg-accent/20 rounded-tr-[8px] rounded-br-[2px]' : 'bg-[#354050] rounded-tl-[8px] rounded-bl-[2px]'}`}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -136,8 +154,11 @@ export const Message = ({ message }: { message: IMessageResponse }) => {
               </Button>
             )}
           </div>
-          <div className="w-auto h-full flex flex-col justify-end">
-            <span className="text-[12px] text-gray-300 block pl-2 select-none">{messageTime}</span>
+          <div className=" w-auto h-full flex flex-col justify-end">
+            <div className="flex">
+              <span className="text-[12px] text-gray-300 block pl-2 select-none">{messageTime}</span>
+              {isSender && message.isRead && <CheckCheckIcon className="h-4 text-[#77ddff]" />}
+            </div>
           </div>
         </ContextMenuTrigger>
       </div>

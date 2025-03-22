@@ -34,7 +34,6 @@ const MainGroupChatPage: React.FC = () => {
   useEffect(() => {
     if (!userId) return;
 
-    socket.connect();
     socket.emit('userConnected', userId);
 
     const handleOnlineUsers = (users: string[]) => setOnlineUsers(users);
@@ -44,7 +43,6 @@ const MainGroupChatPage: React.FC = () => {
     // eslint-disable-next-line consistent-return
     return () => {
       socket.off('onlineUsers', handleOnlineUsers);
-      socket.disconnect();
     };
   }, [userId]);
 
