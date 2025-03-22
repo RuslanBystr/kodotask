@@ -127,7 +127,7 @@ export function GroupChat() {
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
       <div className="relative col-span-3 lg:col-span-2 flex flex-col h-[calc(100vh-72px)] w-full">
         {messages.length > 0 ? (
-          <Messages messageDetails={messages} setMessages={setMessages} fetchMoreMessages={fetchMoreMessages} />
+          <Messages messageDetails={messages} fetchMoreMessages={fetchMoreMessages} />
         ) : (
           <div className="flex flex-col p-2 w-full justify-center h-[calc(100vh-72px)]">
             {isLoading ? (

@@ -1,7 +1,7 @@
 import EmojiPicker from 'emoji-picker-react';
 import { MouseDownEvent } from 'emoji-picker-react/dist/config/config';
 import { Mic, SendHorizonalIcon, SmileIcon, Square } from 'lucide-react';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ import { socket } from '@/utils/socket';
 
 import { useChatMicro } from '../hooks/useChatMicro';
 
-export function PrivateChat() {
+export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateAction<string>> }) {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const { id } = useParams();
   const [newMessage, setNewMessage] = useState<string>('');
@@ -34,9 +34,6 @@ export function PrivateChat() {
   useEffect(() => {
     if (!id) return;
 
-    setMessages([]);
-    setPage(1);
-
     refetch().then((response) => {
       if (response.data?.items) {
         setMessages(response.data.items);
@@ -45,7 +42,10 @@ export function PrivateChat() {
   }, [id, refetch]);
 
   useEffect(() => {
-    if (!id) return undefined;
+    if (!id) return;
+
+    setMessages([]);
+    setPage(1);
 
     if (!socket.connected) {
       socket.connect();
@@ -60,18 +60,50 @@ export function PrivateChat() {
       });
     };
 
-    socket.on('newMessage', handleNewMessage);
+    const updateMessageHandler = (updateMessage: IMessageResponse) => {
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) => (msg.id === updateMessage.id ? { ...msg, reaction: updateMessage.reaction } : msg)),
+      );
+    };
+    const removeMessageHandler = (removedMessage: IMessageResponse) => {
+      setMessages((prevMessages) => prevMessages.filter((msg) => msg.createdAt !== removedMessage.createdAt));
+    };
+    let typingTimeout: NodeJS.Timeout;
 
+    const handleTyping = (userId: string) => {
+      if (userData?.id !== Number(userId)) {
+        changeStatus(`typing`);
+      }
+
+      clearTimeout(typingTimeout);
+
+      typingTimeout = setTimeout(() => {
+        changeStatus('Online');
+      }, 2000);
+    };
+
+    socket.off('updateMessage', updateMessageHandler);
+    socket.off('newMessage', handleNewMessage);
+    socket.off('cleanMessage', removeMessageHandler);
+
+    socket.on('updateMessage', updateMessageHandler);
+    socket.on('cleanMessage', removeMessageHandler);
+    socket.on('newMessage', handleNewMessage);
+    socket.on('typing', handleTyping);
+
+    // eslint-disable-next-line consistent-return
     return () => {
       socket.off('newMessage', handleNewMessage);
+      socket.off('updateMessage', updateMessageHandler);
+      socket.off('cleanMessage', removeMessageHandler);
+      socket.off('typing', handleTyping);
       socket.emit('leaveChat', id);
     };
-  }, [id]);
+  }, [changeStatus, id, userData?.id]);
 
   useEffect(() => {
     if (initialMessages?.items) {
       setMessages((prevMessages) => {
-        // Prevent duplicate messages
         const newMessages = initialMessages.items.filter((msg) => !prevMessages.some((prev) => prev.id === msg.id));
         return [...newMessages, ...prevMessages];
       });
@@ -124,6 +156,7 @@ export function PrivateChat() {
   };
 
   const handleChangeMessage = (e: ChangeEvent<HTMLInputElement>) => {
+    socket.emit('typing', { chatId: id, userId: userData?.id });
     setNewMessage(e.target.value);
   };
 
@@ -131,7 +164,7 @@ export function PrivateChat() {
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
       <div className="relative col-span-3 lg:col-span-2 flex flex-col h-[calc(100vh-72px)] w-full">
         {messages.length > 0 ? (
-          <Messages messageDetails={messages} setMessages={setMessages} fetchMoreMessages={fetchMoreMessages} />
+          <Messages messageDetails={messages} fetchMoreMessages={fetchMoreMessages} />
         ) : (
           <div className="flex flex-col p-2 w-full justify-center h-[calc(100vh-72px)]">
             {isLoading && (

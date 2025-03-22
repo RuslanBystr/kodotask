@@ -5,14 +5,16 @@ export interface IChatResponse {
   type: 'PRIVATE' | 'GROUP';
   groupName: string | null;
   lastMessage: IMessageResponse;
-  userChats: {
+  userChats: IUserChat[];
+}
+
+export interface IUserChat {
+  id: string;
+  name: string;
+  avatar: string;
+  user: {
     id: string;
-    name: string;
+    firstName: string;
     avatar: string;
-    user: {
-      id: string;
-      firstName: string;
-      avatar: string;
-    };
-  }[];
+  };
 }
