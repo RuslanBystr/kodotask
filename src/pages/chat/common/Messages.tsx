@@ -1,6 +1,5 @@
 import { clsx } from 'clsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import * as React from 'react';
 
 import LoadingIcon from '@/assets/icons/LoadingIcon';
 import { Message } from '@/pages/chat/common/Message';
@@ -9,10 +8,9 @@ import { IMessageResponse } from '@/types/responses/IMessageResponse';
 interface MessagesProps {
   messageDetails: IMessageResponse[];
   fetchMoreMessages: () => void;
-  setMessages: React.Dispatch<React.SetStateAction<IMessageResponse[]>>;
 }
 
-function Messages({ messageDetails, setMessages, fetchMoreMessages }: MessagesProps) {
+function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeight = useRef<number>(0);
   const [loading, setLoading] = useState(false);
@@ -105,7 +103,7 @@ function Messages({ messageDetails, setMessages, fetchMoreMessages }: MessagesPr
       )}
 
       {messageDetails.map((message) => (
-        <Message message={message} setMessages={setMessages} key={`${message.id}-${message.createdAt}`} />
+        <Message message={message} key={`${message.id}-${message.createdAt}`} />
       ))}
     </div>
   );

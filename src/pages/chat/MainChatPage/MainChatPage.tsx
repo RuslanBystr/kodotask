@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarMenuButton, SidebarTrigger } from '@/components/ui/sidebar';
 import { PrivateChat } from '@/pages/chat/PrivateChat/PrivateChat';
 import { selectAuthenticatedUserSelector } from '@/store';
-import { IChatResponse } from '@/types/responses/IChatResponse';
+import { IChatResponse, IUserChat } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { getEnv } from '@/utils';
 import { socket } from '@/utils/socket';
@@ -25,9 +25,11 @@ const MainChatPage: React.FC = () => {
   const userId = userData?.id;
 
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
+  const [selectedCompanion, setSelectedCompanion] = useState<IUserChat | undefined>(undefined);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
-
+  const [userStatus, setUserStatus] = useState<string>('Online');
   const { chats } = useMainChatsPage();
 
   useEffect(() => {
@@ -64,8 +66,15 @@ const MainChatPage: React.FC = () => {
     return chatName.toLowerCase().includes(searchQuery);
   });
 
+  useEffect(() => {
+    if (activeChat) {
+      const companion = activeChat.userChats?.find((userChat) => Number(userChat.user.id) !== userId);
+      setSelectedCompanion(companion);
+    }
+  }, [activeChat, userId]);
+
   return (
-    <div className="p-0 flex">
+    <div className="md:p-2 flex">
       <div className="flex flex-col h-[100vh] w-min-content border-r">
         <header className="flex h-16 shrink-0 justify-center md:justify-start items-center border-b">
           <SidebarTrigger />
@@ -92,11 +101,11 @@ const MainChatPage: React.FC = () => {
                 ? new Date(lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 : '';
 
-              const receiver = chat?.userChats?.filter((userChat) => Number(userChat?.user?.id) === userId)[0];
-              const sender = chat?.userChats?.filter((userChat) => Number(userChat?.user?.id) !== userId)[0];
+              const receiver = chat?.userChats?.find((userChat) => Number(userChat.user.id) === userId);
+              const sender = chat?.userChats?.find((userChat) => Number(userChat.user.id) !== userId);
 
               const chatName = chat?.groupName || receiver?.name || '';
-              const isOnline = onlineUsers.includes(sender?.user?.id);
+              const isOnline = onlineUsers.includes(sender?.user?.id || '');
 
               return (
                 <SidebarMenuButton
@@ -111,7 +120,7 @@ const MainChatPage: React.FC = () => {
                 >
                   <div className="relative">
                     <Avatar className="h-8 w-8 rounded-full relative">
-                      <AvatarImage src={receiver?.avatar ? `${api}/file/${sender.user.avatar}` : ''} alt="file" />
+                      <AvatarImage src={receiver?.avatar ? `${api}/file/${sender?.user.avatar}` : ''} alt="file" />
                       <AvatarFallback>{chatName?.[0]?.toUpperCase()}</AvatarFallback>
                     </Avatar>
                     {isOnline && (
@@ -145,12 +154,18 @@ const MainChatPage: React.FC = () => {
 
       <div className="flex flex-col w-full">
         <div className="w-full min-h-16 pl-6 border-b">
-          <p>{activeChat?.userChats[1]?.name}</p>
+          <p>{selectedCompanion && selectedCompanion.user.firstName}</p>
           <p className="text-[11px]">
-            {activeChat && (onlineUsers.includes(activeChat.userChats[1].id) ? 'Online' : 'Offline')}
+            {activeChat &&
+              selectedCompanion &&
+              (onlineUsers.includes(selectedCompanion.user.id) ? (
+                <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : 'Online'}</p>
+              ) : (
+                'Offline'
+              ))}
           </p>
         </div>
-        <PrivateChat />
+        <PrivateChat changeStatus={setUserStatus} />
       </div>
     </div>
   );

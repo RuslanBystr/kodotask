@@ -1,7 +1,8 @@
 import { CopyCheckIcon, CopyIcon, TrashIcon } from 'lucide-react';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,25 +14,17 @@ import {
   ContextMenuShortcut,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { useAddReactionMutation, useDeleteMessageMutation } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { getEnv } from '@/utils';
+import { socket } from '@/utils/socket';
 
 const { api } = getEnv();
 
-export const Message = ({
-  message,
-  setMessages,
-}: {
-  message: IMessageResponse;
-  setMessages: React.Dispatch<React.SetStateAction<IMessageResponse[]>>;
-}) => {
+export const Message = ({ message }: { message: IMessageResponse }) => {
   const userData = useSelector(selectAuthenticatedUserSelector);
-  const [addReaction] = useAddReactionMutation();
-  const [deleteMessage] = useDeleteMessageMutation();
   const isSender = userData?.id === message?.sender.id || userData?.id === message.sender;
-
+  const { id: chatId } = useParams();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const messageTime = new Date(message.createdAt).toLocaleTimeString([], {
@@ -41,6 +34,7 @@ export const Message = ({
 
   const handleCopyMessage = async () => {
     await navigator.clipboard.writeText(message.content);
+    navigator.vibrate(100);
     toast(
       <div className="flex gap-2">
         <CopyCheckIcon />
@@ -70,23 +64,25 @@ export const Message = ({
     );
   };
 
-  const handleReaction = async (reaction: string | null) => {
-    try {
-      const updatedMessage = await addReaction({ id: message.id, reaction }).unwrap();
+  const handleReaction = useCallback(
+    async (reaction: string | null) => {
+      if (!chatId || !message.id) return;
 
-      if (updatedMessage) {
-        setMessages((prevMessages) =>
-          prevMessages.map((msg) => (msg.id === message.id ? { ...msg, reaction: updatedMessage.reaction } : msg)),
-        );
+      if (!socket.connected) {
+        socket.connect();
       }
-    } catch (error) {
-      toast.error('Failed to add reaction');
-    }
-  };
+      socket.emit('reaction', { chatId, id: message.id, reaction });
+    },
+    [chatId, message.id],
+  );
 
   const handleDeleteMessage = async () => {
-    await deleteMessage(message.id).unwrap();
-    setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== message.id));
+    if (!chatId || !message.id) return;
+
+    if (!socket.connected) {
+      socket.connect();
+    }
+    socket.emit('removeMessage', { chatId, id: message.id });
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
