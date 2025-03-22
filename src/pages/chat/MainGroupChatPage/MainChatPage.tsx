@@ -27,6 +27,7 @@ const MainGroupChatPage: React.FC = () => {
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const [userStatus, setUserStatus] = useState<string>('');
 
   const { chats } = useMainChatsPage();
 
@@ -144,8 +145,13 @@ const MainGroupChatPage: React.FC = () => {
       </div>
 
       <div className="flex flex-col w-full">
-        <div className="w-full min-h-16 pl-6 border-b" />
-        <GroupChat />
+        <div className="w-full min-h-16 pl-6 border-b">
+          <p>{activeChat && activeChat.groupName}</p>
+          <p className="text-[11px]">
+            {activeChat && <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : ''}</p>}
+          </p>
+        </div>
+        <GroupChat changeStatus={setUserStatus} />
       </div>
     </div>
   );

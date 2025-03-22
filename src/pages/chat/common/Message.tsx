@@ -34,7 +34,6 @@ export const Message = ({ message }: { message: IMessageResponse }) => {
 
   const handleCopyMessage = async () => {
     await navigator.clipboard.writeText(message.content);
-    navigator.vibrate(100);
     toast(
       <div className="flex gap-2">
         <CopyCheckIcon />
