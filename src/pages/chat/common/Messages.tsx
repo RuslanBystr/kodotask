@@ -86,25 +86,32 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
   }, [messageDetails]);
 
   return (
-    <div
-      ref={messagesContainerRef}
-      onScroll={handleScroll}
-      className="messages-container flex-1 overflow-y-auto p-4 space-y-2 max-h-[calc(100vh-142px)] custom-scrollbar"
-    >
-      {loading && (
-        <div className="flex justify-center text-center text-gray-400 p-2">
-          Load more
-          <LoadingIcon
-            className={clsx('ml-[13px] h-[14px] w-[15px]', {
-              'animate-spin': loading,
-            })}
-          />
-        </div>
-      )}
+    <div className="relative">
+      <div
+        className={clsx(
+          'absolute top-0 z-10 left-0 w-full h-6 bg-gradient-to-b from-transparent/10 to-transparent backdrop-blur-[1px] transition-all duration-500',
+        )}
+      />
+      <div
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
+        className="messages-container flex-1 overflow-y-auto p-4 space-y-2 max-h-[calc(100vh-142px)] custom-scrollbar"
+      >
+        {loading && (
+          <div className="flex justify-center text-center text-gray-400 p-2">
+            Load more
+            <LoadingIcon
+              className={clsx('ml-[13px] h-[14px] w-[15px]', {
+                'animate-spin': loading,
+              })}
+            />
+          </div>
+        )}
 
-      {messageDetails.map((message) => (
-        <Message message={message} key={`${message.id}-${message.createdAt}`} />
-      ))}
+        {messageDetails.map((message) => (
+          <Message message={message} key={`${message.id}-${message.createdAt}`} />
+        ))}
+      </div>
     </div>
   );
 }
