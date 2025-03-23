@@ -92,6 +92,8 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
           'absolute z-10 top-0 left-0 w-full h-6 bg-gradient-to-b from-transparent/5 to-transparent backdrop-blur-[1px] transition-all duration-500',
         )}
       />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-md" />
+
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}

@@ -149,7 +149,7 @@ export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateA
           </Button>
         </div>
       </div>
-      <div className="hidden lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-muted/30" />
+      <div className="hidden lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-muted/90" />
     </div>
   ) : (
     <div className="flex justify-center items-center w-full h-full">Select a chat to start messaging</div>

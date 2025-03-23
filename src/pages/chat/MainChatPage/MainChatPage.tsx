@@ -150,7 +150,14 @@ const MainChatPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col w-full">
+      <div
+        className="flex flex-col w-full relative"
+        style={{
+          backgroundImage: selectedCompanion ? `url(${api}/file/${selectedCompanion.user.avatar})` : 'none',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <div className="flex items-center w-full min-h-16 pl-6 border-b">
           <Avatar className="h-12 w-12 mr-2">
             {selectedCompanion && (
