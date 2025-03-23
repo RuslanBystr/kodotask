@@ -72,9 +72,9 @@ const MainChatPage: React.FC = () => {
   }, [activeChat, userId]);
 
   return (
-    <div className="md:p-2 flex">
+    <div className="flex">
       <div className="flex flex-col h-[100vh] w-min-content border-r">
-        <header className="flex h-16 shrink-0 justify-center md:justify-start items-center border-b">
+        <header className="flex min-h-[72px] shrink-0 justify-center md:justify-start items-center border-b">
           <SidebarTrigger />
           <Separator orientation="vertical" className="mr-4 h-4 hidden md:block" />
           <Breadcrumb>
@@ -158,7 +158,7 @@ const MainChatPage: React.FC = () => {
           backgroundPosition: 'center',
         }}
       >
-        <div className="flex items-center w-full min-h-16 pl-6 border-b">
+        <div className="flex items-center w-full min-h-[72px] pl-6 border-b bg-[#394D54]/70">
           <Avatar className="h-12 w-12 mr-2">
             {selectedCompanion && (
               <AvatarImage src={`${api}/file/${selectedCompanion.user.avatar}`} alt={userData?.firstName} />
