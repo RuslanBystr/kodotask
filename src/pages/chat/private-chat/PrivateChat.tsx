@@ -117,7 +117,7 @@ export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateA
             )}
           </div>
         )}
-        <div className="sticky h-full right-0 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom bg-[#394D54]/80">
+        <div className="sticky h-full right-0 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom bg-[#384D54]/90">
           <Input
             className="flex-1 rounded-full text-[12px] md:text-[14px]"
             placeholder="Type your message..."
@@ -149,7 +149,7 @@ export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateA
           </Button>
         </div>
       </div>
-      <div className="hidden lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-muted/90" />
+      <div className="hidden lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-[#384D54]/70" />
     </div>
   ) : (
     <div className="flex justify-center items-center w-full h-full">Select a chat to start messaging</div>

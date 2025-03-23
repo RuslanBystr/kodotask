@@ -158,7 +158,7 @@ const MainChatPage: React.FC = () => {
           backgroundPosition: 'center',
         }}
       >
-        <div className="flex items-center w-full min-h-[72px] pl-6 border-b bg-[#394D54]/70">
+        <div className="flex items-center w-full min-h-[72px] pl-6 border-b bg-[#374C53]/90">
           <Avatar className="h-12 w-12 mr-2">
             {selectedCompanion && (
               <AvatarImage src={`${api}/file/${selectedCompanion.user.avatar}`} alt={userData?.firstName} />
