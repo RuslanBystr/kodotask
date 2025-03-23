@@ -119,7 +119,7 @@ export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAct
             )}
           </div>
         )}
-        <div className="flex items-center gap-2 border-t pl-2 pt-4 md:p-4">
+        <div className="sticky bottom-2 right-0 border-t p-4 md:p-4 flex items-center gap-2 z-50 safe-bottom">
           <Input
             className="flex-1 rounded-full text-[12px] md:text-[14px]"
             placeholder="Type your message..."

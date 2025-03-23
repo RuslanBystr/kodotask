@@ -85,7 +85,7 @@ const MainChatPage: React.FC = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col pr-2 pt-2 md:p-2 bg-muted/10">
+        <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
           <Input className="md:w-[14em] p-2 text-[10px]" placeholder="Search" onChange={filterChats} />
 
           {!filteredChats ? (
@@ -151,7 +151,7 @@ const MainChatPage: React.FC = () => {
       </div>
 
       <div className="flex flex-col w-full">
-        <div className="flex  items-center w-full min-h-16 pl-6 border-b">
+        <div className="flex items-center w-full min-h-16 pl-6 border-b">
           <Avatar className="h-12 w-12 mr-2">
             {selectedCompanion && (
               <AvatarImage src={`${api}/file/${selectedCompanion.user.avatar}`} alt={userData?.firstName} />

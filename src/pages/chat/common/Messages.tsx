@@ -86,16 +86,16 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
   }, [messageDetails]);
 
   return (
-    <div className="relative">
+    <div className="relative h-[calc(100vh-72px)]">
       <div
         className={clsx(
-          'absolute top-0 z-10 left-0 w-full h-6 bg-gradient-to-b from-transparent/10 to-transparent backdrop-blur-[1px] transition-all duration-500',
+          'absolute z-10 top-0 left-0 w-full h-6 bg-gradient-to-b from-transparent/5 to-transparent backdrop-blur-[1px] transition-all duration-500',
         )}
       />
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="messages-container flex-1 overflow-y-auto p-4 space-y-2 max-h-[calc(100vh-142px)] custom-scrollbar"
+        className="messages-container flex-1 overflow-y-auto p-4 space-y-2 h-[calc(100vh-142px)] custom-scrollbar"
       >
         {loading && (
           <div className="flex justify-center text-center text-gray-400 p-2">

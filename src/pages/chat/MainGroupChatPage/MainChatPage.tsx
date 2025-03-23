@@ -64,7 +64,7 @@ const MainGroupChatPage: React.FC = () => {
   });
 
   return (
-    <div className="p-2 flex">
+    <div className="md:p-2 flex">
       <div className="flex flex-col h-[100vh] w-min-content border-r">
         <header className="flex h-16 shrink-0 justify-center md:justify-start items-center border-b">
           <SidebarTrigger />
@@ -77,7 +77,7 @@ const MainGroupChatPage: React.FC = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col pr-2 pt-2 md:p-2 bg-muted/10">
+        <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
           <Input className="md:w-[14em] p-2 text-[10px]" placeholder="Search" onChange={filterChats} />
 
           {!filteredChats ? (
@@ -143,9 +143,9 @@ const MainGroupChatPage: React.FC = () => {
       </div>
 
       <div className="flex flex-col w-full">
-        <div className="w-full min-h-16 pl-6 border-b">
+        <div className="flex items-center w-full min-h-16 pl-6 border-b">
           <p>{activeChat && activeChat.groupName}</p>
-          <p className="text-[11px]">
+          <p className="text-[12px]">
             {activeChat && <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : ''}</p>}
           </p>
         </div>
