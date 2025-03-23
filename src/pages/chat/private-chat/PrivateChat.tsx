@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Messages from '@/pages/chat/common/Messages';
+import { useChatMessage } from '@/pages/chat/hooks/useChatMessage';
 import { useGetMessagesQuery } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
@@ -41,72 +42,7 @@ export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateA
     });
   }, [id, refetch]);
 
-  useEffect(() => {
-    if (!id) return;
-
-    setMessages([]);
-    setPage(1);
-
-    if (!socket.connected) {
-      socket.connect();
-    }
-
-    socket.emit('joinChat', id);
-
-    const handleNewMessage = (message: IMessageResponse) => {
-      setMessages((prevMessages) => {
-        const isDuplicate = prevMessages.some((msg) => msg.id === message.id);
-        return isDuplicate ? prevMessages : [...prevMessages, message];
-      });
-    };
-
-    const updateMessageHandler = (updateMessage: IMessageResponse) => {
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) =>
-          msg.id === updateMessage.id
-            ? { ...msg, isRead: updateMessage.isRead, reaction: updateMessage.reaction }
-            : msg,
-        ),
-      );
-    };
-    const removeMessageHandler = (removedMessage: IMessageResponse) => {
-      setMessages((prevMessages) => prevMessages.filter((msg) => msg.createdAt !== removedMessage.createdAt));
-    };
-    let typingTimeout: NodeJS.Timeout;
-
-    const handleTyping = (userId: string) => {
-      if (userData?.id !== Number(userId)) {
-        changeStatus(`typing`);
-      }
-
-      clearTimeout(typingTimeout);
-
-      typingTimeout = setTimeout(() => {
-        changeStatus('Online');
-      }, 2000);
-    };
-
-    socket.off('updateMessage', updateMessageHandler);
-    socket.off('newMessage', handleNewMessage);
-    socket.off('cleanMessage', removeMessageHandler);
-    socket.off('messageRead', updateMessageHandler);
-
-    socket.on('updateMessage', updateMessageHandler);
-    socket.on('cleanMessage', removeMessageHandler);
-    socket.on('newMessage', handleNewMessage);
-    socket.on('typing', handleTyping);
-    socket.on('messageRead', updateMessageHandler);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      socket.off('newMessage', handleNewMessage);
-      socket.off('updateMessage', updateMessageHandler);
-      socket.off('cleanMessage', removeMessageHandler);
-      socket.off('messageRead', updateMessageHandler);
-      socket.off('typing', handleTyping);
-      socket.emit('leaveChat', id);
-    };
-  }, [changeStatus, id, userData?.id]);
+  useChatMessage({ chatId: id, setMessages, setPage, userData, changeStatus });
 
   useEffect(() => {
     if (initialMessages?.items) {
