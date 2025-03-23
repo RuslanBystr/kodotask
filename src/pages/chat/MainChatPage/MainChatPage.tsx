@@ -151,17 +151,25 @@ const MainChatPage: React.FC = () => {
       </div>
 
       <div className="flex flex-col w-full">
-        <div className="w-full min-h-16 pl-6 border-b">
-          <p>{selectedCompanion && selectedCompanion.user.firstName}</p>
-          <p className="text-[11px]">
-            {activeChat &&
-              selectedCompanion &&
-              (onlineUsers.includes(selectedCompanion.user.id) ? (
-                <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : 'Online'}</p>
-              ) : (
-                'Offline'
-              ))}
-          </p>
+        <div className="flex  items-center w-full min-h-16 pl-6 border-b">
+          <Avatar className="h-12 w-12 mr-2">
+            {selectedCompanion && (
+              <AvatarImage src={`${api}/file/${selectedCompanion.user.avatar}`} alt={userData?.firstName} />
+            )}
+            <AvatarFallback className="h-12 w-12 rounded-full relative">NM</AvatarFallback>
+          </Avatar>
+          <div>
+            <p>{selectedCompanion && selectedCompanion.user.firstName}</p>
+            <p className="text-[12px]">
+              {activeChat &&
+                selectedCompanion &&
+                (onlineUsers.includes(selectedCompanion.user.id) ? (
+                  <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : 'Online'}</p>
+                ) : (
+                  'Offline'
+                ))}
+            </p>
+          </div>
         </div>
         <PrivateChat changeStatus={setUserStatus} />
       </div>
