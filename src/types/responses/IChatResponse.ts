@@ -6,6 +6,7 @@ export interface IChatResponse {
   groupName: string | null;
   lastMessage: IMessageResponse;
   userChats: IUserChat[];
+  messages: IMessageResponse[];
 }
 
 export interface IUserChat {
