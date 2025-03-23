@@ -129,7 +129,12 @@ const MainChatPage: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="hidden md:block w-full">
+                  <div className="relative hidden md:block w-full">
+                    {chat?.messages?.length > 0 && (
+                      <div className="absolute right-0 bottom-1 bg-[#7799aa] min-w-6 cut text-center">
+                        {chat?.messages?.length}
+                      </div>
+                    )}
                     <div className="flex justify-between w-full">
                       <p>{chatName}</p>
                       <p className="text-[10px]">{formattedDate}</p>
