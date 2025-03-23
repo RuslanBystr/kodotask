@@ -86,13 +86,13 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
   }, [messageDetails]);
 
   return (
-    <div className="relative h-[calc(100vh-72px)]">
+    <div className="relative">
       <div
         className={clsx(
           'absolute z-10 top-0 left-0 w-full h-6 bg-gradient-to-b from-transparent/5 to-transparent backdrop-blur-[1px] transition-all duration-500',
         )}
       />
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-md pointer-events-none" />
 
       <div
         ref={messagesContainerRef}
