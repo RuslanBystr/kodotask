@@ -6,7 +6,13 @@ export interface IMessageResponse {
   reaction: string;
   voiceMessage: { uuid: string };
   sender: Partial<IUserResponse>;
-  chat: string;
+  chat: Chat;
   createdAt: Date;
   isRead: boolean;
+}
+
+export interface Chat {
+  id: number;
+  groupName: string;
+  type: string;
 }

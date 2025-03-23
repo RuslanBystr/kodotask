@@ -1,13 +1,14 @@
 import EmojiPicker from 'emoji-picker-react';
 import { MouseDownEvent } from 'emoji-picker-react/dist/config/config';
 import { Mic, SendHorizonalIcon, SmileIcon, Square } from 'lucide-react';
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Messages from '@/pages/chat/common/Messages';
+import { useChatMessage } from '@/pages/chat/hooks/useChatMessage';
 import { useGetMessagesQuery } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
@@ -26,7 +27,6 @@ export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAct
   const { data: initialMessages, isLoading, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 20 });
   const [showPicker, setShowPicker] = useState(false);
   const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleEmojiClick: MouseDownEvent = (emojiObject) => {
     setNewMessage((prev) => prev + emojiObject.emoji);
@@ -35,9 +35,6 @@ export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAct
   useEffect(() => {
     if (!id) return;
 
-    setMessages([]);
-    setPage(1);
-
     refetch().then((response) => {
       if (response.data?.items) {
         setMessages(response.data.items);
@@ -45,73 +42,7 @@ export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAct
     });
   }, [id, refetch]);
 
-  useEffect(() => {
-    if (!id) return;
-
-    setMessages([]);
-    setPage(1);
-
-    if (!socket.connected) {
-      socket.connect();
-    }
-
-    socket.emit('joinChat', id);
-
-    const handleNewMessage = (message: IMessageResponse) => {
-      setMessages((prevMessages) => {
-        const isDuplicate = prevMessages.some((msg) => msg.id === message.id);
-        return isDuplicate ? prevMessages : [...prevMessages, message];
-      });
-    };
-
-    const updateMessageHandler = (updateMessage: IMessageResponse) => {
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) =>
-          msg.id === updateMessage.id
-            ? { ...msg, isRead: updateMessage.isRead, reaction: updateMessage.reaction }
-            : msg,
-        ),
-      );
-    };
-    const removeMessageHandler = (removedMessage: IMessageResponse) => {
-      setMessages((prevMessages) => prevMessages.filter((msg) => msg.createdAt !== removedMessage.createdAt));
-    };
-
-    const handleTyping = (userId: string) => {
-      if (userData?.id !== Number(userId)) {
-        changeStatus(`typing`);
-      }
-
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-
-      typingTimeoutRef.current = setTimeout(() => {
-        changeStatus('');
-      }, 2000);
-    };
-
-    socket.off('updateMessage', updateMessageHandler);
-    socket.off('newMessage', handleNewMessage);
-    socket.off('cleanMessage', removeMessageHandler);
-    socket.off('messageRead', updateMessageHandler);
-
-    socket.on('updateMessage', updateMessageHandler);
-    socket.on('cleanMessage', removeMessageHandler);
-    socket.on('newMessage', handleNewMessage);
-    socket.on('typing', handleTyping);
-    socket.on('messageRead', updateMessageHandler);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      socket.off('newMessage', handleNewMessage);
-      socket.off('updateMessage', updateMessageHandler);
-      socket.off('cleanMessage', removeMessageHandler);
-      socket.off('messageRead', updateMessageHandler);
-      socket.off('typing', handleTyping);
-      socket.emit('leaveChat', id);
-    };
-  }, [changeStatus, id, userData?.id]);
+  useChatMessage({ chatId: id, setMessages, setPage, userData, changeStatus });
 
   useEffect(() => {
     if (initialMessages?.items) {
@@ -152,7 +83,6 @@ export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAct
       content: newMessage.trim() === '' ? null : newMessage.trim(),
       voiceMessage: newVoiceMessage,
     };
-
     socket.emit('sendMessage', messageData);
     setNewMessage('');
     setNewVoiceMessage(null);
