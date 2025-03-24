@@ -1,8 +1,11 @@
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { LogOut } from 'lucide-react';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { PaymentModal } from '@/components/modals/payment-modal';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -25,6 +28,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const stripePromise = loadStripe(import.meta.env.PUBLIC_STRIPE_KEY || '');
+
   const onLogoutClick = () => {
     dispatch(logout());
     navigate(ROUTES.AUTH.ROOT);
@@ -39,6 +44,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
+        <SidebarMenuButton className="hover:bg-muted/50" tooltip="Payment">
+          <Elements stripe={stripePromise}>
+            <PaymentModal />
+          </Elements>
+        </SidebarMenuButton>
         <SidebarMenuButton className="hover:bg-muted/50" tooltip="Logout" onClick={onLogoutClick}>
           <LogOut />
           <span>Logout</span>

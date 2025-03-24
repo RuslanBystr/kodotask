@@ -1,6 +1,6 @@
 import { AdminRoleEnum } from '@/enums';
 
-import { getLocalStorageItem, removeLocalStorageItem, setLocalStorageItem } from './localStorage';
+import { getLocalStorageItem, removeLocalStorageItem, setLocalStorageItem } from './local-storage';
 
 export const AUTH_TOKEN_NAME = 'accessToken';
 
