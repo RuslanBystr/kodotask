@@ -127,7 +127,7 @@ const MainGroupChatPage: React.FC = () => {
             {activeChat && <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : ''}</p>}
           </p>
         </div>
-        <GroupChat activeChat={activeChat} changeStatus={setUserStatus} />
+        <GroupChat changeStatus={setUserStatus} />
       </div>
     </div>
   );

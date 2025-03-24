@@ -11,20 +11,13 @@ import Messages from '@/pages/chat/common/Messages';
 import { useChatMessage } from '@/pages/chat/hooks/useChatMessage';
 import { useGetMessagesQuery } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
-import { IChatResponse } from '@/types/responses/IChatResponse';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { socket } from '@/utils/socket';
 
 import { useChatMicro } from '../hooks/useChatMicro';
 
-export function PrivateChat({
-  changeStatus,
-  activeChat,
-}: {
-  changeStatus: Dispatch<SetStateAction<string>>;
-  activeChat: IChatResponse | null;
-}) {
+export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateAction<string>> }) {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const { id } = useParams();
   const [newMessage, setNewMessage] = useState<string>('');
@@ -49,7 +42,7 @@ export function PrivateChat({
     });
   }, [id, refetch]);
 
-  useChatMessage({ activeChat, chatId: id, setMessages, setPage, userData, changeStatus });
+  useChatMessage({ chatId: id, setMessages, setPage, userData, changeStatus });
 
   useEffect(() => {
     if (initialMessages?.items) {
@@ -111,14 +104,16 @@ export function PrivateChat({
   };
 
   return id ? (
-    <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
+    <div className="relative w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
+      <div className="absolute inset-0 bg-[#374C53]/20 backdrop-blur-md pointer-events-none" />
       <div className="relative col-span-3 lg:col-span-2 flex flex-col h-[calc(100vh-72px)] w-full">
-        {messages.length > 0 ? (
+        {messages && messages.length > 0 ? (
           <Messages messageDetails={messages} fetchMoreMessages={fetchMoreMessages} />
         ) : (
           <div className="flex flex-col p-2 w-full justify-center h-[calc(100vh-72px)]">
             {isLoading && (
               <div className="flex justify-center">
+                <div className="absolute inset-0 bg-black/30 backdrop-blur-md pointer-events-none" />
                 <Loading />
               </div>
             )}
@@ -156,7 +151,7 @@ export function PrivateChat({
           </Button>
         </div>
       </div>
-      <div className="hidden lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-[#384D54]/70" />
+      <div className="hidden z-10 lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-[#384D54]/90" />
     </div>
   ) : (
     <div className="flex justify-center items-center w-full h-full">Select a chat to start messaging</div>

@@ -162,7 +162,7 @@ const MainChatPage: React.FC = () => {
             </p>
           </div>
         </div>
-        <PrivateChat activeChat={activeChat} changeStatus={setUserStatus} />
+        <PrivateChat changeStatus={setUserStatus} />
       </div>
     </div>
   );
