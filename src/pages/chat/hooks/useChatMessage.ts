@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 
-import { IChatResponse } from '@/types/responses/IChatResponse';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { IUserResponse } from '@/types/responses/IUserResponse';
 import { socket } from '@/utils/socket';
@@ -11,17 +10,9 @@ interface ChatMessageParams {
   setMessages: Dispatch<SetStateAction<IMessageResponse[]>>;
   userData: IUserResponse | null;
   changeStatus: Dispatch<SetStateAction<string>>;
-  activeChat: IChatResponse | null;
 }
 
-export const useChatMessage = ({
-  activeChat,
-  chatId,
-  setMessages,
-  setPage,
-  userData,
-  changeStatus,
-}: ChatMessageParams) => {
+export const useChatMessage = ({ chatId, setMessages, setPage, userData, changeStatus }: ChatMessageParams) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -37,6 +28,8 @@ export const useChatMessage = ({
     socket.emit('joinChat', chatId);
 
     const handleNewMessage = (message: IMessageResponse) => {
+      if (message.chat.id !== Number(chatId)) return;
+
       setMessages((prevMessages) => {
         const isDuplicate = prevMessages.some((msg) => msg.id === message.id);
         return isDuplicate ? prevMessages : [...prevMessages, message];
@@ -90,5 +83,5 @@ export const useChatMessage = ({
       socket.off('typing', handleTyping);
       socket.emit('leaveChat', chatId);
     };
-  }, [activeChat, changeStatus, chatId, setMessages, setPage, userData?.id]);
+  }, [changeStatus, chatId, setMessages, setPage, userData?.id]);
 };

@@ -130,7 +130,7 @@ export const Message = ({ message }: { message: IMessageResponse }) => {
         <ContextMenuTrigger
           ref={messageRef}
           className={`relative p-2 max-w-[75%] rounded-[17px] border border-gray-500 shadow-md text-white flex cursor-pointer hover:bg-[#445566] select-none 
-            ${isSender ? 'bg-accent/20 rounded-tr-[8px] rounded-br-[2px]' : 'bg-[#354050] rounded-tl-[8px] rounded-bl-[2px]'}`}
+            ${isSender ? 'bg-accent/60 rounded-tr-[8px] rounded-br-[2px]' : 'bg-[#354050]/60 rounded-tl-[8px] rounded-bl-[2px]'}`}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
