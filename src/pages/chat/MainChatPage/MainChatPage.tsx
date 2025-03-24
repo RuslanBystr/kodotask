@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,12 +8,13 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/co
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarMenuButton, SidebarTrigger } from '@/components/ui/sidebar';
+import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
+import { useUserConnection } from '@/pages/chat/hooks/useUserConnection';
 import { PrivateChat } from '@/pages/chat/private-chat/PrivateChat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IChatResponse, IUserChat } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { getEnv } from '@/utils';
-import { socket } from '@/utils/socket';
 
 import { useMainChatsPage } from './useMainChatsPage';
 
@@ -27,25 +28,10 @@ const MainChatPage: React.FC = () => {
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
   const [selectedCompanion, setSelectedCompanion] = useState<IUserChat | undefined>(undefined);
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
-  const [userStatus, setUserStatus] = useState<string>('Online');
+  const [userStatus, setUserStatus] = useState<string>('');
   const { chats } = useMainChatsPage();
 
-  useEffect(() => {
-    if (!userId) return;
-
-    socket.emit('userConnected', userId);
-
-    const handleOnlineUsers = (users: string[]) => setOnlineUsers(users);
-
-    socket.on('onlineUsers', handleOnlineUsers);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      socket.off('onlineUsers', handleOnlineUsers);
-    };
-  }, [userId]);
+  const onlineUsers = useUserConnection({ userId });
 
   const handleSelectedChat = useCallback(
     (chat: IChatResponse) => {
@@ -55,14 +41,7 @@ const MainChatPage: React.FC = () => {
     [navigate],
   );
 
-  const filterChats = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value.toLowerCase());
-  }, []);
-
-  const filteredChats = chats?.items?.filter((chat) => {
-    const chatName = chat?.groupName || chat?.userChats?.[0]?.name || '';
-    return chatName.toLowerCase().includes(searchQuery);
-  });
+  const { filterValue, filteredChats } = useFilterChats(chats?.items);
 
   useEffect(() => {
     if (activeChat) {
@@ -86,7 +65,7 @@ const MainChatPage: React.FC = () => {
           </Breadcrumb>
         </header>
         <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
-          <Input className="md:w-[14em] p-2 text-[10px]" placeholder="Search" onChange={filterChats} />
+          <Input className="md:w-[14em] p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
 
           {!filteredChats ? (
             <div className="w-full h-full flex justify-center">
@@ -183,7 +162,7 @@ const MainChatPage: React.FC = () => {
             </p>
           </div>
         </div>
-        <PrivateChat changeStatus={setUserStatus} />
+        <PrivateChat activeChat={activeChat} changeStatus={setUserStatus} />
       </div>
     </div>
   );

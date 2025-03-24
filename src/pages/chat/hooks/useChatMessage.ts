@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 
+import { IChatResponse } from '@/types/responses/IChatResponse';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { IUserResponse } from '@/types/responses/IUserResponse';
 import { socket } from '@/utils/socket';
@@ -10,9 +11,17 @@ interface ChatMessageParams {
   setMessages: Dispatch<SetStateAction<IMessageResponse[]>>;
   userData: IUserResponse | null;
   changeStatus: Dispatch<SetStateAction<string>>;
+  activeChat: IChatResponse | null;
 }
 
-export const useChatMessage = ({ chatId, setMessages, setPage, userData, changeStatus }: ChatMessageParams) => {
+export const useChatMessage = ({
+  activeChat,
+  chatId,
+  setMessages,
+  setPage,
+  userData,
+  changeStatus,
+}: ChatMessageParams) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -81,5 +90,5 @@ export const useChatMessage = ({ chatId, setMessages, setPage, userData, changeS
       socket.off('typing', handleTyping);
       socket.emit('leaveChat', chatId);
     };
-  }, [changeStatus, chatId, setMessages, setPage, userData?.id]);
+  }, [activeChat, changeStatus, chatId, setMessages, setPage, userData?.id]);
 };

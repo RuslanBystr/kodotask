@@ -11,13 +11,20 @@ import Messages from '@/pages/chat/common/Messages';
 import { useChatMessage } from '@/pages/chat/hooks/useChatMessage';
 import { useGetMessagesQuery } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
+import { IChatResponse } from '@/types/responses/IChatResponse';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { socket } from '@/utils/socket';
 
 import { useChatMicro } from '../hooks/useChatMicro';
 
-export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAction<string>> }) {
+export function GroupChat({
+  changeStatus,
+  activeChat,
+}: {
+  changeStatus: Dispatch<SetStateAction<string>>;
+  activeChat: IChatResponse | null;
+}) {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const { id } = useParams();
   const [newMessage, setNewMessage] = useState<string>('');
@@ -42,7 +49,7 @@ export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAct
     });
   }, [id, refetch]);
 
-  useChatMessage({ chatId: id, setMessages, setPage, userData, changeStatus });
+  useChatMessage({ activeChat, chatId: id, setMessages, setPage, userData, changeStatus });
 
   useEffect(() => {
     if (initialMessages?.items) {
