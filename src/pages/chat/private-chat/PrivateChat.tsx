@@ -11,13 +11,20 @@ import Messages from '@/pages/chat/common/Messages';
 import { useChatMessage } from '@/pages/chat/hooks/useChatMessage';
 import { useGetMessagesQuery } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
+import { IChatResponse } from '@/types/responses/IChatResponse';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { socket } from '@/utils/socket';
 
 import { useChatMicro } from '../hooks/useChatMicro';
 
-export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateAction<string>> }) {
+export function PrivateChat({
+  changeStatus,
+  activeChat,
+}: {
+  changeStatus: Dispatch<SetStateAction<string>>;
+  activeChat: IChatResponse | null;
+}) {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const { id } = useParams();
   const [newMessage, setNewMessage] = useState<string>('');
@@ -42,7 +49,7 @@ export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateA
     });
   }, [id, refetch]);
 
-  useChatMessage({ chatId: id, setMessages, setPage, userData, changeStatus });
+  useChatMessage({ activeChat, chatId: id, setMessages, setPage, userData, changeStatus });
 
   useEffect(() => {
     if (initialMessages?.items) {
@@ -117,7 +124,7 @@ export function PrivateChat({ changeStatus }: { changeStatus: Dispatch<SetStateA
             )}
           </div>
         )}
-        <div className="sticky h-full right-0 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom bg-[#384D54]/90">
+        <div className="sticky h-20 right-0 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom bg-[#384D54]/90">
           <Input
             className="flex-1 rounded-full text-[12px] md:text-[14px]"
             placeholder="Type your message..."

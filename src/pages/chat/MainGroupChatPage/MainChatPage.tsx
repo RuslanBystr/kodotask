@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,11 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarMenuButton, SidebarTrigger } from '@/components/ui/sidebar';
 import { GroupChat } from '@/pages/chat/group-chat/GroupChat';
+import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
+import { useUserConnection } from '@/pages/chat/hooks/useUserConnection';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IChatResponse } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { getEnv } from '@/utils';
-import { socket } from '@/utils/socket';
 
 import { useMainChatsPage } from './useMainChatsPage';
 
@@ -23,28 +24,12 @@ const MainGroupChatPage: React.FC = () => {
   const navigate = useNavigate();
   const userData = useSelector(selectAuthenticatedUserSelector);
   const userId = userData?.id;
-
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [userStatus, setUserStatus] = useState<string>('');
 
   const { chats } = useMainChatsPage();
 
-  useEffect(() => {
-    if (!userId) return;
-
-    socket.emit('userConnected', userId);
-
-    const handleOnlineUsers = (users: string[]) => setOnlineUsers(users);
-
-    socket.on('onlineUsers', handleOnlineUsers);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      socket.off('onlineUsers', handleOnlineUsers);
-    };
-  }, [userId]);
+  const onlineUsers = useUserConnection({ userId });
 
   const handleSelectedChat = useCallback(
     (chat: IChatResponse) => {
@@ -54,14 +39,7 @@ const MainGroupChatPage: React.FC = () => {
     [navigate],
   );
 
-  const filterChats = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value.toLowerCase());
-  }, []);
-
-  const filteredChats = chats?.items?.filter((chat) => {
-    const chatName = chat?.groupName || chat?.userChats?.[0]?.name || '';
-    return chatName.toLowerCase().includes(searchQuery);
-  });
+  const { filterValue, filteredChats } = useFilterChats(chats?.items);
 
   return (
     <div className="md:p-2 flex">
@@ -78,14 +56,14 @@ const MainGroupChatPage: React.FC = () => {
           </Breadcrumb>
         </header>
         <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
-          <Input className="md:w-[14em] p-2 text-[10px]" placeholder="Search" onChange={filterChats} />
+          <Input className="md:w-[14em] p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
 
           {!filteredChats ? (
             <div className="w-full h-full flex justify-center">
               <Loading size={32} />
             </div>
           ) : (
-            filteredChats.map((chat) => {
+            filteredChats?.map((chat) => {
               const lastMessage = chat?.lastMessage;
               const formattedDate = lastMessage?.createdAt
                 ? new Date(lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -149,7 +127,7 @@ const MainGroupChatPage: React.FC = () => {
             {activeChat && <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : ''}</p>}
           </p>
         </div>
-        <GroupChat changeStatus={setUserStatus} />
+        <GroupChat activeChat={activeChat} changeStatus={setUserStatus} />
       </div>
     </div>
   );
