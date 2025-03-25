@@ -13,7 +13,9 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { getEnv } from '@/utils';
 
+const { api } = getEnv();
 export function PaymentModal() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -27,7 +29,7 @@ export function PaymentModal() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3001/payments/create-payment-intent', {
+      const response = await fetch(`${api}/payments/create-payment-intent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount }),

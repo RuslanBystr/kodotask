@@ -27,7 +27,7 @@ const MainGroupChatPage: React.FC = () => {
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
   const [userStatus, setUserStatus] = useState<string>('');
 
-  const { chats } = useMainChatsPage();
+  const { chats, refetch } = useMainChatsPage();
 
   const onlineUsers = useUserConnection({ userId });
 
@@ -127,7 +127,7 @@ const MainGroupChatPage: React.FC = () => {
             {activeChat && <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : ''}</p>}
           </p>
         </div>
-        <GroupChat changeStatus={setUserStatus} />
+        <GroupChat changeStatus={setUserStatus} refetchChats={refetch} />
       </div>
     </div>
   );

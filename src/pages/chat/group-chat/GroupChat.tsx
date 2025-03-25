@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Messages from '@/pages/chat/common/Messages';
 import { useChatMessage } from '@/pages/chat/hooks/useChatMessage';
+import { useFetchMessages } from '@/pages/chat/hooks/useFetchMessages';
+import { useInitMessages } from '@/pages/chat/hooks/useInitMessages';
 import { useGetMessagesQuery } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
@@ -17,58 +19,35 @@ import { socket } from '@/utils/socket';
 
 import { useChatMicro } from '../hooks/useChatMicro';
 
-export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAction<string>> }) {
+export function GroupChat({
+  changeStatus,
+  refetchChats,
+}: {
+  changeStatus: Dispatch<SetStateAction<string>>;
+  refetchChats: () => void;
+}) {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const { id } = useParams();
   const [newMessage, setNewMessage] = useState<string>('');
   const [newVoiceMessage, setNewVoiceMessage] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [messages, setMessages] = useState<IMessageResponse[]>([]);
-  const { data: initialMessages, isLoading, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 20 });
+  const { data: initialMessages, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 20 });
   const [showPicker, setShowPicker] = useState(false);
   const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
+  const [loading, setLoading] = useState(false);
 
   const handleEmojiClick: MouseDownEvent = (emojiObject) => {
     setNewMessage((prev) => prev + emojiObject.emoji);
   };
 
-  useEffect(() => {
-    if (!id) return;
-
-    refetch().then((response) => {
-      if (response.data?.items) {
-        setMessages(response.data.items);
-      }
-    });
-  }, [id, refetch]);
-
-  useChatMessage({ chatId: id, setMessages, setPage, userData, changeStatus });
-
-  useEffect(() => {
-    if (initialMessages?.items) {
-      setMessages((prevMessages) => {
-        // Prevent duplicate messages
-        const newMessages = initialMessages.items.filter((msg) => !prevMessages.some((prev) => prev.id === msg.id));
-        return [...newMessages, ...prevMessages];
-      });
-    }
-  }, [initialMessages]);
+  useFetchMessages(id, page, refetch);
+  useInitMessages({ initialMessages, setMessages });
+  useChatMessage({ refetchChats, chatId: id, setMessages, setPage, userData, changeStatus });
 
   const fetchMoreMessages = useCallback(() => {
     setPage((prevPage) => prevPage + 1);
   }, []);
-
-  useEffect(() => {
-    refetch().then((response) => {
-      if (response.data?.items.length) {
-        setMessages((prevMessages) => {
-          const newMessages =
-            response?.data?.items.filter((msg) => !prevMessages.some((prev) => prev.id === msg.id)) || [];
-          return [...newMessages, ...prevMessages];
-        });
-      }
-    });
-  }, [page, refetch]);
 
   const sendMessage = useCallback(() => {
     if (newMessage === '' && newVoiceMessage === null) return;
@@ -106,18 +85,20 @@ export function GroupChat({ changeStatus }: { changeStatus: Dispatch<SetStateAct
   return id ? (
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
       <div className="relative col-span-3 lg:col-span-2 flex flex-col h-[calc(100vh-72px)] w-full">
-        {messages.length > 0 ? (
-          <Messages messageDetails={messages} fetchMoreMessages={fetchMoreMessages} />
-        ) : (
-          <div className="flex flex-col p-2 w-full justify-center h-[calc(100vh-72px)]">
-            {isLoading ? (
-              <div className="flex justify-center">
-                <Loading />
-              </div>
-            ) : (
-              <p className="text-center text-gray-400">No messages yet</p>
-            )}
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {messages.length ? (
+          <Messages
+            messageDetails={messages}
+            loading={loading}
+            setLoading={setLoading}
+            fetchMoreMessages={fetchMoreMessages}
+          />
+        ) : loading ? (
+          <div className="flex justify-center items-center h-[calc(100vh-142px)]">
+            <Loading />
           </div>
+        ) : (
+          <div className="flex flex-col h-[calc(100vh-142px)]" />
         )}
         <div className="sticky bottom-2 right-0 border-t p-4 md:p-4 flex items-center gap-2 z-50 safe-bottom">
           <Input

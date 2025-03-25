@@ -29,19 +29,19 @@ const MainChatPage: React.FC = () => {
   const [selectedCompanion, setSelectedCompanion] = useState<IUserChat | undefined>(undefined);
 
   const [userStatus, setUserStatus] = useState<string>('');
-  const { chats } = useMainChatsPage();
 
-  const onlineUsers = useUserConnection({ userId });
+  const { chats, refetch } = useMainChatsPage();
 
-  const handleSelectedChat = useCallback(
-    (chat: IChatResponse) => {
-      setActiveChat(chat);
-      navigate(`/chats/user/${chat.id}`);
-    },
-    [navigate],
-  );
-
-  const { filterValue, filteredChats } = useFilterChats(chats?.items);
+  useEffect(() => {
+    const savedChatId = localStorage.getItem('activeChatId');
+    if (savedChatId && chats?.items) {
+      const savedChat = chats.items.find((chat) => chat.id.toString() === savedChatId);
+      if (savedChat) {
+        setActiveChat(savedChat);
+        navigate(`/chats/user/${savedChatId}`);
+      }
+    }
+  }, [chats, navigate]);
 
   useEffect(() => {
     if (activeChat) {
@@ -49,6 +49,19 @@ const MainChatPage: React.FC = () => {
       setSelectedCompanion(companion);
     }
   }, [activeChat, userId]);
+
+  const onlineUsers = useUserConnection({ userId });
+
+  const handleSelectedChat = useCallback(
+    (chat: IChatResponse) => {
+      setActiveChat(chat);
+      localStorage.setItem('activeChatId', chat.id.toString());
+      navigate(`/chats/user/${chat.id}`);
+    },
+    [navigate],
+  );
+
+  const { filterValue, filteredChats } = useFilterChats(chats?.items);
 
   return (
     <div className="flex">
@@ -145,7 +158,10 @@ const MainChatPage: React.FC = () => {
         <div className="flex items-center w-full min-h-[72px] pl-6 border-b bg-[#374C53]/90">
           <Avatar className="h-12 w-12 mr-2">
             {selectedCompanion && (
-              <AvatarImage src={`${api}/file/${selectedCompanion.user.avatar}`} alt={userData?.firstName} />
+              <AvatarImage
+                src={`${api}/file/${selectedCompanion.user.avatar}`}
+                alt={selectedCompanion?.user.firstName}
+              />
             )}
             <AvatarFallback className="h-12 w-12 rounded-full relative">NM</AvatarFallback>
           </Avatar>
@@ -162,7 +178,7 @@ const MainChatPage: React.FC = () => {
             </p>
           </div>
         </div>
-        <PrivateChat changeStatus={setUserStatus} />
+        <PrivateChat changeStatus={setUserStatus} refetchChats={refetch} />
       </div>
     </div>
   );
