@@ -33,7 +33,7 @@ const MainChatPage: React.FC = () => {
   const { chats, refetch } = useMainChatsPage();
 
   useEffect(() => {
-    const savedChatId = localStorage.getItem('activeChatId');
+    const savedChatId = sessionStorage.getItem('activeChatId');
     if (savedChatId && chats?.items) {
       const savedChat = chats.items.find((chat) => chat.id.toString() === savedChatId);
       if (savedChat) {
@@ -55,7 +55,7 @@ const MainChatPage: React.FC = () => {
   const handleSelectedChat = useCallback(
     (chat: IChatResponse) => {
       setActiveChat(chat);
-      localStorage.setItem('activeChatId', chat.id.toString());
+      sessionStorage.setItem('activeChatId', chat.id.toString());
       navigate(`/chats/user/${chat.id}`);
     },
     [navigate],
@@ -109,10 +109,15 @@ const MainChatPage: React.FC = () => {
                   onClick={() => handleSelectedChat(chat)}
                 >
                   <div className="relative">
-                    <Avatar className="h-8 w-8 rounded-full relative">
+                    <Avatar className="h-8 w-8 rounded-full">
                       <AvatarImage src={receiver?.avatar ? `${api}/file/${sender?.user.avatar}` : ''} alt="file" />
                       <AvatarFallback>{chatName?.[0]?.toUpperCase()}</AvatarFallback>
                     </Avatar>
+                    {chat?.messages?.length > 0 && (
+                      <div className="absolute sm:-left-1 md:right-0 bottom-0 bg-[#559965] w-4 h-4 rounded-full border border-green-200 text-[10px] flex justify-center items-center">
+                        {chat?.messages?.length > 99 ? '99' : chat?.messages?.length}
+                      </div>
+                    )}
                     {isOnline && (
                       <span
                         className="absolute right-0 bottom-0 w-3 h-3 bg-green-500 rounded-full border border-green-200"
@@ -122,11 +127,6 @@ const MainChatPage: React.FC = () => {
                   </div>
 
                   <div className="relative hidden md:block w-full">
-                    {chat?.messages?.length > 0 && (
-                      <div className="absolute right-0 bottom-1 bg-[#7799aa] min-w-6 cut text-center">
-                        {chat?.messages?.length}
-                      </div>
-                    )}
                     <div className="flex justify-between w-full">
                       <p>{chatName}</p>
                       <p className="text-[10px]">{formattedDate}</p>
