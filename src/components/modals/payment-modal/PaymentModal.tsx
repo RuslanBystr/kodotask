@@ -13,9 +13,11 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { SidebarMenuButton } from '@/components/ui/sidebar';
 import { getEnv } from '@/utils';
 
 const { api } = getEnv();
+
 export function PaymentModal() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -59,13 +61,13 @@ export function PaymentModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-none bg-transparent hover:bg-[#88aabb]" onClick={() => setOpen(true)}>
+        <SidebarMenuButton className="rounded-none bg-transparent hover:bg-[#88aabb]" onClick={() => setOpen(true)}>
           <DollarSign />
-          Help for our team
-        </Button>
+          Support us
+        </SidebarMenuButton>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px] min-h-[200px] h-[50vh] bg-[#374C53] rounded-none cut cut-left-15 cut-right-10">
+      <DialogContent className="sm:max-w-[425px] min-h-[200px] bg-[#374C53] rounded-none cut cut-left-15 cut-right-10">
         <DialogHeader>
           <DialogTitle>Support the Developer</DialogTitle>
           <DialogDescription>Are you sure you want to proceed with the payment?</DialogDescription>

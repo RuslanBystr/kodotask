@@ -100,14 +100,16 @@ export function PrivateChat({
             onChange={handleChangeMessage}
             onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
           />
-          <Button className="bg-[#336677] w-10 rounded-full" onClick={() => setShowPicker(!showPicker)}>
-            <SmileIcon />
-          </Button>
-          {showPicker && (
-            <div className="absolute bottom-20 right-0 mt-2">
-              <EmojiPicker onEmojiClick={handleEmojiClick} />
-            </div>
-          )}
+          <div className="hidden md:block">
+            <Button className="bg-[#336677] w-10 rounded-full" onClick={() => setShowPicker(!showPicker)}>
+              <SmileIcon />
+            </Button>
+            {showPicker && (
+              <div className="absolute bottom-20 right-0 mt-2">
+                <EmojiPicker onEmojiClick={handleEmojiClick} />
+              </div>
+            )}
+          </div>
           <Button onClick={recording ? stopRecording : startRecording} className="bg-[#336677] w-10 rounded-full">
             {recording ? <Square size={24} /> : <Mic size={24} />}
           </Button>
