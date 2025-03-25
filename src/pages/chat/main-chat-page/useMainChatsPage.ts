@@ -20,7 +20,12 @@ export const useMainChatsPage = () => {
   const { page, rowsPerPage: limit } = paginateParams;
   const userData = useSelector(selectAuthenticatedUserSelector);
   const userId = userData?.id.toString() ?? '';
-  const { data: chats, isLoading } = useGetUserChatsQuery({
+
+  const {
+    data: chats,
+    isLoading,
+    refetch,
+  } = useGetUserChatsQuery({
     limit,
     page: page + 1,
     userId,
@@ -35,6 +40,7 @@ export const useMainChatsPage = () => {
 
   return {
     chats,
+    refetch,
     meta,
     noData,
     isLoading,

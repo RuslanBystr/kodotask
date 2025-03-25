@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import LoadingIcon from '@/assets/icons/LoadingIcon';
 import { Message } from '@/pages/chat/common/Message';
@@ -8,19 +8,18 @@ import { IMessageResponse } from '@/types/responses/IMessageResponse';
 interface MessagesProps {
   messageDetails: IMessageResponse[];
   fetchMoreMessages: () => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
 }
 
-function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
+function Messages({ messageDetails, loading, setLoading, fetchMoreMessages }: MessagesProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeight = useRef<number>(0);
-  const [loading, setLoading] = useState(false);
   const isFetching = useRef(false);
 
   const fetchMessages = useCallback(() => {
     if (isFetching.current) return;
     isFetching.current = true;
-    setLoading(true);
-
     const container = messagesContainerRef.current;
     if (!container) return;
 
@@ -29,8 +28,8 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
 
     fetchMoreMessages();
 
-    setLoading(false);
     isFetching.current = false;
+    setLoading(false);
 
     const observer = new MutationObserver(() => {
       if (container) {
@@ -42,14 +41,14 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
     });
 
     observer.observe(container, { childList: true, subtree: true });
-  }, [fetchMoreMessages]);
+  }, [fetchMoreMessages, setLoading]);
 
   const handleScroll = useCallback(() => {
     const container = messagesContainerRef.current;
     if (!container || isFetching.current || loading) return;
 
     if (container.scrollTop === 0) {
-      setTimeout(fetchMessages, 200);
+      fetchMessages();
     }
   }, [fetchMessages, loading]);
 
@@ -68,7 +67,7 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
     if (!container) return;
 
     const observer = new ResizeObserver(() => {
-      const isAtBottom = container.scrollHeight - (container.scrollTop + container.clientHeight) <= 200;
+      const isAtBottom = container.scrollHeight - (container.scrollTop + container.clientHeight) <= 170;
 
       if (isAtBottom) {
         requestAnimationFrame(() => {
@@ -86,33 +85,20 @@ function Messages({ messageDetails, fetchMoreMessages }: MessagesProps) {
   }, [messageDetails]);
 
   return (
-    <div className="relative">
-      <div
-        className={clsx(
-          'absolute z-10 top-0 left-0 w-full h-6 bg-gradient-to-b from-transparent/5 to-transparent backdrop-blur-[1px] transition-all duration-500',
-        )}
-      />
-
-      <div
-        ref={messagesContainerRef}
-        onScroll={handleScroll}
-        className="messages-container flex-1 overflow-y-auto p-4 space-y-2 h-[calc(100vh-142px)] custom-scrollbar"
-      >
-        {loading && (
-          <div className="flex justify-center text-center text-gray-400 p-2">
-            Load more
-            <LoadingIcon
-              className={clsx('ml-[13px] h-[14px] w-[15px]', {
-                'animate-spin': loading,
-              })}
-            />
-          </div>
-        )}
-
-        {messageDetails.map((message) => (
-          <Message message={message} key={`${message.id}-${message.createdAt}`} />
-        ))}
-      </div>
+    <div
+      ref={messagesContainerRef}
+      onScroll={handleScroll}
+      className="messages-container flex-1 overflow-y-auto p-4 space-y-2 h-[calc(100vh-142px)] custom-scrollbar"
+    >
+      {loading && (
+        <div className="flex justify-center items-center text-center text-gray-400 p-2">
+          <LoadingIcon className={clsx('mr-[13px] h-[14px] w-[15px] animate-spin')} />
+          <p>Loading...</p>
+        </div>
+      )}
+      {messageDetails.map((message) => (
+        <Message message={message} key={`${message.id}-${message.createdAt}`} />
+      ))}
     </div>
   );
 }

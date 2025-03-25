@@ -10,9 +10,17 @@ interface ChatMessageParams {
   setMessages: Dispatch<SetStateAction<IMessageResponse[]>>;
   userData: IUserResponse | null;
   changeStatus: Dispatch<SetStateAction<string>>;
+  refetchChats: () => void;
 }
 
-export const useChatMessage = ({ chatId, setMessages, setPage, userData, changeStatus }: ChatMessageParams) => {
+export const useChatMessage = ({
+  refetchChats,
+  chatId,
+  setMessages,
+  setPage,
+  userData,
+  changeStatus,
+}: ChatMessageParams) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -27,13 +35,17 @@ export const useChatMessage = ({ chatId, setMessages, setPage, userData, changeS
 
     socket.emit('joinChat', chatId);
 
-    const handleNewMessage = (message: IMessageResponse) => {
-      if (message.chat.id !== Number(chatId)) return;
+    const handleNewMessage = async (message: IMessageResponse) => {
+      if (message.chat.id !== Number(chatId)) {
+        await refetchChats();
+        return;
+      }
 
       setMessages((prevMessages) => {
         const isDuplicate = prevMessages.some((msg) => msg.id === message.id);
         return isDuplicate ? prevMessages : [...prevMessages, message];
       });
+      await refetchChats();
     };
 
     const updateMessageHandler = (updateMessage: IMessageResponse) => {
@@ -45,8 +57,9 @@ export const useChatMessage = ({ chatId, setMessages, setPage, userData, changeS
         ),
       );
     };
-    const removeMessageHandler = (removedMessage: IMessageResponse) => {
+    const removeMessageHandler = async (removedMessage: IMessageResponse) => {
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.createdAt !== removedMessage.createdAt));
+      await refetchChats();
     };
 
     const handleTyping = (userId: string) => {
@@ -83,5 +96,5 @@ export const useChatMessage = ({ chatId, setMessages, setPage, userData, changeS
       socket.off('typing', handleTyping);
       socket.emit('leaveChat', chatId);
     };
-  }, [changeStatus, chatId, setMessages, setPage, userData?.id]);
+  }, [refetchChats, changeStatus, chatId, setMessages, setPage, userData?.id]);
 };
