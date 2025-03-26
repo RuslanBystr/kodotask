@@ -1,6 +1,6 @@
 import EmojiPicker from 'emoji-picker-react';
 import { MouseDownEvent } from 'emoji-picker-react/dist/config/config';
-import { Mic, SendHorizonalIcon, SmileIcon, Square } from 'lucide-react';
+import { Mic, ReplyIcon, SendHorizonalIcon, SmileIcon, Square, XIcon } from 'lucide-react';
 import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -36,6 +36,7 @@ export function GroupChat({
   const [showPicker, setShowPicker] = useState(false);
   const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
   const [loading, setLoading] = useState(false);
+  const [reply, setReply] = useState<IMessageResponse | null>(null);
 
   const handleEmojiClick: MouseDownEvent = (emojiObject) => {
     setNewMessage((prev) => prev + emojiObject.emoji);
@@ -61,11 +62,13 @@ export function GroupChat({
       chatId: id,
       content: newMessage.trim() === '' ? null : newMessage.trim(),
       voiceMessage: newVoiceMessage,
+      linkToMessage: reply?.id,
     };
     socket.emit('sendMessage', messageData);
     setNewMessage('');
     setNewVoiceMessage(null);
-  }, [newMessage, newVoiceMessage, userData, id]);
+    setReply(null);
+  }, [newMessage, newVoiceMessage, userData?.id, id, reply?.id]);
 
   useEffect(() => {
     if (newVoiceMessage) {
@@ -83,7 +86,7 @@ export function GroupChat({
   };
 
   return id ? (
-    <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
+    <div className="relative w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
       <div className="relative col-span-3 lg:col-span-2 flex flex-col h-[calc(100vh-72px)] w-full">
         {/* eslint-disable-next-line no-nested-ternary */}
         {messages.length ? (
@@ -92,6 +95,7 @@ export function GroupChat({
             loading={loading}
             setLoading={setLoading}
             fetchMoreMessages={fetchMoreMessages}
+            setReply={setReply}
           />
         ) : loading ? (
           <div className="flex justify-center items-center h-[calc(100vh-142px)]">
@@ -100,6 +104,22 @@ export function GroupChat({
         ) : (
           <div className="flex flex-col h-[calc(100vh-142px)]" />
         )}
+        <div>
+          {reply && (
+            <div className="flex justify-between bg-[#394E56] p-2">
+              <ReplyIcon />
+              <div>
+                <p className="text-[#4FA3B8]">Reply to {reply.sender.firstName}</p>
+                <p>{reply.content}</p>
+              </div>
+              <div className="flex flex-1 justify-end">
+                <Button className="rounded-none bg-transparent" onClick={() => setReply(null)}>
+                  <XIcon />
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="sticky bottom-2 right-0 border-t p-4 md:p-4 flex items-center gap-2 z-50 safe-bottom">
           <Input
             className="flex-1 rounded-full text-[12px] md:text-[14px]"

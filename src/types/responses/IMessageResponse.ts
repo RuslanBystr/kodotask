@@ -5,6 +5,7 @@ export interface IMessageResponse {
   content: string;
   reaction: string;
   voiceMessage: { uuid: string };
+  linkToMessage: IMessageResponse | null;
   sender: Partial<IUserResponse>;
   chat: Chat;
   createdAt: Date;

@@ -43,7 +43,10 @@ const MainTaskPage: React.FC = () => {
       </header>
       <div className="h-[calc(100vh-72px)] overflow-y-auto">
         {admin?.role !== AdminRoleEnum.VIEWER && (
-          <Button className="mt-5" variant="outline" onClick={goToCreateTaskPage}>
+          <Button
+            className="mt-5 rounded-none border border-[#4B626D] bg-[#5C7CFA] hover:bg-[#4CAF50] cut cut-left-5 cut-right-5"
+            onClick={goToCreateTaskPage}
+          >
             <PlusIcon />
             Add Task
           </Button>

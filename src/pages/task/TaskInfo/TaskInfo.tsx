@@ -40,14 +40,6 @@ export default function TaskInfoPage() {
     editTask({ id: taskId, description: e.target.value });
   };
 
-  const chartData = [
-    { metric: 'Status Progress', value: 66 },
-    { metric: 'Spent Time', value: 80 },
-    { metric: 'Estimated Time', value: 50 },
-    { metric: 'Priority', value: 90 },
-    { metric: 'Complexity', value: 70 },
-  ];
-
   const tabs = [
     { id: 'tab1', label: 'Time', content: <SpendTime logs={data?.timeLogger} refreshTask={refetch} /> },
     {
@@ -124,7 +116,7 @@ export default function TaskInfoPage() {
           </div>
           <div className="w-full mb-16">
             <div className="flex justify-end">{id && <DeleteTaskDialog taskId={id} />}</div>
-            {data && <TaskDiagram data={data} chartData={chartData} />}
+            {data && <TaskDiagram data={data} />}
           </div>
         </div>
       </div>

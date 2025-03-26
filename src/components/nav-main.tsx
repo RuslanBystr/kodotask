@@ -59,9 +59,9 @@ export function NavMain({
                     tooltip={item.title}
                     onClick={() => menuButtonHandler(item)}
                     className={clsx(
-                      'py-4 hover:bg-gray border-gray-600 border-2 transition-all duration-200 ease-in-out transform hover:bg-gray-800',
+                      'py-4 border transition-all duration-200 ease-in-out transform hover:bg-[#425D68]',
                       {
-                        'font-bold bg-gray-700 border-gray-400': isActiveItem,
+                        'font-bold bg-[#425D68] border-gray-400': isActiveItem,
                       },
                     )}
                   >

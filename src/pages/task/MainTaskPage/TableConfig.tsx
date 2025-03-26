@@ -1,10 +1,11 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { CheckCheckIcon, ChevronDown, ChevronRight, ChevronUp, CircleIcon, LoaderCircle } from 'lucide-react';
+import { CheckCheckIcon, ChevronDown, ChevronRight, ChevronUp, CircleIcon } from 'lucide-react';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
 import { AvatarCell } from '@/pages/task/MainTaskPage/сells/AvatarCell';
 import { IconCell } from '@/pages/task/MainTaskPage/сells/IconCell';
 import { Task } from '@/types/responses/IProjectResponse';
+import { Loading } from '@/ui-kit/loading/Loading';
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -66,16 +67,16 @@ export const columns: ColumnDef<Task>[] = [
     header: getDefaultColumnHeader({ name: 'Status', sort: false, search: false }),
     cell: ({ row }) => {
       const statuses = {
-        DONE: { icon: CheckCheckIcon, color: 'text-green-400' },
-        TODO: { icon: CircleIcon, color: 'text-gray-600' },
-        IN_PROGRESS: { icon: LoaderCircle, color: 'text-blue-400' },
+        DONE: { icon: CheckCheckIcon, color: 'text-green-400', props: {} },
+        TODO: { icon: CircleIcon, color: 'text-gray-600', props: {} },
+        IN_PROGRESS: { icon: Loading, color: 'text-blue-400', props: { size: 26 } },
       };
 
-      const { icon: Icon, color } = statuses[row.original.status] || statuses.IN_PROGRESS;
+      const { icon: Icon, color, props } = statuses[row.original.status] || statuses.IN_PROGRESS;
 
       return (
         <div className="flex items-center">
-          <Icon className={color} />
+          <Icon className={color} {...props} />
         </div>
       );
     },
