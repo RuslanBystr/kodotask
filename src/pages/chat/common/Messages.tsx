@@ -10,9 +10,10 @@ interface MessagesProps {
   fetchMoreMessages: () => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  setReply: (reply: IMessageResponse) => void;
 }
 
-function Messages({ messageDetails, loading, setLoading, fetchMoreMessages }: MessagesProps) {
+function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setReply }: MessagesProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeight = useRef<number>(0);
   const isFetching = useRef(false);
@@ -55,11 +56,14 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages }: Me
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (!container) return;
+    container.scrollTop = (container.scrollHeight - container.clientHeight) / 2;
 
-    container.scrollTo({
-      top: container.scrollHeight,
-      behavior: 'smooth',
-    });
+    setTimeout(() => {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: 'smooth',
+      });
+    }, 100);
   }, []);
 
   useEffect(() => {
@@ -88,7 +92,7 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages }: Me
     <div
       ref={messagesContainerRef}
       onScroll={handleScroll}
-      className="messages-container flex-1 overflow-y-auto p-4 space-y-2 h-[calc(100vh-142px)] custom-scrollbar"
+      className="messages-container flex-1 bg-[#446976]/30 overflow-y-auto p-4 space-y-2 h-[calc(100vh-142px)] custom-scrollbar"
     >
       {loading && (
         <div className="flex justify-center items-center text-center text-gray-400 p-2">
@@ -97,7 +101,7 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages }: Me
         </div>
       )}
       {messageDetails.map((message) => (
-        <Message message={message} key={`${message.id}-${message.createdAt}`} />
+        <Message message={message} key={`${message.id}-${message.createdAt}`} setReply={setReply} />
       ))}
     </div>
   );

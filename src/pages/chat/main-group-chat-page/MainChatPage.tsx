@@ -1,16 +1,17 @@
 import { clsx } from 'clsx';
+import { PlusIcon } from 'lucide-react';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarMenuButton, SidebarTrigger } from '@/components/ui/sidebar';
 import { GroupChat } from '@/pages/chat/group-chat/GroupChat';
 import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
-import { useUserConnection } from '@/pages/chat/hooks/useUserConnection';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IChatResponse } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
@@ -28,8 +29,6 @@ const MainGroupChatPage: React.FC = () => {
   const [userStatus, setUserStatus] = useState<string>('');
 
   const { chats, refetch } = useMainChatsPage();
-
-  const onlineUsers = useUserConnection({ userId });
 
   const handleSelectedChat = useCallback(
     (chat: IChatResponse) => {
@@ -56,7 +55,12 @@ const MainGroupChatPage: React.FC = () => {
           </Breadcrumb>
         </header>
         <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
-          <Input className="md:w-[14em] p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
+          <div className="md:flex md:flex-row-reverse w-full">
+            <Button className=" bg-[#345a66] hover:bg-[#446976] border">
+              <PlusIcon />
+            </Button>
+            <Input className="p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
+          </div>
 
           {!filteredChats ? (
             <div className="w-full h-full flex justify-center">
@@ -73,7 +77,6 @@ const MainGroupChatPage: React.FC = () => {
               const sender = chat?.userChats?.filter((userChat) => Number(userChat?.user?.id) !== userId)[0];
 
               const chatName = chat?.groupName || receiver?.name || '';
-              const isOnline = onlineUsers.includes(sender?.user?.id);
 
               return (
                 <SidebarMenuButton
@@ -91,12 +94,6 @@ const MainGroupChatPage: React.FC = () => {
                       <AvatarImage src={receiver?.avatar ? `${api}/file/${sender.user.avatar}` : ''} alt="file" />
                       <AvatarFallback>{chatName?.[0]?.toUpperCase()}</AvatarFallback>
                     </Avatar>
-                    {isOnline && (
-                      <span
-                        className="absolute right-0 bottom-0 w-3 h-3 bg-green-500 rounded-full border border-green-200"
-                        title="Online"
-                      />
-                    )}
                   </div>
 
                   <div className="hidden md:block w-full">

@@ -105,8 +105,8 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
           </DropdownMenu>
         </div>
       )}
-      <div className="rounded-lg border overflow-x-auto w-auto">
-        <Table>
+      <div className="rounded-none cut cut-left-10 cut-right-10 overflow-x-auto w-auto shadow-[1px_0_0_2px_#1f2937]">
+        <Table className="">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

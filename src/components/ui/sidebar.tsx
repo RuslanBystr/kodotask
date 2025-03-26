@@ -152,7 +152,7 @@ const Sidebar = React.forwardRef<
   if (collapsible === 'none') {
     return (
       <div
-        className={cn('flex h-full w-[--sidebar-width] flex-col animated-bg text-sidebar-foreground', className)}
+        className={cn('flex h-full w-[--sidebar-width] flex-col bg-[#2F3D44] text-sidebar-foreground', className)}
         ref={ref}
         {...props}
       >
@@ -185,7 +185,7 @@ const Sidebar = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        'group peer hidden md:block text-sidebar-foreground',
+        'group peer hidden md:block text-sidebar-foreground bg-[#2F3D44]',
         state === 'collapsed' ? 'w-auto' : 'w-[15rem]',
       )}
       data-state={state}
@@ -206,7 +206,7 @@ const Sidebar = React.forwardRef<
       />
       <div
         className={cn(
-          'duration-200 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex',
+          'duration-100 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex',
           side === 'left'
             ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
             : 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',
@@ -240,14 +240,14 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
         data-sidebar="trigger"
         variant="ghost"
         size="icon"
-        className={cn('h-7 w-7', className)}
+        className={cn('h-10 w-10  ', className)}
         onClick={(event) => {
           onClick?.(event);
           toggleSidebar();
         }}
         {...props}
       >
-        <PanelLeft />
+        <PanelLeft size={32} className={cn('h-10 w-10')} />
         <span className="sr-only">Toggle Sidebar</span>
       </Button>
     );

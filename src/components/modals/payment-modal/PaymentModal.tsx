@@ -31,6 +31,12 @@ export function PaymentModal() {
     setLoading(true);
 
     try {
+      if (amount <= 0) {
+        toast.error('Amount must be greater than zero.');
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch(`${api}/payments/create-payment-intent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

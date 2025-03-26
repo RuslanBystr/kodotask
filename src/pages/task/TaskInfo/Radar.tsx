@@ -1,32 +1,43 @@
 'use client';
 
 import { TrendingUp } from 'lucide-react';
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
+import { useMemo } from 'react';
+import { Pie, PieChart } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Progress } from '@/components/ui/progress';
 import { ITaskResponse } from '@/types/responses/IProjectResponse';
 
+const chartDataMock = [
+  { status: 'done', tasks: 287, fill: '#4CAF50' },
+  { status: 'inProgress', tasks: 173, fill: '#64B5F6' },
+  { status: 'remaining', tasks: 190, fill: '#FFD54F' },
+];
+
 const chartConfig = {
-  value: {
-    label: 'Task Metrics',
-    color: 'hsl(var(--chart-1))',
+  done: {
+    label: 'Done',
+    color: '#4A5A62',
+  },
+  inProgress: {
+    label: 'In Progress',
+    color: '#3B474D',
+  },
+  remaining: {
+    label: 'Remaining',
+    color: '#2F3D44',
   },
 } satisfies ChartConfig;
-
-interface IChartData {
-  metric: string;
-  value: number;
-}
 
 const calculateProgress = (spentTime: number, estimate: number) => {
   if (estimate === 0) return 0;
   return Math.min((spentTime / estimate) * 100, 100);
 };
 
-export function TaskDiagram({ data, chartData }: { data: ITaskResponse; chartData: IChartData[] }) {
+export function TaskDiagram({ data }: { data: ITaskResponse }) {
   const progress = calculateProgress(data.spentTime, data.estimate);
+  const totalTime = useMemo(() => chartDataMock.reduce((acc, curr) => acc + curr.tasks, 0), []);
 
   return (
     <Card className="flex flex-col bg-transparent border-none shadow-none">
@@ -36,25 +47,15 @@ export function TaskDiagram({ data, chartData }: { data: ITaskResponse; chartDat
       </CardHeader>
       <CardContent className="pb-0">
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
-          <RadarChart data={chartData}>
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <PolarAngleAxis dataKey="metric" />
-            <PolarGrid />
-            <Radar
-              dataKey="value"
-              fill="var(--color-metrics)"
-              fillOpacity={0.5}
-              dot={{
-                r: 3,
-                fillOpacity: 1,
-              }}
-            />
-          </RadarChart>
+          <PieChart>
+            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+            <Pie data={chartDataMock} dataKey="tasks" nameKey="status" innerRadius={60} strokeWidth={5} />
+          </PieChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 7.8% this week <TrendingUp className="h-4 w-4" />
+          In Developing {totalTime}m<TrendingUp className="h-4 w-4" />
         </div>
         <div className="w-full p-3 rounded-md text-sm">
           <div className="grid grid-cols-2 gap-4">

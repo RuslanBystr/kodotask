@@ -72,13 +72,15 @@ export const messagesApi = baseApi.injectEndpoints({
       }),
       providesTags: () => ['Messages'],
     }),
-    deleteMessage: builder.mutation<void, number | undefined>({
-      query: (id) => ({
-        url: `${API_ROUTES.MESSAGES}/${id}`,
-        method: 'DELETE',
+
+    createMessage: builder.mutation<IMessageResponse, unknown>({
+      query: (body) => ({
+        url: `${API_ROUTES.MESSAGES}`,
+        body,
+        method: 'POST',
       }),
-      invalidatesTags: [{ type: 'Messages', id: 'LIST' }],
     }),
+
     addReaction: builder.mutation<IMessageResponse, unknown>({
       query: ({ id, reaction }) => ({
         url: `${API_ROUTES.MESSAGES}/${id}`,
@@ -86,12 +88,20 @@ export const messagesApi = baseApi.injectEndpoints({
         method: 'PUT',
       }),
     }),
-    createMessage: builder.mutation<IMessageResponse, unknown>({
-      query: (body) => ({
-        url: `${API_ROUTES.MESSAGES}`,
-        body,
-        method: 'POST',
+
+    deletePrivateChat: builder.mutation<void, { chatId: number }>({
+      query: (params) => ({
+        url: `chats/${params.chatId}`,
+        method: 'DELETE',
       }),
+      invalidatesTags: [{ type: 'Chats', id: 'LIST' }],
+    }),
+    deleteMessage: builder.mutation<void, number | undefined>({
+      query: (id) => ({
+        url: `${API_ROUTES.MESSAGES}/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'Messages', id: 'LIST' }],
     }),
   }),
 });
@@ -101,6 +111,7 @@ export const {
   useGetUserGroupChatsQuery,
   useCreatePrivateChatMutation,
   useGetMessagesQuery,
+  useDeletePrivateChatMutation,
   useDeleteMessageMutation,
   useGetMessageByIdQuery,
   useCreateMessageMutation,

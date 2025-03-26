@@ -1,4 +1,4 @@
-import { CheckCheckIcon, CopyCheckIcon, CopyIcon, TrashIcon } from 'lucide-react';
+import { CheckCheckIcon, CopyCheckIcon, CopyIcon, CornerDownLeft, ReplyIcon, TrashIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef } from 'react';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
@@ -21,7 +21,13 @@ import { socket } from '@/utils/socket';
 
 const { api } = getEnv();
 
-export const Message = ({ message }: { message: IMessageResponse }) => {
+export const Message = ({
+  message,
+  setReply,
+}: {
+  message: IMessageResponse;
+  setReply: (reply: IMessageResponse) => void;
+}) => {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const isSender = userData?.id === message?.sender.id || userData?.id === message.sender;
   const { id: chatId } = useParams();
@@ -116,6 +122,11 @@ export const Message = ({ message }: { message: IMessageResponse }) => {
     }
   };
 
+  const handleReplyMessage = () => {
+    toast.error('In development');
+    setReply(message);
+  };
+
   return (
     <ContextMenu>
       <div className={`flex ${isSender ? 'justify-end' : 'justify-start'}`}>
@@ -129,12 +140,22 @@ export const Message = ({ message }: { message: IMessageResponse }) => {
         )}
         <ContextMenuTrigger
           ref={messageRef}
-          className={`relative p-2 max-w-[75%] rounded-[17px] border border-gray-500 shadow-md text-white flex cursor-pointer hover:bg-[#445566] select-none 
-            ${isSender ? 'bg-accent/60 rounded-tr-[8px] rounded-br-[2px]' : 'bg-[#354050]/60 rounded-tl-[8px] rounded-bl-[2px]'}`}
+          className={`relative p-2 max-w-[75%] rounded-[17px] border border-[#4FA3B8] shadow-md text-white flex cursor-pointer hover:bg-[#445566] select-none 
+            ${
+              isSender
+                ? 'bg-[#374C53]/80 rounded-tr-[8px] rounded-br-[2px]'
+                : 'bg-[#2C3E50]/80 rounded-tl-[8px] rounded-bl-[2px]'
+            }`}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
           <div className="flex flex-col">
+            {message.linkToMessage && (
+              <div className="flex justify-between text-[12px] bg-[#557080] border w-full rounded-[6px] p-2 my-2">
+                {message.linkToMessage.content}
+                <CornerDownLeft className="h-4" />
+              </div>
+            )}
             {!isSender && <p className="text-[12px] text-green-100">{message.sender.firstName}</p>}
             <p className="text-sm break-all">{message.content}</p>
             {message.voiceMessage !== null && (
@@ -163,20 +184,26 @@ export const Message = ({ message }: { message: IMessageResponse }) => {
         </ContextMenuTrigger>
       </div>
       <ContextMenuContent className="w-32 bg-card/90 rounded-none cut border-none cut-left-10 cut-right-10">
+        <ContextMenuItem onClick={handleReplyMessage}>
+          Reply
+          <ContextMenuShortcut>
+            <ReplyIcon />
+          </ContextMenuShortcut>
+        </ContextMenuItem>
         <div className="flex border-b">
           <ContextMenuItem onClick={() => handleReaction('👍')}>👍</ContextMenuItem>
           <ContextMenuItem onClick={() => handleReaction('😂')}>😂</ContextMenuItem>
           <ContextMenuItem onClick={() => handleReaction('🔥')}>🔥</ContextMenuItem>
         </div>
         {message?.content?.length > 0 && (
-          <ContextMenuItem inset onClick={handleCopyMessage}>
+          <ContextMenuItem onClick={handleCopyMessage}>
             Copy
             <ContextMenuShortcut>
               <CopyIcon />
             </ContextMenuShortcut>
           </ContextMenuItem>
         )}
-        <ContextMenuItem inset onClick={handleDeleteMessage}>
+        <ContextMenuItem onClick={handleDeleteMessage}>
           Delete
           <ContextMenuShortcut>
             <TrashIcon />

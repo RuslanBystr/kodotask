@@ -1,16 +1,20 @@
-import { clsx } from 'clsx';
+import { ContextMenuTrigger } from '@radix-ui/react-context-menu';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
+import { ContextMenu, ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { SidebarMenuButton, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
 import { useUserConnection } from '@/pages/chat/hooks/useUserConnection';
+import { ChatItem } from '@/pages/chat/main-chat-page/ChatItem';
 import { PrivateChat } from '@/pages/chat/private-chat/PrivateChat';
+import { useDeletePrivateChatMutation } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IChatResponse, IUserChat } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
@@ -25,43 +29,63 @@ const MainChatPage: React.FC = () => {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const userId = userData?.id;
 
+  const { chats, refetch } = useMainChatsPage();
+  const onlineUsers = useUserConnection({ userId });
+  const { filterValue, filteredChats } = useFilterChats(chats?.items);
+
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
   const [selectedCompanion, setSelectedCompanion] = useState<IUserChat | undefined>(undefined);
-
   const [userStatus, setUserStatus] = useState<string>('');
-
-  const { chats, refetch } = useMainChatsPage();
-
-  useEffect(() => {
-    const savedChatId = sessionStorage.getItem('activeChatId');
-    if (savedChatId && chats?.items) {
-      const savedChat = chats.items.find((chat) => chat.id.toString() === savedChatId);
-      if (savedChat) {
-        setActiveChat(savedChat);
-        navigate(`/chats/user/${savedChatId}`);
-      }
-    }
-  }, [chats, navigate]);
+  const [deleteChat] = useDeletePrivateChatMutation();
 
   useEffect(() => {
-    if (activeChat) {
-      const companion = activeChat.userChats?.find((userChat) => Number(userChat.user.id) !== userId);
-      setSelectedCompanion(companion);
-    }
+    if (!activeChat) return;
+    const companion = activeChat.userChats?.find((userChat) => Number(userChat.user.id) !== userId);
+    setSelectedCompanion(companion);
   }, [activeChat, userId]);
-
-  const onlineUsers = useUserConnection({ userId });
 
   const handleSelectedChat = useCallback(
     (chat: IChatResponse) => {
       setActiveChat(chat);
-      sessionStorage.setItem('activeChatId', chat.id.toString());
       navigate(`/chats/user/${chat.id}`);
     },
     [navigate],
   );
 
-  const { filterValue, filteredChats } = useFilterChats(chats?.items);
+  const handleDeleteChat = async (chat: IChatResponse) => {
+    try {
+      setActiveChat(null);
+      await deleteChat({ chatId: chat.id });
+    } catch (error) {
+      toast.error('Failed to delete chat');
+    }
+  };
+
+  const renderChatList = () => {
+    if (!filteredChats) {
+      return (
+        <div className="w-full h-full flex justify-center">
+          <Loading size={32} />
+        </div>
+      );
+    }
+    return filteredChats.map((chat) => (
+      <ContextMenu key={`chat-button-${chat.id}`}>
+        <ContextMenuTrigger className="w-full">
+          <ChatItem
+            chat={chat}
+            userId={userId}
+            activeChat={activeChat}
+            onlineUsers={onlineUsers}
+            handleSelectedChat={handleSelectedChat}
+          />
+        </ContextMenuTrigger>
+        <ContextMenuContent className="bg-card rounded-none border-none cut cut-left-5 cut-right-5">
+          <ContextMenuItem onClick={() => handleDeleteChat(chat)}>Delete chat</ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+    ));
+  };
 
   return (
     <div className="flex">
@@ -77,73 +101,10 @@ const MainChatPage: React.FC = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
+
         <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
-          <Input className="md:w-[14em] p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
-
-          {!filteredChats ? (
-            <div className="w-full h-full flex justify-center">
-              <Loading size={32} />
-            </div>
-          ) : (
-            filteredChats.map((chat) => {
-              const lastMessage = chat?.lastMessage;
-              const formattedDate = lastMessage?.createdAt
-                ? new Date(lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                : '';
-
-              const receiver = chat?.userChats?.find((userChat) => Number(userChat.user.id) === userId);
-              const sender = chat?.userChats?.find((userChat) => Number(userChat.user.id) !== userId);
-
-              const chatName = chat?.groupName || receiver?.name || '';
-              const isOnline = onlineUsers.includes(sender?.user?.id || '');
-
-              return (
-                <SidebarMenuButton
-                  key={chat.id}
-                  className={clsx(
-                    'h-[3em] hover:bg-[#557080] rounded-none border-b transition-all active:scale-95 active:bg-[#557080] shadow-md cut cut-right-5 cut-left-5',
-                    {
-                      'bg-[#557080]': activeChat?.id === chat.id,
-                    },
-                  )}
-                  onClick={() => handleSelectedChat(chat)}
-                >
-                  <div className="relative">
-                    <Avatar className="h-8 w-8 rounded-full">
-                      <AvatarImage src={receiver?.avatar ? `${api}/file/${sender?.user.avatar}` : ''} alt="file" />
-                      <AvatarFallback>{chatName?.[0]?.toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    {chat?.messages?.length > 0 && (
-                      <div className="absolute sm:-left-1 md:right-0 bottom-0 bg-[#559965] w-4 h-4 rounded-full border border-green-200 text-[10px] flex justify-center items-center">
-                        {chat?.messages?.length > 99 ? '99' : chat?.messages?.length}
-                      </div>
-                    )}
-                    {isOnline && (
-                      <span
-                        className="absolute right-0 bottom-0 w-3 h-3 bg-green-500 rounded-full border border-green-200"
-                        title="Online"
-                      />
-                    )}
-                  </div>
-
-                  <div className="relative hidden md:block w-full">
-                    <div className="flex justify-between w-full">
-                      <p>{chatName}</p>
-                      <p className="text-[10px]">{formattedDate}</p>
-                    </div>
-                    <p className="text-accent h-6">
-                      {/* eslint-disable-next-line no-nested-ternary */}
-                      {lastMessage?.content === null
-                        ? 'Voice Message'
-                        : lastMessage?.content?.length > 15
-                          ? `${lastMessage.content.slice(0, 18)}...`
-                          : lastMessage?.content}
-                    </p>
-                  </div>
-                </SidebarMenuButton>
-              );
-            })
-          )}
+          <Input className="md:w-full p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
+          {renderChatList()}
         </div>
       </div>
 
@@ -156,28 +117,28 @@ const MainChatPage: React.FC = () => {
         }}
       >
         <div className="flex items-center w-full min-h-[72px] pl-6 border-b bg-[#374C53]/90">
-          <Avatar className="h-12 w-12 mr-2">
-            {selectedCompanion && (
+          {selectedCompanion && (
+            <Avatar className="h-12 w-12 mr-2">
               <AvatarImage
                 src={`${api}/file/${selectedCompanion.user.avatar}`}
                 alt={selectedCompanion?.user.firstName}
               />
-            )}
-            <AvatarFallback className="h-12 w-12 rounded-full relative">NM</AvatarFallback>
-          </Avatar>
+              <AvatarFallback className="h-12 w-12 rounded-full relative">NM</AvatarFallback>
+            </Avatar>
+          )}
           <div>
-            <p>{selectedCompanion && selectedCompanion.user.firstName}</p>
+            <p>{selectedCompanion?.user.firstName}</p>
             <p className="text-[12px]">
-              {activeChat &&
-                selectedCompanion &&
+              {selectedCompanion &&
                 (onlineUsers.includes(selectedCompanion.user.id) ? (
-                  <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : 'Online'}</p>
+                  <span className="text-green-400">{userStatus === 'typing' ? 'Typing...' : 'Online'}</span>
                 ) : (
                   'Offline'
                 ))}
             </p>
           </div>
         </div>
+
         <PrivateChat changeStatus={setUserStatus} refetchChats={refetch} />
       </div>
     </div>
