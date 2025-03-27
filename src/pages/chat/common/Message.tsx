@@ -123,7 +123,6 @@ export const Message = ({
   };
 
   const handleReplyMessage = () => {
-    toast.error('In development');
     setReply(message);
   };
 
@@ -152,7 +151,10 @@ export const Message = ({
           <div className="flex flex-col">
             {message.linkToMessage && (
               <div className="flex justify-between text-[12px] bg-[#557080] border w-full rounded-[6px] p-2 my-2">
-                {message.linkToMessage.content}
+                <div>
+                  <p className="text-[#4fa3b8]">{message.linkToMessage?.sender.firstName}</p>
+                  <p>{message.linkToMessage.content}</p>
+                </div>
                 <CornerDownLeft className="h-4" />
               </div>
             )}
