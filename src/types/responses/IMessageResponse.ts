@@ -4,6 +4,10 @@ export interface IMessageResponse {
   id: number;
   content: string;
   reaction: string;
+  file: {
+    uuid: string;
+    createdAt: string;
+  };
   voiceMessage: { uuid: string };
   linkToMessage: IMessageResponse | null;
   sender: Partial<IUserResponse>;
