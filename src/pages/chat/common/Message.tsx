@@ -1,5 +1,5 @@
 import { CheckCheckIcon, CopyCheckIcon, CopyIcon, CornerDownLeft, ReplyIcon, TrashIcon } from 'lucide-react';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -34,7 +34,19 @@ export const Message = ({
   const { id: chatId } = useParams();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const messageRef = useRef(null);
+  const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
 
+  useEffect(() => {
+    if (message?.file?.uuid) {
+      fetch(`${api}/file/${message.file.uuid}`)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const imageUrl = URL.createObjectURL(blob);
+          setImageSrc(imageUrl);
+        })
+        .catch(() => toast.error('Error fetching image'));
+    }
+  }, [message?.file?.uuid]);
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (!message.isRead && !isSender && chatId && message.id) {
@@ -150,6 +162,9 @@ export const Message = ({
           onTouchEnd={handleTouchEnd}
         >
           <div className="flex flex-col">
+            {message?.file?.uuid && (
+              <img className="h-[300px]" src={imageSrc} loading="lazy" alt={message?.file?.createdAt} />
+            )}
             {message.linkToMessage && (
               <div className="flex justify-between text-[12px] bg-[#557080] border w-full rounded-[6px] p-2 my-2">
                 <div>

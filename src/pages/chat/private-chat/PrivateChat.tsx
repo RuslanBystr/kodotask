@@ -1,9 +1,20 @@
 import EmojiPicker from 'emoji-picker-react';
-import { Mic, ReplyIcon, SendHorizonalIcon, SmileIcon, Square, XIcon } from 'lucide-react';
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { Mic, PaperclipIcon, ReplyIcon, SendHorizonalIcon, SmileIcon, Square, XIcon } from 'lucide-react';
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
+import { OpenFileModal } from '@/components/modals/open-file-modal/OpenFileModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Messages from '@/pages/chat/common/Messages';
@@ -11,6 +22,7 @@ import { useChatMessage } from '@/pages/chat/hooks/useChatMessage';
 import { useFetchMessages } from '@/pages/chat/hooks/useFetchMessages';
 import { useInitMessages } from '@/pages/chat/hooks/useInitMessages';
 import { useGetMessagesQuery } from '@/services/chat';
+import { useUploadFileMutation } from '@/services/file';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
@@ -27,6 +39,7 @@ export function PrivateChat({
 }) {
   const { id } = useParams();
   const userData = useSelector(selectAuthenticatedUserSelector);
+
   const [newMessage, setNewMessage] = useState('');
   const [newVoiceMessage, setNewVoiceMessage] = useState<string | null>(null);
   const [messages, setMessages] = useState<IMessageResponse[]>([]);
@@ -34,10 +47,16 @@ export function PrivateChat({
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [reply, setReply] = useState<IMessageResponse | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fileUUId, setFileUUId] = useState<string | null>(null);
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [uploadFile] = useUploadFileMutation();
   const { data: initialMessages, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 30 });
-  const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
 
+  const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
   useFetchMessages(id, page, refetch);
   useInitMessages({ initialMessages, setMessages });
   useChatMessage({ refetchChats, chatId: id, setMessages, setPage, userData, changeStatus });
@@ -47,20 +66,21 @@ export function PrivateChat({
   }, []);
 
   const sendMessage = useCallback(() => {
-    if (!newMessage.trim() && !newVoiceMessage) return;
-
+    if (!newMessage.trim() && !newVoiceMessage && !fileUUId) return;
     socket.emit('sendMessage', {
       senderId: userData?.id,
       chatId: id,
       content: newMessage.trim() || null,
       voiceMessage: newVoiceMessage,
+      file: fileUUId,
       linkToMessage: reply?.id,
     });
 
     setNewMessage('');
     setNewVoiceMessage(null);
     setReply(null);
-  }, [newMessage, newVoiceMessage, userData?.id, id, reply]);
+    setFileUUId(null);
+  }, [newMessage, newVoiceMessage, userData?.id, id, fileUUId, reply?.id]);
 
   const handleEmojiClick = (emojiObject: { emoji: string }) => {
     setNewMessage((prev) => prev + emojiObject.emoji);
@@ -70,6 +90,42 @@ export function PrivateChat({
     socket.emit('typing', { chatId: id, userId: userData?.id });
     setNewMessage(e.target.value);
   };
+
+  const handleFileSelect: ChangeEventHandler<HTMLInputElement> | undefined = (event) => {
+    const selectedImage = event.target.files ? event.target.files[0] : null;
+    if (selectedImage) {
+      setSelectedFile(selectedImage);
+      setIsModalOpen(true);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSendFile = async () => {
+    if (!selectedFile) return;
+    toast.warning('Uploading file...');
+    closeModal();
+
+    try {
+      const { uuid } = await uploadFile(selectedFile).unwrap();
+
+      if (uuid) {
+        setFileUUId(uuid);
+      }
+    } catch (error) {
+      toast.error('File upload failed:');
+    } finally {
+      setSelectedFile(null);
+    }
+  };
+
+  useEffect(() => {
+    if (fileUUId) {
+      sendMessage();
+    }
+  }, [fileUUId, sendMessage]);
 
   useEffect(() => {
     if (newVoiceMessage) sendMessage();
@@ -112,7 +168,19 @@ export function PrivateChat({
             </div>
           )}
         </div>
+        {isModalOpen && (
+          <OpenFileModal
+            isModalOpen={isModalOpen}
+            closeModal={closeModal}
+            selectedFile={selectedFile}
+            handleSendFile={handleSendFile}
+          />
+        )}
         <div className="sticky h-20 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom bg-[#384D54]/90">
+          <Button className="w-10 bg-[#557799] rounded-full" onClick={() => fileInputRef.current?.click()}>
+            <PaperclipIcon />
+          </Button>
+          <Input className="hidden" type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" />
           <Input
             className="flex-1 rounded-full text-[12px] md:text-[14px]"
             placeholder="Type your message..."
