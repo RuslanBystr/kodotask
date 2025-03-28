@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import AudioPlayer from '@/components/ui/audio-player';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -132,14 +133,14 @@ export const Message = ({
         {!isSender && (
           <div className="flex items-end mr-1">
             <Avatar className="size-9">
-              <AvatarImage src={`${api}/file/${message.sender.avatar}`} alt={userData?.firstName} />
+              <AvatarImage src={`${api}/file/${message.sender.avatar}`} alt={message.sender.firstName} />
               <AvatarFallback>{message?.sender?.firstName?.[0] || 'U'}</AvatarFallback>
             </Avatar>
           </div>
         )}
         <ContextMenuTrigger
           ref={messageRef}
-          className={`relative p-2 max-w-[75%] rounded-[17px] border border-[#4FA3B8] shadow-md text-white flex cursor-pointer hover:bg-[#445566] select-none 
+          className={`relative p-2 max-w-[90%] md:max-w-[75%] rounded-[17px] border border-[#4FA3B8] shadow-md text-white flex cursor-pointer hover:bg-[#445566] select-none 
             ${
               isSender
                 ? 'bg-[#374C53]/80 rounded-tr-[8px] rounded-br-[2px]'
@@ -160,14 +161,7 @@ export const Message = ({
             )}
             {!isSender && <p className="text-[12px] text-green-100">{message.sender.firstName}</p>}
             <p className="text-sm break-all">{message.content}</p>
-            {message.voiceMessage !== null && (
-              // eslint-disable-next-line jsx-a11y/media-has-caption
-              <audio controls className="audio h-10 max-w-[100%]" onContextMenu={(e) => e.stopPropagation()}>
-                <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/webm" />
-                <source src={`${api}/file/${message.voiceMessage.uuid}`} type="audio/mp3" />
-                Your browser does not support the audio element.
-              </audio>
-            )}
+            {message.voiceMessage !== null && <AudioPlayer src={`${api}/file/${message.voiceMessage.uuid}`} />}
             {message.reaction && (
               <Button
                 onClick={() => handleReaction(null)}
