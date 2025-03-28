@@ -1,6 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { IUsersState } from './types';
+interface IUsersState {
+  isDeleteUserModalOpen: boolean;
+  selectedUserForModal: null;
+}
 
 const initialState: IUsersState = {
   isDeleteUserModalOpen: false,
