@@ -6,7 +6,7 @@ import { AuthLayout, MainLayout } from '@/layouts';
 import ActivityPage from '@/pages/activity/Activity';
 import AuthSuccess from '@/pages/auth-success/AuthSuccess';
 import MainChatPage from '@/pages/chat/main-chat-page/MainChatPage';
-import MainGroupChatPage from '@/pages/chat/main-group-chat-page/MainChatPage';
+import MainGroupChatPage from '@/pages/chat/main-group-chat-page/MainGroupChatPage';
 import { CreateProjectPage } from '@/pages/project/CreateProjectPage';
 import { EditProjectPage } from '@/pages/project/EditProjectPage';
 import MainProjectPage from '@/pages/project/MainProjectPage/MainProjectPage';

@@ -14,6 +14,7 @@ export interface IMessageResponse {
   chat: Chat;
   createdAt: Date;
   isRead: boolean;
+  readByUsers: IUserResponse[];
 }
 
 export interface Chat {

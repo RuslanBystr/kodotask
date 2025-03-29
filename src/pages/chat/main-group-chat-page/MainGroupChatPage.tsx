@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarMenuButton, SidebarTrigger } from '@/components/ui/sidebar';
-import { GroupChat } from '@/pages/chat/group-chat/GroupChat';
+import { Chat } from '@/pages/chat/common/Chat';
 import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IChatResponse } from '@/types/responses/IChatResponse';
@@ -29,6 +29,7 @@ const MainGroupChatPage: React.FC = () => {
   const [userStatus, setUserStatus] = useState<string>('');
 
   const { chats, refetch } = useMainChatsPage();
+  const { filterValue, filteredChats } = useFilterChats(chats?.items);
 
   const handleSelectedChat = useCallback(
     (chat: IChatResponse) => {
@@ -37,8 +38,6 @@ const MainGroupChatPage: React.FC = () => {
     },
     [navigate],
   );
-
-  const { filterValue, filteredChats } = useFilterChats(chats?.items);
 
   return (
     <div className="md:p-2 flex">
@@ -54,6 +53,7 @@ const MainGroupChatPage: React.FC = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
+
         <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
           <div className="md:flex md:flex-row-reverse w-full">
             <Button className=" bg-[#345a66] hover:bg-[#446976] border">
@@ -94,6 +94,11 @@ const MainGroupChatPage: React.FC = () => {
                       <AvatarImage src={receiver?.avatar ? `${api}/file/${sender.user.avatar}` : ''} alt="file" />
                       <AvatarFallback>{chatName?.[0]?.toUpperCase()}</AvatarFallback>
                     </Avatar>
+                    {chat?.messages?.length > 0 && (
+                      <div className="absolute sm:-left-1 md:right-0 bottom-0 bg-[#559965] w-4 h-4 rounded-full border border-green-200 text-[10px] flex justify-center items-center">
+                        {chat?.messages?.length > 99 ? '99' : chat?.messages?.length}
+                      </div>
+                    )}
                   </div>
 
                   <div className="hidden md:block w-full">
@@ -124,7 +129,7 @@ const MainGroupChatPage: React.FC = () => {
             {activeChat && <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : ''}</p>}
           </p>
         </div>
-        <GroupChat changeStatus={setUserStatus} refetchChats={refetch} />
+        <Chat changeStatus={setUserStatus} refetchChats={refetch} />
       </div>
     </div>
   );

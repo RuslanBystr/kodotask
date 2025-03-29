@@ -1,16 +1,17 @@
 import EmojiPicker from 'emoji-picker-react';
-import { MouseDownEvent } from 'emoji-picker-react/dist/config/config';
-import { Mic, ReplyIcon, SendHorizonalIcon, SmileIcon, Square, XIcon } from 'lucide-react';
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { Mic, PaperclipIcon, ReplyIcon, SendHorizonalIcon, SmileIcon, Square, XIcon } from 'lucide-react';
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
+import { OpenFileModal } from '@/components/modals/open-file-modal/OpenFileModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Messages from '@/pages/chat/common/Messages';
 import { useChatMessage } from '@/pages/chat/hooks/useChatMessage';
 import { useFetchMessages } from '@/pages/chat/hooks/useFetchMessages';
 import { useInitMessages } from '@/pages/chat/hooks/useInitMessages';
+import { useSendFileMessage } from '@/pages/chat/hooks/useSendFileMessage';
 import { useGetMessagesQuery } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
@@ -19,65 +20,59 @@ import { socket } from '@/utils/socket';
 
 import { useChatMicro } from '../hooks/useChatMicro';
 
-export function GroupChat({
+export function Chat({
   changeStatus,
   refetchChats,
 }: {
   changeStatus: Dispatch<SetStateAction<string>>;
   refetchChats: () => void;
 }) {
-  const userData = useSelector(selectAuthenticatedUserSelector);
   const { id } = useParams();
+  const userData = useSelector(selectAuthenticatedUserSelector);
+
   const [newMessage, setNewMessage] = useState<string>('');
   const [newVoiceMessage, setNewVoiceMessage] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
   const [messages, setMessages] = useState<IMessageResponse[]>([]);
-  const { data: initialMessages, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 20 });
   const [showPicker, setShowPicker] = useState(false);
-  const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [reply, setReply] = useState<IMessageResponse | null>(null);
 
-  const handleEmojiClick: MouseDownEvent = (emojiObject) => {
-    setNewMessage((prev) => prev + emojiObject.emoji);
-  };
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { data: initialMessages, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 30 });
+
+  const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
   useFetchMessages(id, page, refetch);
   useInitMessages({ initialMessages, setMessages });
   useChatMessage({ refetchChats, chatId: id, setMessages, setPage, userData, changeStatus });
+  const { fileUUId, setFileUUId, selectedFile, handleSendFile, handleFileSelect, isModalOpen, closeModal } =
+    useSendFileMessage();
 
   const fetchMoreMessages = useCallback(() => {
     setPage((prevPage) => prevPage + 1);
   }, []);
 
   const sendMessage = useCallback(() => {
-    if (newMessage === '' && newVoiceMessage === null) return;
+    if (!newMessage.trim() && !newVoiceMessage && !fileUUId) return;
 
-    if (newVoiceMessage !== null) {
-      setNewMessage('');
-    }
-
-    const messageData = {
+    socket.emit('sendMessage', {
       senderId: userData?.id,
       chatId: id,
-      content: newMessage.trim() === '' ? null : newMessage.trim(),
+      content: newMessage.trim(),
       voiceMessage: newVoiceMessage,
+      file: fileUUId,
       linkToMessage: reply?.id,
-    };
-    socket.emit('sendMessage', messageData);
+    });
+
     setNewMessage('');
     setNewVoiceMessage(null);
     setReply(null);
-  }, [newMessage, newVoiceMessage, userData?.id, id, reply?.id]);
+    setFileUUId(null);
+  }, [newMessage, newVoiceMessage, fileUUId, userData?.id, id, reply?.id, setFileUUId]);
 
-  useEffect(() => {
-    if (newVoiceMessage) {
-      sendMessage();
-    }
-  }, [newVoiceMessage, sendMessage]);
-
-  const handleStopRecording = async () => {
-    stopRecording();
+  const handleEmojiClick = (emojiObject: { emoji: string }) => {
+    setNewMessage((prev) => prev + emojiObject.emoji);
   };
 
   const handleChangeMessage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -85,8 +80,19 @@ export function GroupChat({
     setNewMessage(e.target.value);
   };
 
+  useEffect(() => {
+    if (fileUUId) {
+      sendMessage();
+    }
+  }, [fileUUId, sendMessage]);
+
+  useEffect(() => {
+    if (newVoiceMessage) sendMessage();
+  }, [newVoiceMessage, sendMessage]);
+
   return id ? (
     <div className="relative w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
+      <div className="absolute inset-0 bg-[#C8A27E]/30 pointer-events-none" />
       <div className="relative col-span-3 lg:col-span-2 flex flex-col h-[calc(100vh-72px)] w-full">
         {/* eslint-disable-next-line no-nested-ternary */}
         {messages.length ? (
@@ -104,6 +110,7 @@ export function GroupChat({
         ) : (
           <div className="flex flex-col h-[calc(100vh-142px)]" />
         )}
+
         <div>
           {reply && (
             <div className="flex justify-between bg-[#394E56] p-2">
@@ -120,12 +127,24 @@ export function GroupChat({
             </div>
           )}
         </div>
-        <div className="sticky bottom-2 right-0 border-t p-4 md:p-4 flex items-center gap-2 z-50 safe-bottom">
+        {isModalOpen && (
+          <OpenFileModal
+            isModalOpen={isModalOpen}
+            closeModal={closeModal}
+            selectedFile={selectedFile}
+            handleSendFile={handleSendFile}
+          />
+        )}
+        <div className="sticky h-20 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom bg-[#384D54]/90">
+          <Button className="w-10 bg-[#557799] rounded-full" onClick={() => fileInputRef.current?.click()}>
+            <PaperclipIcon />
+          </Button>
+          <Input className="hidden" type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" />
           <Input
             className="flex-1 rounded-full text-[12px] md:text-[14px]"
             placeholder="Type your message..."
             value={newMessage}
-            onChange={(e) => handleChangeMessage(e)}
+            onChange={handleChangeMessage}
             onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
           />
           <div className="hidden md:block">
@@ -138,21 +157,15 @@ export function GroupChat({
               </div>
             )}
           </div>
-          <div>
-            <Button
-              onClick={recording ? handleStopRecording : startRecording}
-              className="bg-[#336677] w-10 rounded-full transition duration-300 ease-in-out"
-            >
-              {recording ? <Square size={24} /> : <Mic size={24} />}
-            </Button>
-          </div>
-
+          <Button onClick={recording ? stopRecording : startRecording} className="bg-[#336677] w-10 rounded-full">
+            {recording ? <Square size={24} /> : <Mic size={24} />}
+          </Button>
           <Button className="bg-[#668899] w-10 rounded-full" onClick={sendMessage}>
             <SendHorizonalIcon />
           </Button>
         </div>
       </div>
-      <div className="hidden lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-muted/30" />
+      <div className="hidden z-10 lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-[#384D54]/90" />
     </div>
   ) : (
     <div className="flex justify-center items-center w-full h-full">Select a chat to start messaging</div>

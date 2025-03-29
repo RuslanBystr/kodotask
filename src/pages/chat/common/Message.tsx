@@ -1,3 +1,4 @@
+import { DropdownMenu, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { CheckCheckIcon, CopyCheckIcon, CopyIcon, CornerDownLeft, ReplyIcon, TrashIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as React from 'react';
@@ -12,9 +13,11 @@ import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
+import { DropdownMenuContent, DropdownMenuLabel } from '@/components/ui/dropdown-menu';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { getEnv } from '@/utils';
@@ -53,7 +56,7 @@ export const Message = ({
       const observer = new IntersectionObserver(
         ([entry], obs) => {
           if (entry.isIntersecting) {
-            socket.emit('markMessageAsRead', { chatId, id: message.id });
+            socket.emit('markMessageAsRead', { chatId, readByUserId: userData?.id, userId: message.id });
             obs.disconnect();
           }
         },
@@ -64,7 +67,7 @@ export const Message = ({
 
       return () => observer.disconnect();
     }
-  }, [chatId, isSender, message]);
+  }, [chatId, isSender, message, userData?.id]);
 
   const messageTime = new Date(message.createdAt).toLocaleTimeString([], {
     hour: '2-digit',
@@ -163,10 +166,10 @@ export const Message = ({
         >
           <div className="flex flex-col">
             {message?.file?.uuid && (
-              <img className="h-[300px]" src={imageSrc} loading="lazy" alt={message?.file?.createdAt} />
+              <img className="w-full" src={imageSrc} loading="lazy" alt={message?.file?.createdAt} />
             )}
             {message.linkToMessage && (
-              <div className="flex justify-between text-[12px] bg-[#557080] border w-full rounded-[6px] p-2 my-2">
+              <div className="flex justify-between text-[12px] bg-[#557080] border-l-4 border-[#4FA3B8] w-full rounded-[6px] p-2 my-2">
                 <div>
                   <p className="text-[#4fa3b8]">{message.linkToMessage?.sender.firstName}</p>
                   <p>{message.linkToMessage.content}</p>
@@ -189,7 +192,27 @@ export const Message = ({
           <div className=" w-auto h-full flex flex-col justify-end">
             <div className="flex">
               <span className="text-[12px] text-gray-300 block pl-2 select-none">{messageTime}</span>
-              {isSender && message.isRead && <CheckCheckIcon className="h-4 text-[#77ddff]" />}
+              {isSender && message.isRead && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="h-4 w-4 bg-transparent">
+                    <CheckCheckIcon className="h-4 text-[#77ddff]" />
+                  </DropdownMenuTrigger>
+                  {message.readByUsers && (
+                    <DropdownMenuContent className="bg-card/90 rounded-none cut border-none cut-left-5 cut-right-5">
+                      {message.readByUsers.map((user) => (
+                        <DropdownMenuLabel key={`read-by-user-${user.id}`} className="flex items-center">
+                          <Avatar className="size-6 mr-2">
+                            <AvatarImage src={`${api}/file/${user.avatar}`} alt={user.firstName} />
+                            <AvatarFallback>{user.firstName?.[0] || 'U'}</AvatarFallback>
+                          </Avatar>
+                          {user.firstName}
+                          <CheckCheckIcon className="h-4 text-[#77ddff] mr-1" />
+                        </DropdownMenuLabel>
+                      ))}
+                    </DropdownMenuContent>
+                  )}
+                </DropdownMenu>
+              )}
             </div>
           </div>
         </ContextMenuTrigger>
@@ -201,11 +224,13 @@ export const Message = ({
             <ReplyIcon />
           </ContextMenuShortcut>
         </ContextMenuItem>
-        <div className="flex border-b">
+        <ContextMenuSeparator />
+        <div className="flex justify-between">
           <ContextMenuItem onClick={() => handleReaction('👍')}>👍</ContextMenuItem>
           <ContextMenuItem onClick={() => handleReaction('😂')}>😂</ContextMenuItem>
           <ContextMenuItem onClick={() => handleReaction('🔥')}>🔥</ContextMenuItem>
         </div>
+        <ContextMenuSeparator />
         {message?.content?.length > 0 && (
           <ContextMenuItem onClick={handleCopyMessage}>
             Copy

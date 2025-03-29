@@ -10,10 +10,10 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem } from '@/components/u
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { Chat } from '@/pages/chat/common/Chat';
 import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
 import { useUserConnection } from '@/pages/chat/hooks/useUserConnection';
 import { ChatItem } from '@/pages/chat/main-chat-page/ChatItem';
-import { PrivateChat } from '@/pages/chat/private-chat/PrivateChat';
 import { useDeletePrivateChatMutation } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IChatResponse, IUserChat } from '@/types/responses/IChatResponse';
@@ -139,7 +139,7 @@ const MainChatPage: React.FC = () => {
           </div>
         </div>
 
-        <PrivateChat changeStatus={setUserStatus} refetchChats={refetch} />
+        <Chat changeStatus={setUserStatus} refetchChats={refetch} />
       </div>
     </div>
   );
