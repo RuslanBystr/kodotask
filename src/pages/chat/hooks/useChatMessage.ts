@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef } from 'react';
 
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { IUserResponse } from '@/types/responses/IUserResponse';
@@ -23,19 +23,8 @@ export const useChatMessage = ({
 }: ChatMessageParams) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    if (!chatId) return;
-
-    setMessages([]);
-    setPage(1);
-
-    if (!socket.connected) {
-      socket.connect();
-    }
-
-    socket.emit('joinChat', chatId);
-
-    const handleNewMessage = async (message: IMessageResponse) => {
+  const handleNewMessage = useCallback(
+    async (message: IMessageResponse) => {
       if (message.chat.id !== Number(chatId)) {
         await refetchChats();
         return;
@@ -46,9 +35,12 @@ export const useChatMessage = ({
         return isDuplicate ? prevMessages : [...prevMessages, message];
       });
       await refetchChats();
-    };
+    },
+    [chatId, refetchChats, setMessages],
+  );
 
-    const updateMessageHandler = (updateMessage: IMessageResponse) => {
+  const updateMessageHandler = useCallback(
+    (updateMessage: IMessageResponse) => {
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
           msg.id === updateMessage.id
@@ -56,15 +48,22 @@ export const useChatMessage = ({
             : msg,
         ),
       );
-    };
-    const removeMessageHandler = async (removedMessage: IMessageResponse) => {
-      setMessages((prevMessages) => prevMessages.filter((msg) => msg.createdAt !== removedMessage.createdAt));
-      await refetchChats();
-    };
+    },
+    [setMessages],
+  );
 
-    const handleTyping = (userId: string) => {
+  const removeMessageHandler = useCallback(
+    async (removedMessage: IMessageResponse) => {
+      setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== removedMessage.id));
+      await refetchChats();
+    },
+    [setMessages, refetchChats],
+  );
+
+  const handleTyping = useCallback(
+    (userId: string) => {
       if (userData?.id !== Number(userId)) {
-        changeStatus(`typing`);
+        changeStatus('typing');
       }
 
       if (typingTimeoutRef.current) {
@@ -74,27 +73,40 @@ export const useChatMessage = ({
       typingTimeoutRef.current = setTimeout(() => {
         changeStatus('');
       }, 2000);
+    },
+    [userData?.id, changeStatus],
+  );
+
+  useEffect(() => {
+    if (!chatId) return undefined;
+
+    setMessages([]);
+    setPage(1);
+
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    socket.emit('joinChat', chatId);
+
+    const eventHandlers = {
+      newMessage: handleNewMessage,
+      updateMessage: updateMessageHandler,
+      cleanMessage: removeMessageHandler,
+      typing: handleTyping,
+      messageRead: updateMessageHandler,
     };
 
-    socket.off('updateMessage', updateMessageHandler);
-    socket.off('newMessage', handleNewMessage);
-    socket.off('cleanMessage', removeMessageHandler);
-    socket.off('messageRead', updateMessageHandler);
+    Object.entries(eventHandlers).forEach(([event, handler]) => {
+      socket.off(event, handler);
+      socket.on(event, handler);
+    });
 
-    socket.on('updateMessage', updateMessageHandler);
-    socket.on('cleanMessage', removeMessageHandler);
-    socket.on('newMessage', handleNewMessage);
-    socket.on('typing', handleTyping);
-    socket.on('messageRead', updateMessageHandler);
-
-    // eslint-disable-next-line consistent-return
     return () => {
-      socket.off('newMessage', handleNewMessage);
-      socket.off('updateMessage', updateMessageHandler);
-      socket.off('cleanMessage', removeMessageHandler);
-      socket.off('messageRead', updateMessageHandler);
-      socket.off('typing', handleTyping);
+      Object.entries(eventHandlers).forEach(([event, handler]) => {
+        socket.off(event, handler);
+      });
       socket.emit('leaveChat', chatId);
     };
-  }, [refetchChats, changeStatus, chatId, setMessages, setPage, userData?.id]);
+  }, [chatId, handleNewMessage, updateMessageHandler, removeMessageHandler, handleTyping, setMessages, setPage]);
 };

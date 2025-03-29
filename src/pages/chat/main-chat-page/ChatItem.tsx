@@ -3,6 +3,7 @@ import { clsx } from 'clsx';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { SidebarMenuButton } from '@/components/ui/sidebar';
 import { IChatResponse } from '@/types/responses/IChatResponse';
+import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { getEnv } from '@/utils';
 
 const { api } = getEnv();
@@ -25,6 +26,16 @@ export const ChatItem = ({ chat, onlineUsers, userId, handleSelectedChat, active
   const isOnline = onlineUsers.includes(sender?.user?.id || '');
 
   const chatName = chat?.groupName || receiver?.name || '';
+
+  const getMessageContent = (message: IMessageResponse) => {
+    if (message?.content) {
+      return message.content.length > 18 ? `${message.content.slice(0, 18)}...` : message.content;
+    }
+    if (message?.file) {
+      return 'Image Message';
+    }
+    return 'Voice Message';
+  };
 
   return (
     <SidebarMenuButton
@@ -60,14 +71,7 @@ export const ChatItem = ({ chat, onlineUsers, userId, handleSelectedChat, active
           <p>{chatName}</p>
           <p className="text-[10px]">{formattedDate}</p>
         </div>
-        <p className="text-accent h-6">
-          {/* eslint-disable-next-line no-nested-ternary */}
-          {lastMessage?.content === null
-            ? 'Voice Message'
-            : lastMessage?.content?.length > 15
-              ? `${lastMessage.content.slice(0, 18)}...`
-              : lastMessage?.content}
-        </p>
+        <p className="text-accent h-6">{getMessageContent(lastMessage)}</p>
       </div>
     </SidebarMenuButton>
   );
