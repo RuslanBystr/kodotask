@@ -73,8 +73,8 @@ const MainGroupChatPage: React.FC = () => {
                 ? new Date(lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 : '';
 
-              const receiver = chat?.userChats?.filter((userChat) => Number(userChat?.user?.id) === userId)[0];
-              const sender = chat?.userChats?.filter((userChat) => Number(userChat?.user?.id) !== userId)[0];
+              const receiver = chat?.userChats?.find((userChat) => Number(userChat?.user?.id) === userId);
+              const sender = chat?.userChats?.find((userChat) => Number(userChat?.user?.id) !== userId);
 
               const chatName = chat?.groupName || receiver?.name || '';
 
@@ -91,7 +91,7 @@ const MainGroupChatPage: React.FC = () => {
                 >
                   <div className="relative">
                     <Avatar className="h-8 w-8 rounded-full relative">
-                      <AvatarImage src={receiver?.avatar ? `${api}/file/${sender.user.avatar}` : ''} alt="file" />
+                      <AvatarImage src={receiver?.avatar ? `${api}/file/${sender?.user.avatar}` : ''} alt="file" />
                       <AvatarFallback>{chatName?.[0]?.toUpperCase()}</AvatarFallback>
                     </Avatar>
                     {chat?.messages?.length > 0 && (

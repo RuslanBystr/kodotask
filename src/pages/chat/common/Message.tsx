@@ -1,6 +1,6 @@
 import { DropdownMenu, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { CheckCheckIcon, CopyCheckIcon, CopyIcon, CornerDownLeft, ReplyIcon, TrashIcon } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -39,6 +39,11 @@ export const Message = ({
   const messageRef = useRef(null);
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
 
+  const handleReadMark = useMemo(
+    () => !message?.readByUsers?.find((user) => user.id === userData?.id),
+    [message?.readByUsers, userData?.id],
+  );
+
   useEffect(() => {
     if (message?.file?.uuid) {
       fetch(`${api}/file/${message.file.uuid}`)
@@ -50,24 +55,26 @@ export const Message = ({
         .catch(() => toast.error('Error fetching image'));
     }
   }, [message?.file?.uuid]);
-  // eslint-disable-next-line consistent-return
+
   useEffect(() => {
-    if (!message.isRead && !isSender && chatId && message.id) {
-      const observer = new IntersectionObserver(
-        ([entry], obs) => {
-          if (entry.isIntersecting) {
-            socket.emit('markMessageAsRead', { chatId, readByUserId: userData?.id, userId: message.id });
-            obs.disconnect();
-          }
-        },
-        { threshold: 0.8 },
-      );
-
-      if (messageRef.current) observer.observe(messageRef.current);
-
-      return () => observer.disconnect();
+    if (!(handleReadMark && !isSender && chatId && message.id)) {
+      return undefined;
     }
-  }, [chatId, isSender, message, userData?.id]);
+
+    const observer = new IntersectionObserver(
+      ([entry], obs) => {
+        if (entry.isIntersecting) {
+          socket.emit('markMessageAsRead', { chatId, readByUserId: userData?.id, userId: message.id });
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.8 },
+    );
+
+    if (messageRef.current) observer.observe(messageRef.current);
+
+    return () => observer.disconnect();
+  }, [chatId, handleReadMark, isSender, message, userData?.id]);
 
   const messageTime = new Date(message.createdAt).toLocaleTimeString([], {
     hour: '2-digit',
