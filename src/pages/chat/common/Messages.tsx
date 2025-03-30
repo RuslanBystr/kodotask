@@ -86,7 +86,7 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
     observer.observe(container);
 
     setTimeout(() => observer.disconnect(), 500);
-  }, [messageDetails]);
+  }, [messageDetails.length]);
 
   return (
     <div

@@ -26,7 +26,7 @@ export const useChatMessage = ({
   const handleNewMessage = useCallback(
     async (message: IMessageResponse) => {
       if (message.chat.id !== Number(chatId)) {
-        await refetchChats();
+        refetchChats();
         return;
       }
 
@@ -34,7 +34,7 @@ export const useChatMessage = ({
         const isDuplicate = prevMessages.some((msg) => msg.id === message.id);
         return isDuplicate ? prevMessages : [...prevMessages, message];
       });
-      await refetchChats();
+      refetchChats();
     },
     [chatId, refetchChats, setMessages],
   );
@@ -44,7 +44,12 @@ export const useChatMessage = ({
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
           msg.id === updateMessage.id
-            ? { ...msg, isRead: updateMessage.isRead, reaction: updateMessage.reaction }
+            ? {
+                ...msg,
+                isRead: updateMessage.isRead,
+                readByUsers: updateMessage.readByUsers,
+                reaction: updateMessage.reaction,
+              }
             : msg,
         ),
       );
@@ -55,7 +60,7 @@ export const useChatMessage = ({
   const removeMessageHandler = useCallback(
     async (removedMessage: IMessageResponse) => {
       setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== removedMessage.id));
-      await refetchChats();
+      refetchChats();
     },
     [setMessages, refetchChats],
   );
@@ -72,7 +77,7 @@ export const useChatMessage = ({
 
       typingTimeoutRef.current = setTimeout(() => {
         changeStatus('');
-      }, 2000);
+      }, 1600);
     },
     [userData?.id, changeStatus],
   );
