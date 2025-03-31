@@ -76,7 +76,7 @@ export default function TaskInfoPage() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href=".">Task</BreadcrumbLink>
+              <BreadcrumbLink href="/tasks">Task</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden md:block" />
             <BreadcrumbItem className="hidden md:block">
