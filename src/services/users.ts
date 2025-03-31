@@ -1,6 +1,7 @@
 import { API_ROUTES } from '@/constants/apiRoutes';
 import { baseApi } from '@/services/base';
 import { IRequestParams, IResponse, IUserFormParams } from '@/types';
+import { IActivityResponse } from '@/types/responses/IActivityResponse';
 import { IUserResponse } from '@/types/responses/IUserResponse';
 
 export const usersApi = baseApi.injectEndpoints({
@@ -60,6 +61,12 @@ export const usersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Users'],
     }),
+    getUserActivity: builder.query<IActivityResponse[], { userId: number | undefined }>({
+      query: ({ userId }) => ({
+        url: `${API_ROUTES.ACTIVITY}/${userId}`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -70,4 +77,5 @@ export const {
   useEditUserMutation,
   useCreateUserMutation,
   useBlockUserMutation,
+  useGetUserActivityQuery,
 } = usersApi;
