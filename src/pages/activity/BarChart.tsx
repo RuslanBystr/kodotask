@@ -30,13 +30,13 @@ export function ActivityChart() {
       })) || [];
 
   return (
-    <Card className="bg-transparent rounded-none border-none">
+    <Card className="bg-transparent flex flex-col items-center rounded-none border-none">
       <CardHeader>
         <CardTitle>User Activity</CardTitle>
         <CardDescription>Logged time per day</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer className="flex justify-center h-[30vh]" config={chartConfig}>
           <BarChart data={formattedData} width={600} height={300}>
             <CartesianGrid vertical={false} strokeDasharray="3 3" />
             <XAxis dataKey="date" tickLine={false} tickMargin={10} axisLine={false} />

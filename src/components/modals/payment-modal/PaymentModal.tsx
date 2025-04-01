@@ -88,7 +88,12 @@ export function PaymentModal() {
             value={amount}
             onChange={(e) => setAmount(Number(e.target.value))}
           />
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button
+            type="submit"
+            className="mt-5 w-full rounded-none border border-[#4B626D] bg-[#5C7CFA] hover:bg-[#4CAF50] cut cut-left-5 cut-right-5"
+            variant="outline"
+            disabled={loading}
+          >
             {loading ? 'Processing...' : 'Pay'}
           </Button>
         </form>
