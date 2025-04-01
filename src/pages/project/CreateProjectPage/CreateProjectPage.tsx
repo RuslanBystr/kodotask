@@ -1,7 +1,7 @@
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-import ProjectForm from '@/components/forms/ProjectForm/ProjectForm';
+import ProjectForm from '@/components/forms/project/ProjectForm';
 import {
   Breadcrumb,
   BreadcrumbItem,

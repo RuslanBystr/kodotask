@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useCreateUserPage } from '@/pages/Users/CreateUserPage/useCreateUserPage';
+import { useCreateUserPage } from '@/pages/users/create-user-page/useCreateUserPage';
 
 export default function CreateUserPage() {
   const props = useCreateUserPage();

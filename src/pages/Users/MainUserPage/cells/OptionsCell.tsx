@@ -24,12 +24,12 @@ export const OptionsCell = ({ row }: { row: any }) => {
   // eslint-disable-next-line consistent-return
   const openChat = async () => {
     try {
-      await createPrivateChat({
+      const chat = await createPrivateChat({
         user1Id: userId,
         user2Id: userData?.id,
       }).unwrap();
 
-      navigate(`/chats/user/${userId}`);
+      navigate(`/chats/user/${chat.id}`);
     } catch (err: unknown) {
       if (typeof err === 'object' && err !== null && 'status' in err) {
         const error = err as FetchBaseQueryError;
@@ -57,7 +57,6 @@ export const OptionsCell = ({ row }: { row: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={openChat}>Message</DropdownMenuItem>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
           <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
           <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
         </DropdownMenuContent>

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { API_ROUTES } from '@/constants/apiRoutes';
+import { API_ROUTES } from '@/constants/api-routes';
 import { getEnv, setAccessTokenToHeaders } from '@/utils';
 
 const { api } = getEnv();

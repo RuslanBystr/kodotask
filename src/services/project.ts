@@ -1,5 +1,5 @@
-import { IProjectFormParams } from '@/components/forms/ProjectForm/ProjectForm';
-import { API_ROUTES } from '@/constants/apiRoutes';
+import { IProjectFormParams } from '@/components/forms/project/ProjectForm';
+import { API_ROUTES } from '@/constants/api-routes';
 import { baseApi } from '@/services/base';
 import { IRequestParams, IResponse } from '@/types';
 import { IProjectResponse } from '@/types/responses/IProjectResponse';
@@ -29,7 +29,6 @@ export const projectsApi = baseApi.injectEndpoints({
       }),
       providesTags: () => ['Projects'],
     }),
-    // set IUserFormParams
     editProject: builder.mutation<IProjectResponse, IProjectFormParams & { id: string }>({
       query: ({ id, ...body }) => ({
         url: `${API_ROUTES.PROJECT}/${id}`,

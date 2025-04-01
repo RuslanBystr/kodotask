@@ -51,7 +51,7 @@ const MainUserPage: React.FC = () => {
           Create User
         </Button>
       )}
-      <div className="flex justify-center overflow-auto">
+      <div className="flex justify-center max-h-[75vh] overflow-auto">
         <CustomDataTable
           columns={columns}
           data={users?.items || []}

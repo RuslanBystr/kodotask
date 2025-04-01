@@ -1,1 +1,1 @@
-export { SortingOrderEnum } from './sortingOrder';
+export { SortingOrderEnum } from './sorting-order';

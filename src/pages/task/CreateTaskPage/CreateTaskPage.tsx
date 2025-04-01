@@ -1,7 +1,7 @@
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-import TaskForm from '@/components/forms/TaskForm/TaskForm';
+import TaskForm from '@/components/forms/task/TaskForm';
 import {
   Breadcrumb,
   BreadcrumbItem,

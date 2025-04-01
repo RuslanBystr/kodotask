@@ -1,5 +1,5 @@
-import { ITaskFormParams } from '@/components/forms/TaskForm/TaskForm';
-import { API_ROUTES } from '@/constants/apiRoutes';
+import { ITaskFormParams } from '@/components/forms/task/TaskForm';
+import { API_ROUTES } from '@/constants/api-routes';
 import { baseApi } from '@/services/base';
 import { IRequestParams, IResponse } from '@/types';
 import { ITaskLog, ITaskResponse } from '@/types/responses/IProjectResponse';

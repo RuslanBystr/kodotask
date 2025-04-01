@@ -1,4 +1,4 @@
-import { API_ROUTES } from '@/constants/apiRoutes';
+import { API_ROUTES } from '@/constants/api-routes';
 import { baseApi } from '@/services/base';
 import { IChatRequestParams, IResponse } from '@/types';
 import { IChatResponse } from '@/types/responses/IChatResponse';

@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { DeleteTaskDialog } from '@/components/modals/TaskModal';
+import { DeleteTaskDialog } from '@/components/modals/task-modal';
 import {
   Breadcrumb,
   BreadcrumbItem,

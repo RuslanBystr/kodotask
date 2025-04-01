@@ -1,4 +1,4 @@
-import { SortingOrderEnum } from '@/enums/sorting/sortingOrder';
+import { SortingOrderEnum } from '@/enums/sorting/sorting-order';
 
 export interface IRequestParams {
   limit: number;

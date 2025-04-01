@@ -1,4 +1,4 @@
-import { API_ROUTES } from '@/constants/apiRoutes';
+import { API_ROUTES } from '@/constants/api-routes';
 import { baseApi } from '@/services/base';
 import { IRequestParams, IResponse, IUserFormParams } from '@/types';
 import { IActivityResponse } from '@/types/responses/IActivityResponse';

@@ -2,8 +2,8 @@ import { useCallback, useEffect } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { IProjectFormParams } from '@/components/forms/ProjectForm/ProjectForm';
-import { projectCreateFormSchema } from '@/components/forms/ProjectForm/schemas';
+import { IProjectFormParams } from '@/components/forms/project/ProjectForm';
+import { projectCreateFormSchema } from '@/components/forms/project/schemas';
 import { Pathes } from '@/constants';
 import { useToastMessageRequest } from '@/hooks';
 import { useCreateProjectMutation } from '@/services/project';
