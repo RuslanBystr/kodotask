@@ -18,7 +18,7 @@ const ActivityPage: React.FC = () => (
         </BreadcrumbList>
       </Breadcrumb>
     </header>
-    <div className="md:w-[40vw] h-[30vh]">
+    <div className="relative w-full h-[30vh]">
       <ActivityChart />
     </div>
   </div>

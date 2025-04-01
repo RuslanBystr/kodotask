@@ -10,11 +10,10 @@ import { Progress } from '@/components/ui/progress';
 import { ITaskResponse } from '@/types/responses/IProjectResponse';
 
 const chartDataMock = [
-  { status: 'done', tasks: 287, fill: '#4CAF50' },
-  { status: 'inProgress', tasks: 173, fill: '#64B5F6' },
-  { status: 'remaining', tasks: 190, fill: '#FFD54F' },
+  { status: 'done', tasks: 287, fill: '#4E6A74' }, // Deep teal
+  { status: 'inProgress', tasks: 173, fill: '#5F8291' }, // Muted cyan-blue
+  { status: 'remaining', tasks: 190, fill: '#6F8F7F' }, // Muted greenish-teal
 ];
-
 const chartConfig = {
   done: {
     label: 'Done',
@@ -70,9 +69,6 @@ export function TaskDiagram({ data }: { data: ITaskResponse }) {
                 <strong>Started:</strong>
               </p>
               <p>
-                <strong>Deadline:</strong>
-              </p>
-              <p>
                 <strong>Estimate:</strong>
               </p>
               <p>
@@ -95,7 +91,6 @@ export function TaskDiagram({ data }: { data: ITaskResponse }) {
               <p>{data.status}</p>
               <p>{data.priority}</p>
               <p>{new Date(data.createdAt).toLocaleDateString()}</p>
-              <p>{data.deadline ? new Date(data.deadline).toLocaleDateString() : '-'}</p>
               <p>{data.estimate}m</p>
               <p>{data.spentTime}m</p>
               <p>{data.remaining}m</p>

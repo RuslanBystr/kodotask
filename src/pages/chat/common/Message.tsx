@@ -173,7 +173,7 @@ export const Message = ({
         >
           <div className="flex flex-col">
             {message?.file?.uuid && (
-              <img className="w-full" src={imageSrc} loading="lazy" alt={message?.file?.createdAt} />
+              <img className="w-full md:max-w-[420px]" src={imageSrc} alt={message?.file?.createdAt} />
             )}
             {message.linkToMessage && (
               <div className="flex justify-between text-[12px] bg-[#557080] border-l-4 border-[#4FA3B8] w-full rounded-[6px] p-2 my-2">

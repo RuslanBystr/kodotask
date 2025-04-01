@@ -51,7 +51,7 @@ const MainUserPage: React.FC = () => {
           Create User
         </Button>
       )}
-      <div className="flex justify-center">
+      <div className="flex justify-center overflow-auto">
         <CustomDataTable
           columns={columns}
           data={users?.items || []}
@@ -62,6 +62,7 @@ const MainUserPage: React.FC = () => {
           columnFilters={columnFilters}
           setColumnFilters={setColumnFilters}
           paginateParams={paginateParams}
+          selectColumns={false}
         />
       </div>
     </div>
