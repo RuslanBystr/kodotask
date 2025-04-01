@@ -1,1 +1,1 @@
-export { AdminRoleEnum } from './adminRole';
+export { AdminRoleEnum } from './admin-role';

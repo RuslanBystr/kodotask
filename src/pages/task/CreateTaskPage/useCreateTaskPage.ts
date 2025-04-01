@@ -2,8 +2,8 @@ import { useCallback, useEffect } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { taskCreateFormSchema } from '@/components/forms/TaskForm/schemas';
-import { ITaskFormParams } from '@/components/forms/TaskForm/TaskForm';
+import { taskCreateFormSchema } from '@/components/forms/task/schemas';
+import { ITaskFormParams } from '@/components/forms/task/TaskForm';
 import { Pathes } from '@/constants';
 import { useToastMessageRequest } from '@/hooks';
 import { useCreateTaskMutation } from '@/services/task';

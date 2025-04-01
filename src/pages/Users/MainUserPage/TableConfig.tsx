@@ -1,8 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
-import { AvatarCell } from '@/pages/Users/MainUserPage/сells/AvatarCell';
-import { OptionsCell } from '@/pages/Users/MainUserPage/сells/OptionsCell';
+import { AvatarCell, OptionsCell } from '@/pages/users/MainUserPage/cells';
 import { IUserResponse } from '@/types/responses/IUserResponse';
 
 // This type is used to define the shape of our data.

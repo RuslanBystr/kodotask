@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { IProjectFormParams } from '@/components/forms/ProjectForm/ProjectForm';
+import { IProjectFormParams } from '@/components/forms/project/ProjectForm';
 import { useToastMessageRequest } from '@/hooks';
 import { useEditProjectMutation, useGetProjectByIdQuery } from '@/services/project';
 

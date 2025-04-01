@@ -4,9 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { FieldsRow } from '@/components/forms/fields-row';
-import { defaultInitialValue } from '@/components/forms/UserForm';
+import { defaultInitialValue } from '@/components/forms/user';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useUploadFileMutation } from '@/services/file';
@@ -177,24 +176,6 @@ const UserForm: React.FC<IFormProps<IUserFormParams>> = ({
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
                     <Input placeholder="" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isBlocked"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Blocked</FormLabel>
-                  <FormControl>
-                    <Checkbox
-                      className="h-[30px] w-[30px]"
-                      aria-label="meforef"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

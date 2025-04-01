@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { userCreateFormSchema } from '@/components/forms/UserForm/schemas';
+import { userCreateFormSchema } from '@/components/forms/user/schemas';
 import { Pathes } from '@/constants';
 import { useToastMessageRequest } from '@/hooks';
 import { useCreateUserMutation } from '@/services/users';

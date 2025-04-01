@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { UserForm } from '@/components';
-import { userEditFormSchema } from '@/components/forms/UserForm/schemas';
+import { userEditFormSchema } from '@/components/forms/user/schemas';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useEditUserPage } from '@/pages/Users/EditUserPage/useEditUserPage';
+import { useEditUserPage } from '@/pages/users/edit-user-page/useEditUserPage';
 
 const EditUserPage: React.FC = () => {
   const { initialUserValues, isEditUserLoading, onUserSubmit } = useEditUserPage();
