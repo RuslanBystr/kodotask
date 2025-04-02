@@ -1,11 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
-import { AvatarCell, OptionsCell } from '@/pages/users/MainUserPage/cells';
+import { AvatarCell, OptionsCell } from '@/pages/Users/MainUserPage/cells';
 import { IUserResponse } from '@/types/responses/IUserResponse';
-
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 
 export const columns: ColumnDef<IUserResponse>[] = [
   {
@@ -29,11 +26,6 @@ export const columns: ColumnDef<IUserResponse>[] = [
     accessorKey: 'email',
     header: getDefaultColumnHeader({ name: 'Email' }),
   },
-  // {
-  //   accessorKey: 'isBlocked',
-  //   header: getDefaultColumnHeader({ name: 'Blocked', search: false }),
-  //   cell: ({ row }) => <IsBlockedCell row={row} />,
-  // },
   {
     accessorKey: 'createdAt',
     header: getDefaultColumnHeader({ name: 'Created', search: false }),

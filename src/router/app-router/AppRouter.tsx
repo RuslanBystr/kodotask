@@ -16,7 +16,7 @@ import MainTaskPage from '@/pages/task/MainTaskPage/MainTaskPage';
 import TaskInfoPage from '@/pages/task/TaskInfo/TaskInfo';
 import { ROUTES } from '@/router/constants';
 
-import { CreateUserPage, EditUserPage, MainUserPage } from '../../pages/users';
+import { CreateUserPage, EditUserPage, MainUserPage } from '../../pages/Users';
 
 export const AppRouter: React.FC = (): React.ReactElement | null =>
   useRoutes([
