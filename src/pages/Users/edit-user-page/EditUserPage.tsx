@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useEditUserPage } from '@/pages/users/edit-user-page/useEditUserPage';
+import { useEditUserPage } from '@/pages/Users/edit-user-page/useEditUserPage';
 
 const EditUserPage: React.FC = () => {
   const { initialUserValues, isEditUserLoading, onUserSubmit } = useEditUserPage();
