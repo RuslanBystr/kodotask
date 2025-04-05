@@ -26,6 +26,8 @@
     --destructive-foreground: 0 0% 35%;
     --ring: 200 100% 50%;
     --radius: 0.6rem;
+    --main-button: #4F9496;
+    --main-button-hover: #5FA8A9;
   }
 
   .dark {

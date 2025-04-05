@@ -55,8 +55,8 @@ const MainGroupChatPage: React.FC = () => {
         </header>
 
         <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
-          <div className="md:flex md:flex-row-reverse w-full">
-            <Button className=" bg-[#345a66] hover:bg-[#446976] border">
+          <div className="md:flex md:flex-row-reverse w-full gap-1">
+            <Button className="transition-all active:scale-95 bg-[--main-button] hover:bg-[--main-button-hover]">
               <PlusIcon />
             </Button>
             <Input className="p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
