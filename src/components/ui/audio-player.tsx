@@ -1,6 +1,8 @@
 import { PauseIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import { Button } from '@/components/ui/button';
+
 export default function AudioPlayer({ src }: { src: string }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -67,13 +69,12 @@ export default function AudioPlayer({ src }: { src: string }) {
         Your browser does not support the audio element.
       </audio>
       <div className="flex items-center rounded-lg w-full">
-        {/* eslint-disable-next-line react/button-has-type */}
-        <button
-          className="play-btn flex justify-center items-center bg-teal-500 min-h-8 min-w-8 mr-2 text-white border-none text-sm rounded-[6px] cursor-pointer hover:bg-teal-600"
+        <Button
+          className="play-btn bg-teal-500 min-h-8 min-w-8 mr-2 text-white rounded-none cursor-pointer hover:bg-teal-600 cut cut-left-5 cut-right-5"
           onClick={handlePlayPause}
         >
           {isPlaying ? <PauseIcon /> : <PlayIcon />}
-        </button>
+        </Button>
         <div className="min-w-[50px] w-full h-2 bg-teal-700 rounded-md mt-2 cursor-pointer relative">
           <div
             className="h-full bg-teal-500 rounded-md transition-all duration-100"

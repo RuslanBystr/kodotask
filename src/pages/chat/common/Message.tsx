@@ -1,5 +1,13 @@
 import { DropdownMenu, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
-import { CheckCheckIcon, CopyCheckIcon, CopyIcon, CornerDownLeft, ReplyIcon, TrashIcon } from 'lucide-react';
+import {
+  CheckCheckIcon,
+  CopyCheckIcon,
+  CopyIcon,
+  CornerDownLeft,
+  DownloadIcon,
+  ReplyIcon,
+  TrashIcon,
+} from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
@@ -149,6 +157,17 @@ export const Message = ({
     setReply(message);
   };
 
+  const handleDownload = () => {
+    if (imageSrc) {
+      const link = document.createElement('a');
+      link.href = imageSrc;
+      link.download = message.file?.uuid || 'downloaded-image';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   return (
     <ContextMenu>
       <div className={`flex ${isSender ? 'justify-end' : 'justify-start'}`}>
@@ -179,7 +198,10 @@ export const Message = ({
               <div className="flex justify-between text-[12px] bg-[#557080] border-l-4 border-[#4FA3B8] w-full rounded-[6px] p-2 my-2">
                 <div>
                   <p className="text-[#4fa3b8]">{message.linkToMessage?.sender.firstName}</p>
-                  <p>{message.linkToMessage.content}</p>
+                  <p>
+                    {message?.linkToMessage?.content ||
+                      (message?.linkToMessage?.voiceMessage?.uuid ? 'Voice Message' : 'Photo')}
+                  </p>
                 </div>
                 <CornerDownLeft className="h-4" />
               </div>
@@ -243,6 +265,14 @@ export const Message = ({
             Copy
             <ContextMenuShortcut>
               <CopyIcon />
+            </ContextMenuShortcut>
+          </ContextMenuItem>
+        )}
+        {message?.file?.uuid && (
+          <ContextMenuItem onClick={handleDownload}>
+            Download
+            <ContextMenuShortcut>
+              <DownloadIcon />
             </ContextMenuShortcut>
           </ContextMenuItem>
         )}

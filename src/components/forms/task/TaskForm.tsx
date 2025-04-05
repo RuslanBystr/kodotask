@@ -166,7 +166,7 @@ const TaskForm: React.FC<IFormProps<ITaskFormParams>> = ({
 
           <Button
             type="submit"
-            className="mt-5 rounded-none border border-[#4B626D] bg-[#5C7CFA] hover:bg-[#4CAF50] cut cut-left-5 cut-right-5"
+            className="mt-5 rounded-none bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
             variant="outline"
             disabled={isLoading || !isDirty}
           >

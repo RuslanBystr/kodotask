@@ -111,7 +111,10 @@ export const SpendTime = ({
           onKeyDown={handleKeyDown}
           className="rounded-none"
         />
-        <Button className="bg-card hover:bg-card/30 rounded-none" onClick={handleSubmit}>
+        <Button
+          className="bg-[--main-button] hover:bg-[--main-button-hover] rounded-none cut cut-left-5 cut-right-5"
+          onClick={handleSubmit}
+        >
           Log Time
         </Button>
       </div>
