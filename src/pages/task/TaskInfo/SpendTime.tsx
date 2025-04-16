@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import useToastMessageRequest from '@/hooks/useToastMessageRequest';
 import { useDeleteTaskLogMutation, useSpendTimeMutation } from '@/services/task';
 import { ITaskLog } from '@/types/responses/IProjectResponse';
+import { timeFormat } from '@/utils/time-format';
 
 export const SpendTime = ({
   logs = [],
@@ -25,12 +26,6 @@ export const SpendTime = ({
   const [deleteTaskLog, { isSuccess: isDeleteSuccess, isError: isDeleteError, error: deleteError }] =
     useDeleteTaskLogMutation();
   const logContainerRef = useRef<HTMLDivElement | null>(null);
-
-  const timeFormat = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return `${hours}h ${remainingMinutes}m`;
-  };
 
   const dateFormat = (dateString: string) => {
     const date = new Date(dateString);
@@ -77,7 +72,7 @@ export const SpendTime = ({
 
   return (
     <div className="h-[40vh] flex flex-col justify-between max-w-[720px]">
-      <div ref={logContainerRef} className="flex-1 overflow-y-auto bg-muted/20 rounded-lg p-2 rounded-none">
+      <div ref={logContainerRef} className="flex-1 overflow-y-auto bg-muted/20 p-2">
         {logs.length > 0 ? (
           logs.map((log) => (
             <div
