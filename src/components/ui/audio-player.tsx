@@ -70,7 +70,7 @@ export default function AudioPlayer({ src }: { src: string }) {
       </audio>
       <div className="flex items-center rounded-lg w-full">
         <Button
-          className="play-btn bg-teal-500 min-h-8 min-w-8 mr-2 text-white rounded-none cursor-pointer hover:bg-teal-600 cut cut-left-5 cut-right-5"
+          className="play-btn bg-teal-500 h-10 w-10 mr-2 text-white cursor-pointer hover:bg-teal-400 rounded-[13px]"
           onClick={handlePlayPause}
         >
           {isPlaying ? <PauseIcon /> : <PlayIcon />}

@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminRoleEnum } from '@/enums';
 import { useMainTaskPage } from '@/pages/task/MainTaskPage/useMainTaskPage';
+import { useGetProjectsQuery } from '@/services/project';
 import { selectAuthenticatedUserSelector } from '@/store';
 
 import { columns } from './TableConfig';
@@ -27,6 +28,7 @@ const MainTaskPage: React.FC = () => {
   } = useMainTaskPage();
 
   const admin = useSelector(selectAuthenticatedUserSelector);
+  const { data: projects } = useGetProjectsQuery({ limit: 20, page: 1 });
 
   return (
     <div className="p-2">
@@ -66,7 +68,11 @@ const MainTaskPage: React.FC = () => {
             rowClickNavigateId
           />
           <div className="hidden md:block border-l ml-2 w-[20vw]">
-            <Button className="w-full rounded-none bg-transparent/10 hover:bg-transparent/20">Project 1</Button>
+            {projects?.items.map((project) => (
+              <Button key={project.id} className="w-full rounded-none bg-transparent/10 hover:bg-transparent/20">
+                {project?.name}
+              </Button>
+            ))}
           </div>
         </div>
       </div>
