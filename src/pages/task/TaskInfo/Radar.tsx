@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Progress } from '@/components/ui/progress';
 import { ITaskResponse } from '@/types/responses/IProjectResponse';
+import { timeFormat } from '@/utils/time-format';
 
 const chartDataMock = [
   { status: 'done', tasks: 287, fill: '#4E6A74' }, // Deep teal
@@ -91,9 +92,9 @@ export function TaskDiagram({ data }: { data: ITaskResponse }) {
               <p>{data.status}</p>
               <p>{data.priority}</p>
               <p>{new Date(data.createdAt).toLocaleDateString()}</p>
-              <p>{data.estimate}m</p>
-              <p>{data.spentTime}m</p>
-              <p>{data.remaining}m</p>
+              <p>{timeFormat(data.estimate)}</p>
+              <p>{timeFormat(data.spentTime)}</p>
+              <p>{timeFormat(data.remaining)}</p>
               <Progress className="" value={progress || 0} />
               <p>
                 {data.assignedUser.firstName} {data.assignedUser.lastName}

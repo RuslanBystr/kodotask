@@ -6,6 +6,7 @@ import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { ITaskLog } from '@/types/responses/IProjectResponse';
+import { timeFormat } from '@/utils/time-format';
 
 const chartConfig = {
   duration: {
@@ -48,7 +49,7 @@ export function TaskActivity({ data }: { data: ITaskLog[] }) {
               >
                 <span className="text-xs text-muted-foreground">{chartConfig[chart].label}</span>
                 <span className="text-lg font-bold leading-none sm:text-3xl">
-                  {total[key as keyof typeof total].toLocaleString()}
+                  {timeFormat(total[key as keyof typeof total])}
                 </span>
               </button>
             );

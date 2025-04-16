@@ -122,6 +122,8 @@ const MainChatPage: React.FC = () => {
               <AvatarImage
                 src={`${api}/file/${selectedCompanion.user.avatar}`}
                 alt={selectedCompanion?.user.firstName}
+                height={48}
+                width={48}
               />
               <AvatarFallback className="h-12 w-12 rounded-full relative">NM</AvatarFallback>
             </Avatar>
