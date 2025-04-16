@@ -174,8 +174,8 @@ export const Message = ({
         {!isSender && (
           <div className="flex items-end mr-1">
             <Avatar className="size-9">
-              <AvatarImage src={`${api}/file/${message.sender.avatar}`} alt={message.sender.firstName} />
               <AvatarFallback>{message?.sender?.firstName?.[0] || 'U'}</AvatarFallback>
+              <AvatarImage src={`${api}/file/${message.sender.avatar}`} alt={message.sender.firstName} />
             </Avatar>
           </div>
         )}
@@ -192,7 +192,7 @@ export const Message = ({
         >
           <div className="flex flex-col">
             {message?.file?.uuid && (
-              <img className="w-full md:max-w-[420px]" src={imageSrc} alt={message?.file?.createdAt} />
+              <img className="md:max-w-[420px]" height={48} width={48} src={imageSrc} alt={message?.file?.createdAt} />
             )}
             {message.linkToMessage && (
               <div className="flex justify-between text-[12px] bg-[#557080] border-l-4 border-[#4FA3B8] w-full rounded-[6px] p-2 my-2">
