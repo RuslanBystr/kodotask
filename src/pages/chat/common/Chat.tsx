@@ -8,6 +8,7 @@ import { OpenFileModal } from '@/components/modals/open-file-modal/OpenFileModal
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Messages from '@/pages/chat/common/Messages';
+import VideoChat from '@/pages/chat/common/VideoChat';
 import { useChatMessage } from '@/pages/chat/hooks/useChatMessage';
 import { useFetchMessages } from '@/pages/chat/hooks/useFetchMessages';
 import { useInitMessages } from '@/pages/chat/hooks/useInitMessages';
@@ -23,11 +24,14 @@ import { useChatMicro } from '../hooks/useChatMicro';
 export function Chat({
   changeStatus,
   refetchChats,
+  selectedCompanion,
 }: {
   changeStatus: Dispatch<SetStateAction<string>>;
   refetchChats: () => void;
+  selectedCompanion?: { id: string };
 }) {
   const { id } = useParams();
+
   const userData = useSelector(selectAuthenticatedUserSelector);
 
   const [newMessage, setNewMessage] = useState<string>('');
@@ -39,7 +43,6 @@ export function Chat({
   const [reply, setReply] = useState<IMessageResponse | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const { data: initialMessages, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 30 });
 
   const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
@@ -165,7 +168,9 @@ export function Chat({
           </Button>
         </div>
       </div>
-      <div className="hidden z-10 lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-[#384D54]/90" />
+      <div className="hidden z-10 lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-[#384D54]/90">
+        {selectedCompanion && <VideoChat receiverId={selectedCompanion?.id} />}
+      </div>
     </div>
   ) : (
     <div className="flex justify-center items-center w-full h-full">Select a chat to start messaging</div>
