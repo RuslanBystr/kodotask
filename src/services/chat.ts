@@ -6,6 +6,13 @@ import { IMessageResponse } from '@/types/responses/IMessageResponse';
 
 export const messagesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getChatDataById: builder.query<IChatResponse, unknown>({
+      query: ({ userId }) => ({
+        url: `chats/${userId}`,
+        method: 'GET',
+      }),
+    }),
+
     getUserChats: builder.query<IResponse<IChatResponse>, IChatRequestParams>({
       query: (params: IChatRequestParams) => ({
         url: `${API_ROUTES.CHATS}`,
@@ -98,7 +105,7 @@ export const messagesApi = baseApi.injectEndpoints({
     }),
     deleteMessage: builder.mutation<void, number | undefined>({
       query: (id) => ({
-        url: `${API_ROUTES.MESSAGES}/${id}`,
+        url: `${API_ROUTES.CHATS}/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: [{ type: 'Messages', id: 'LIST' }],
@@ -107,6 +114,7 @@ export const messagesApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetChatDataByIdQuery,
   useGetUserChatsQuery,
   useGetUserGroupChatsQuery,
   useCreatePrivateChatMutation,
