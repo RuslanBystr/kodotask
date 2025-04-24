@@ -3,21 +3,10 @@ import { CheckCheckIcon, ChevronDown, ChevronRight, ChevronUp, CircleIcon } from
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
 import { AvatarCell } from '@/pages/task/MainTaskPage/сells/AvatarCell';
-import { IconCell } from '@/pages/task/MainTaskPage/сells/IconCell';
 import { Task } from '@/types/responses/IProjectResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 
 export const columns: ColumnDef<Task>[] = [
-  {
-    accessorKey: 'project.name',
-    header: getDefaultColumnHeader({ name: 'Project' }),
-    cell: ({ row }) => (
-      <div className="flex">
-        <IconCell row={row} />
-        <p className="ml-1">{row.original.project.name}</p>
-      </div>
-    ),
-  },
   {
     accessorKey: 'title',
     header: getDefaultColumnHeader({ name: 'Task' }),
