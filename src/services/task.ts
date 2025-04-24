@@ -1,12 +1,12 @@
 import { ITaskFormParams } from '@/components/forms/task/TaskForm';
 import { API_ROUTES } from '@/constants/api-routes';
 import { baseApi } from '@/services/base';
-import { IRequestParams, IResponse } from '@/types';
+import { IResponse, ITaskRequestParams } from '@/types';
 import { ITaskLog, ITaskResponse } from '@/types/responses/IProjectResponse';
 
 export const tasksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getTasks: builder.query<IResponse<ITaskResponse>, IRequestParams>({
+    getTasks: builder.query<IResponse<ITaskResponse>, ITaskRequestParams>({
       query: (params) => ({
         url: API_ROUTES.TASK,
         params,

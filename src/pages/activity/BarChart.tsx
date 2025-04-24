@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ChartConfig, ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
 import { useGetUserActivityQuery } from '@/services/users';
 import { selectAuthenticatedUserSelector } from '@/store';
+import { timeFormat } from '@/utils/time-format';
 
 const chartConfig = {
   totaltime: {
@@ -40,7 +41,7 @@ export function ActivityChart() {
           <BarChart data={formattedData} width={600} height={300}>
             <CartesianGrid vertical={false} strokeDasharray="3 3" />
             <XAxis dataKey="date" tickLine={false} tickMargin={10} axisLine={false} />
-            <YAxis tickMargin={10} axisLine={false} tickFormatter={(value) => `${value} min`} />
+            <YAxis tickMargin={10} axisLine={false} tickFormatter={(value) => timeFormat(value)} />
             <Tooltip content={<ChartTooltipContent />} />
             <Bar dataKey="totaltime" fill="var(--color-chart-1)" radius={4} />
           </BarChart>

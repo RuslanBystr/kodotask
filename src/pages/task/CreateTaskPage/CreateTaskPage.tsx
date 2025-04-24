@@ -36,15 +36,17 @@ export default function CreateTaskPage() {
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-      <div className="h-[10vh] p-5 bg-gradient-to-t from-[#374C53] to-transparent">
-        <Button variant="outline" onClick={() => navigate(-1)}>
-          <ArrowLeft />
-          Cancel
-        </Button>
-      </div>
-      <div className="flex flex-col content-center items-center w-full h-[75vh] overflow-x-auto">
-        <h1 className="text-[20px]">Add Task</h1>
-        <TaskForm {...props} />
+      <div className="h-full w-full flex flex-col  overflow-x-auto">
+        <div className="h-[10vh] p-5">
+          <Button variant="outline" onClick={() => navigate(-1)}>
+            <ArrowLeft />
+            Cancel
+          </Button>
+        </div>
+        <div className="flex flex-col content-center items-center w-full h-[75vh]">
+          <h1 className="text-[20px]">Add Task</h1>
+          <TaskForm {...props} />
+        </div>
       </div>
     </div>
   );

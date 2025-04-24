@@ -9,7 +9,6 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminRoleEnum } from '@/enums';
 import { useMainTaskPage } from '@/pages/task/MainTaskPage/useMainTaskPage';
-import { useGetProjectsQuery } from '@/services/project';
 import { selectAuthenticatedUserSelector } from '@/store';
 
 import { columns } from './TableConfig';
@@ -17,6 +16,7 @@ import { columns } from './TableConfig';
 const MainTaskPage: React.FC = () => {
   const {
     tasks,
+    projects,
     goToCreateTaskPage,
     sorting,
     isLoading,
@@ -25,10 +25,11 @@ const MainTaskPage: React.FC = () => {
     setColumnFilters,
     paginateParams,
     meta,
+    selectProject,
+    setSelectProject,
   } = useMainTaskPage();
 
   const admin = useSelector(selectAuthenticatedUserSelector);
-  const { data: projects } = useGetProjectsQuery({ limit: 20, page: 1 });
 
   return (
     <div className="p-2">
@@ -69,7 +70,15 @@ const MainTaskPage: React.FC = () => {
           />
           <div className="hidden md:block border-l ml-2 w-[20vw]">
             {projects?.items.map((project) => (
-              <Button key={project.id} className="w-full rounded-none bg-transparent/10 hover:bg-transparent/20">
+              <Button
+                key={project.id}
+                className={`w-full rounded-none ${
+                  selectProject === project.id
+                    ? 'bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5'
+                    : 'bg-transparent/10 hover:bg-transparent/20`'
+                }`}
+                onClick={() => setSelectProject(project.id)}
+              >
                 {project?.name}
               </Button>
             ))}

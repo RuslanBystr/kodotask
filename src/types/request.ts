@@ -12,6 +12,11 @@ export interface IChatRequestParams extends IRequestParams {
   userId?: string;
 }
 
+export interface ITaskRequestParams extends IRequestParams {
+  projectId?: number | undefined;
+  assignedUserId?: string;
+}
+
 export interface IMetadataRequestParams extends IRequestParams {
   url?: string;
   title?: string;
