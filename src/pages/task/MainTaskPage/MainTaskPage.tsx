@@ -75,7 +75,7 @@ const MainTaskPage: React.FC = () => {
                 className={`w-full rounded-none ${
                   selectProject === project.id
                     ? 'bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5'
-                    : 'bg-transparent/10 hover:bg-transparent/20`'
+                    : 'bg-transparent hover:bg-transparent/10'
                 }`}
                 onClick={() => setSelectProject(project.id)}
               >
