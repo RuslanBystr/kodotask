@@ -4,7 +4,10 @@ import { getEnv } from '@/utils';
 
 const { api } = getEnv();
 
-export const socket: Socket = io(api, {
+const wsApi = api.replace(/^http(s)?:\/\//, (match) => (match === 'https://' ? 'wss://' : 'ws://'));
+
+export const socket: Socket = io(wsApi, {
   reconnectionAttempts: 5,
   reconnectionDelay: 2000,
+  transports: ['websocket'],
 });
