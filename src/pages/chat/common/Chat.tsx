@@ -169,7 +169,7 @@ export function Chat({
         </div>
       </div>
       <div className="hidden z-10 lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-[#384D54]/90">
-        {selectedCompanion && <VideoChat receiverId={selectedCompanion?.id} />}
+        {selectedCompanion && <VideoChat receiverId={selectedCompanion?.id} chatId={id} />}
       </div>
     </div>
   ) : (
