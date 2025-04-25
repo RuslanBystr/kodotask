@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { socket } from '@/utils/socket';
 
-const VideoChat = ({ receiverId }: { receiverId: string }) => {
+const VideoChat = ({ receiverId, chatId }: { receiverId: string; chatId: string }) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
@@ -47,6 +47,7 @@ const VideoChat = ({ receiverId }: { receiverId: string }) => {
       if (event.candidate) {
         socket.emit('webrtc_signal', {
           toUserId: receiverId,
+          chatId,
           signal: { candidate: event.candidate },
         });
       }
@@ -61,7 +62,7 @@ const VideoChat = ({ receiverId }: { receiverId: string }) => {
     }
 
     return pc;
-  }, [ICE_SERVERS, localStream, receiverId]);
+  }, [ICE_SERVERS, localStream, chatId, receiverId]);
 
   const handleCallUser = async () => {
     setIsCalling(true);
@@ -71,6 +72,7 @@ const VideoChat = ({ receiverId }: { receiverId: string }) => {
 
     socket.emit('webrtc_signal', {
       toUserId: receiverId,
+      chatId,
       signal: { sdp: offer },
     });
   };
@@ -86,6 +88,7 @@ const VideoChat = ({ receiverId }: { receiverId: string }) => {
 
         socket.emit('webrtc_signal', {
           toUserId: fromUserId,
+          chatId,
           signal: { sdp: answer },
         });
       }
@@ -106,7 +109,7 @@ const VideoChat = ({ receiverId }: { receiverId: string }) => {
     return () => {
       socket.off('webrtc_signal');
     };
-  }, [createPeerConnection, localStream]);
+  }, [createPeerConnection, localStream, chatId]);
 
   useEffect(() => {
     requestMediaAccess();
