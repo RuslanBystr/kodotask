@@ -145,7 +145,7 @@ const MainChatPage: React.FC = () => {
             </div>
             {selectedCompanion && (
               <CallModal>
-                {activeChat && <VideoChat receiverId={selectedCompanion?.id} chatId={activeChat?.id.toString()} />}
+                {activeChat && <VideoChat receiverId={selectedCompanion?.user.id} chatId={activeChat?.id.toString()} />}
               </CallModal>
             )}
           </div>
