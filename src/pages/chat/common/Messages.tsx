@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import LoadingIcon from '@/assets/icons/LoadingIcon';
 import { Message } from '@/pages/chat/common/Message';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
+import { Loading } from '@/ui-kit/loading/Loading';
 
 interface MessagesProps {
   messageDetails: IMessageResponse[];
@@ -11,9 +12,10 @@ interface MessagesProps {
   loading: boolean;
   setLoading: (loading: boolean) => void;
   setReply: (reply: IMessageResponse) => void;
+  typing: boolean;
 }
 
-function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setReply }: MessagesProps) {
+function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setReply, typing }: MessagesProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeight = useRef<number>(0);
   const isFetching = useRef(false);
@@ -64,7 +66,7 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
         behavior: 'smooth',
       });
     }, 100);
-  }, []);
+  }, [typing]);
 
   useEffect(() => {
     const container = messagesContainerRef.current;
@@ -103,6 +105,11 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
       {messageDetails.map((message) => (
         <Message message={message} key={`${message.id}-${message.createdAt}`} setReply={setReply} />
       ))}
+      {typing && (
+        <div className="flex justify-start items-center text-center text-gray-400 p-2">
+          <Loading size={45} color="#a5d2dc" />
+        </div>
+      )}
     </div>
   );
 }
