@@ -45,7 +45,6 @@ const VideoChat = ({ receiverId, chatId }: { receiverId: string; chatId: string 
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
-        toast(receiverId);
         socket.emit('webrtc_signal', {
           toUserId: receiverId,
           chatId,

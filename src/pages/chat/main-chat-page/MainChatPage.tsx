@@ -140,7 +140,7 @@ const MainChatPage: React.FC = () => {
           </div>
         </div>
 
-        <Chat refetchChats={refetch} selectedCompanion={selectedCompanion} />
+        <Chat refetchChats={refetch} selectedCompanion={selectedCompanion?.user} />
       </div>
     </div>
   );
