@@ -1,10 +1,11 @@
 interface LoadingProps {
   size?: number;
+  color?: string;
 }
 
-export const Loading = ({ size = 64 }: LoadingProps) => (
+export const Loading = ({ size = 64, color = '#5889DB' }: LoadingProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width={size} height={size}>
-    <rect fill="#5889DB" stroke="#5889DB" strokeWidth="15" width="30" height="30" x="25" y="50">
+    <rect fill={color} stroke={color} strokeWidth="15" width="30" height="30" x="25" y="50">
       <animate
         attributeName="y"
         calcMode="spline"
@@ -15,7 +16,7 @@ export const Loading = ({ size = 64 }: LoadingProps) => (
         begin="-.4s"
       />
     </rect>
-    <rect fill="#5889DB" stroke="#5889DB" strokeWidth="15" width="30" height="30" x="85" y="50">
+    <rect fill={color} stroke={color} strokeWidth="15" width="30" height="30" x="85" y="50">
       <animate
         attributeName="y"
         calcMode="spline"
@@ -26,7 +27,7 @@ export const Loading = ({ size = 64 }: LoadingProps) => (
         begin="-.2s"
       />
     </rect>
-    <rect fill="#5889DB" stroke="#5889DB" strokeWidth="15" width="30" height="30" x="145" y="50">
+    <rect fill={color} stroke={color} strokeWidth="15" width="30" height="30" x="145" y="50">
       <animate
         attributeName="y"
         calcMode="spline"
