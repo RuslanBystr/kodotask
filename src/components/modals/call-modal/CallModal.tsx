@@ -1,5 +1,5 @@
 import { PhoneCall } from 'lucide-react';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -11,9 +11,15 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-export function CallModal({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false);
-
+export function CallModal({
+  open,
+  setOpen,
+  children,
+}: {
+  open: boolean;
+  setOpen: (value: boolean) => void;
+  children: ReactNode;
+}) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
