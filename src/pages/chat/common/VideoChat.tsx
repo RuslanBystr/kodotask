@@ -170,14 +170,14 @@ const VideoChat = ({
     <div className={open ? 'block' : 'hidden'}>
       {error && <div className="error-message">{error}</div>}
       {open && (
-        <div className="video-container flex flex-col gap-4">
+        <div className="video-container flex flex-col gap-4 rounded-md">
           <video ref={localVideoRef} autoPlay playsInline muted className="ml-auto w-1/2 max-h-[180px] border" />
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <video
             ref={remoteVideoRef}
             autoPlay
             playsInline
-            className="max-h-[260px] md:max-h-[400px] max-w-full border"
+            className="max-h-[260px] md:max-h-[400px] max-w-full border rounded-md"
           />
         </div>
       )}

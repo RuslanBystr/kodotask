@@ -17,7 +17,7 @@ export const useMainChatsPage = () => {
   const [sortBy, isOrderByAsc] = useTableSorting(sorting);
   const paginateParams = usePagination(filters);
 
-  const { page, rowsPerPage: limit } = paginateParams;
+  const { page } = paginateParams;
   const userData = useSelector(selectAuthenticatedUserSelector);
   const userId = userData?.id.toString() ?? '';
 
@@ -26,9 +26,9 @@ export const useMainChatsPage = () => {
     isLoading,
     refetch,
   } = useGetUserChatsQuery({
-    limit,
-    page: page + 1,
+    limit: 100,
     userId,
+    page: page + 1,
     sortBy,
     order: isOrderByAsc ? SortingOrderEnum.ASC : SortingOrderEnum.DESC,
     ...filters,
