@@ -148,7 +148,7 @@ const MainChatPage: React.FC = () => {
             {selectedCompanion && activeChat && (
               <CallModal open={openVideoModal} setOpen={setOpenVideoModal}>
                 <VideoChat
-                  receiverId={selectedCompanion.id}
+                  receiverId={selectedCompanion.user.id}
                   chatId={activeChat.id.toString()}
                   open={openVideoModal}
                   setOpen={setOpenVideoModal}
