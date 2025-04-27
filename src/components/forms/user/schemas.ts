@@ -9,7 +9,6 @@ export const userCreateFormSchema = z
     email,
     password: initialPassword,
     confirmPassword: initialPassword,
-    avatar: text,
   })
   .required()
   .refine((data) => data.password === data.confirmPassword, {
@@ -17,12 +16,10 @@ export const userCreateFormSchema = z
     path: ['confirmPassword'],
   });
 
-export const userEditFormSchema = z
-  .object({
-    firstName,
-    lastName,
-    email,
-    password: editPassword,
-    avatar: text,
-  })
-  .required();
+export const userEditFormSchema = z.object({
+  firstName,
+  lastName,
+  email,
+  password: editPassword,
+  avatar: text,
+});
