@@ -94,7 +94,7 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
     <div
       ref={messagesContainerRef}
       onScroll={handleScroll}
-      className="messages-container flex-1 bg-[#446976]/30 overflow-y-auto p-4 space-y-2 h-[calc(100vh-142px)] custom-scrollbar"
+      className="messages-container flex-1  overflow-y-auto p-4 space-y-2 h-[calc(100vh-142px)] custom-scrollbar"
     >
       {loading && (
         <div className="flex justify-center items-center text-center text-gray-400 p-2">
