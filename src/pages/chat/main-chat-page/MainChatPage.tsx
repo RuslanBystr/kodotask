@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import { CallModal } from '@/components/modals/call-modal';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { ContextMenu, ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu';
@@ -11,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Chat } from '@/pages/chat/common/Chat';
+import VideoChat from '@/pages/chat/common/VideoChat';
 import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
 import { useUserConnection } from '@/pages/chat/hooks/useUserConnection';
 import { ChatItem } from '@/pages/chat/main-chat-page/ChatItem';
@@ -115,32 +117,40 @@ const MainChatPage: React.FC = () => {
           backgroundPosition: 'center',
         }}
       >
-        <div className="flex items-center w-full min-h-[72px] pl-6 border-b bg-[#374C53]/90">
-          {selectedCompanion && (
-            <Avatar className="h-12 w-12 mr-2">
-              <AvatarImage
-                src={`${api}/file/${selectedCompanion.user.avatar}`}
-                alt={selectedCompanion?.user.firstName}
-                height={48}
-                width={48}
-              />
-              <AvatarFallback className="h-12 w-12 rounded-full relative">NM</AvatarFallback>
-            </Avatar>
-          )}
-          <div>
-            <p>{selectedCompanion?.user.firstName}</p>
-            <p className="text-[12px]">
-              {selectedCompanion &&
-                (onlineUsers.includes(selectedCompanion.user.id) ? (
-                  <span className="text-green-400">Online</span>
-                ) : (
-                  'Offline'
-                ))}
-            </p>
+        <div className="flex flex-col w-full">
+          <div className="flex h-[72px] border-b bg-[#374C53]/90 items-center justify-between gap-2 px-2">
+            <div className="flex">
+              {selectedCompanion && (
+                <Avatar className="h-12 w-12 mr-2">
+                  <AvatarImage
+                    src={`${api}/file/${selectedCompanion.user.avatar}`}
+                    alt={selectedCompanion?.user.firstName}
+                    height={48}
+                    width={48}
+                  />
+                  <AvatarFallback className="h-12 w-12 rounded-full relative">NM</AvatarFallback>
+                </Avatar>
+              )}
+              <div>
+                <p>{selectedCompanion?.user.firstName}</p>
+                <p className="text-[12px]">
+                  {selectedCompanion &&
+                    (onlineUsers.includes(selectedCompanion.user.id) ? (
+                      <span className="text-green-400">Online</span>
+                    ) : (
+                      'Offline'
+                    ))}
+                </p>
+              </div>
+            </div>
+            {selectedCompanion && (
+              <CallModal>
+                {activeChat && <VideoChat receiverId={selectedCompanion?.user.id} chatId={activeChat?.id.toString()} />}
+              </CallModal>
+            )}
           </div>
+          <Chat refetchChats={refetch} />
         </div>
-
-        <Chat refetchChats={refetch} selectedCompanion={selectedCompanion?.user} />
       </div>
     </div>
   );

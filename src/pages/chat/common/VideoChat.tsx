@@ -1,6 +1,6 @@
 'use client';
 
-import { VideoIcon } from 'lucide-react';
+import { PhoneOff, VideoIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -115,18 +115,47 @@ const VideoChat = ({ receiverId, chatId }: { receiverId: string; chatId: string 
     requestMediaAccess();
   }, []);
 
+  const handleHangUp = () => {
+    if (peerConnectionRef.current) {
+      peerConnectionRef.current.close();
+      peerConnectionRef.current = null;
+    }
+
+    if (localStream) {
+      localStream.getTracks().forEach((track) => {
+        track.stop();
+      });
+      setLocalStream(null);
+    }
+
+    setIsCalling(false);
+    toast.info('Call ended');
+  };
+
   return (
     <div>
       {error && <div className="error-message">{error}</div>}
-      <div className="video-container flex gap-4">
-        <video ref={localVideoRef} autoPlay playsInline muted className="w-1/2 border" />
+      <div className="video-container flex flex-col gap-4">
+        <video ref={localVideoRef} autoPlay playsInline muted className="ml-auto w-1/2 border" />
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video ref={remoteVideoRef} autoPlay playsInline className="w-1/2 border" />
+        <video ref={remoteVideoRef} autoPlay playsInline className="w-full border" />
       </div>
-      <Button className="mt-4 bg-[--main-button] rounded-none cut cut-left-5 cut-right-5" onClick={handleCallUser}>
-        <VideoIcon className="mr-2" />
-        {isCalling ? 'Calling...' : 'Start Call'}
-      </Button>
+      <div className="flex justify-center mt-2">
+        {isCalling ? (
+          <Button
+            className="bg-red-500 hover:bg-red-600 rounded-none cut cut-left-5 cut-right-5"
+            onClick={handleHangUp}
+          >
+            <PhoneOff />
+            End Call
+          </Button>
+        ) : (
+          <Button className="mt-4 bg-[--main-button] rounded-none cut cut-left-5 cut-right-5" onClick={handleCallUser}>
+            <VideoIcon className="mr-2" />
+            {isCalling ? 'Calling...' : 'Start Call'}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
