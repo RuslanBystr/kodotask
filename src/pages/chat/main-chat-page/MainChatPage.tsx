@@ -11,10 +11,10 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem } from '@/components/u
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useUserConnection } from '@/hooks/useUserConnection';
 import { Chat } from '@/pages/chat/common/Chat';
 import VideoChat from '@/pages/chat/common/VideoChat';
 import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
-import { useUserConnection } from '@/pages/chat/hooks/useUserConnection';
 import { ChatItem } from '@/pages/chat/main-chat-page/ChatItem';
 import { useDeletePrivateChatMutation } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
@@ -107,7 +107,7 @@ const MainChatPage: React.FC = () => {
 
         <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
           <Input className="md:w-full p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
-          {renderChatList()}
+          <div className="h-[85vh] w-full overflow-auto custom-scrollbar">{renderChatList()}</div>
         </div>
       </div>
 
