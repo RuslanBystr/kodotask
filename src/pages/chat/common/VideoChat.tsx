@@ -7,12 +7,23 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { socket } from '@/utils/socket';
 
-const VideoChat = ({ receiverId, chatId }: { receiverId: string; chatId: string }) => {
+const VideoChat = ({
+  receiverId,
+  chatId,
+  open,
+  setOpen,
+}: {
+  receiverId: string;
+  chatId: string;
+  open: boolean;
+  setOpen: (value: boolean) => void;
+}) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-  const [isCalling, setIsCalling] = useState(false);
+  const [callState, setCallState] = useState<'idle' | 'calling' | 'connected' | 'ended'>('idle');
+
   const [error, setError] = useState<string | null>(null);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,6 +64,11 @@ const VideoChat = ({ receiverId, chatId }: { receiverId: string; chatId: string 
       }
     };
 
+    pc.onconnectionstatechange = () => {
+      if (pc.connectionState === 'connected') {
+        setCallState('connected');
+      }
+    };
     peerConnectionRef.current = pc;
 
     if (localStream) {
@@ -65,7 +81,7 @@ const VideoChat = ({ receiverId, chatId }: { receiverId: string; chatId: string 
   }, [ICE_SERVERS, localStream, chatId, receiverId]);
 
   const handleCallUser = async () => {
-    setIsCalling(true);
+    setCallState('calling');
     const pc = createPeerConnection();
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
@@ -128,20 +144,45 @@ const VideoChat = ({ receiverId, chatId }: { receiverId: string; chatId: string 
       setLocalStream(null);
     }
 
-    setIsCalling(false);
-    toast.info('Call ended');
+    setCallState('ended');
+    setOpen(false);
+    toast.info('Call ended', {
+      style: {
+        backgroundColor: 'rgba(53,71,101,0.8)',
+        color: '#ffffff',
+        fontSize: '16px',
+        borderRadius: '0px',
+        clipPath: `polygon(
+            10px 0%,  
+            calc(100% - 10px) 0%, 
+            100% 10px,  
+            100% calc(100% - 10px), 
+            calc(100% - 10px) 100%, 
+            10px 100%, 
+            0% calc(100% - 10px), 
+            0% 10px
+          )`,
+      },
+    });
   };
 
   return (
-    <div>
+    <div className={open ? 'block' : 'hidden'}>
       {error && <div className="error-message">{error}</div>}
-      <div className="video-container flex flex-col gap-4">
-        <video ref={localVideoRef} autoPlay playsInline muted className="ml-auto w-1/2 border" />
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video ref={remoteVideoRef} autoPlay playsInline className="w-full border" />
-      </div>
+      {open && (
+        <div className="video-container flex flex-col gap-4">
+          <video ref={localVideoRef} autoPlay playsInline muted className="ml-auto w-1/2 max-h-[180px] border" />
+          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            playsInline
+            className="max-h-[260px] md:max-h-[400px] max-w-full border"
+          />
+        </div>
+      )}
       <div className="flex justify-center mt-2">
-        {isCalling ? (
+        {callState === 'connected' ? (
           <Button
             className="bg-red-500 hover:bg-red-600 rounded-none cut cut-left-5 cut-right-5"
             onClick={handleHangUp}
@@ -152,7 +193,7 @@ const VideoChat = ({ receiverId, chatId }: { receiverId: string; chatId: string 
         ) : (
           <Button className="mt-4 bg-[--main-button] rounded-none cut cut-left-5 cut-right-5" onClick={handleCallUser}>
             <VideoIcon className="mr-2" />
-            {isCalling ? 'Calling...' : 'Start Call'}
+            {callState === 'idle' ? 'Start Call' : 'Calling...'}
           </Button>
         )}
       </div>

@@ -36,6 +36,8 @@ const MainChatPage: React.FC = () => {
   const { filterValue, filteredChats } = useFilterChats(chats?.items);
 
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
+  const [openVideoModal, setOpenVideoModal] = useState<boolean>(false);
+
   const [selectedCompanion, setSelectedCompanion] = useState<IUserChat | undefined>(undefined);
   const [deleteChat] = useDeletePrivateChatMutation();
 
@@ -143,9 +145,14 @@ const MainChatPage: React.FC = () => {
                 </p>
               </div>
             </div>
-            {selectedCompanion && (
-              <CallModal>
-                {activeChat && <VideoChat receiverId={selectedCompanion?.user.id} chatId={activeChat?.id.toString()} />}
+            {selectedCompanion && activeChat && (
+              <CallModal open={openVideoModal} setOpen={setOpenVideoModal}>
+                <VideoChat
+                  receiverId={selectedCompanion.id}
+                  chatId={activeChat.id.toString()}
+                  open={openVideoModal}
+                  setOpen={setOpenVideoModal}
+                />
               </CallModal>
             )}
           </div>
