@@ -26,7 +26,6 @@ const MainGroupChatPage: React.FC = () => {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const userId = userData?.id;
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
-  const [userStatus, setUserStatus] = useState<string>('');
 
   const { chats, refetch } = useMainChatsPage();
   const { filterValue, filteredChats } = useFilterChats(chats?.items);
@@ -125,11 +124,9 @@ const MainGroupChatPage: React.FC = () => {
       <div className="flex flex-col w-full">
         <div className="flex items-center w-full min-h-16 pl-6 border-b">
           <p>{activeChat && activeChat.groupName}</p>
-          <p className="text-[12px]">
-            {activeChat && <p className="text-green-400">{userStatus === 'typing' ? 'Typing...' : ''}</p>}
-          </p>
+          <p className="text-[12px]">{activeChat && <p>Members</p>}</p>
         </div>
-        <Chat changeStatus={setUserStatus} refetchChats={refetch} />
+        <Chat refetchChats={refetch} />
       </div>
     </div>
   );

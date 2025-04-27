@@ -9,8 +9,8 @@ interface ChatMessageParams {
   setPage: Dispatch<SetStateAction<number>>;
   setMessages: Dispatch<SetStateAction<IMessageResponse[]>>;
   userData: IUserResponse | null;
-  changeStatus: Dispatch<SetStateAction<string>>;
   refetchChats: () => void;
+  setIsTyping: Dispatch<SetStateAction<boolean>>;
 }
 
 export const useChatMessage = ({
@@ -19,7 +19,7 @@ export const useChatMessage = ({
   setMessages,
   setPage,
   userData,
-  changeStatus,
+  setIsTyping,
 }: ChatMessageParams) => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -68,7 +68,7 @@ export const useChatMessage = ({
   const handleTyping = useCallback(
     (userId: string) => {
       if (userData?.id !== Number(userId)) {
-        changeStatus('typing');
+        setIsTyping(true);
       }
 
       if (typingTimeoutRef.current) {
@@ -76,10 +76,10 @@ export const useChatMessage = ({
       }
 
       typingTimeoutRef.current = setTimeout(() => {
-        changeStatus('');
+        setIsTyping(false);
       }, 1600);
     },
-    [userData?.id, changeStatus],
+    [userData?.id, setIsTyping],
   );
 
   useEffect(() => {
