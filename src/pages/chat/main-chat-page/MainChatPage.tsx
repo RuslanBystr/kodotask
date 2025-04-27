@@ -35,7 +35,6 @@ const MainChatPage: React.FC = () => {
 
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
   const [selectedCompanion, setSelectedCompanion] = useState<IUserChat | undefined>(undefined);
-  const [userStatus, setUserStatus] = useState<string>('');
   const [deleteChat] = useDeletePrivateChatMutation();
 
   useEffect(() => {
@@ -133,7 +132,7 @@ const MainChatPage: React.FC = () => {
             <p className="text-[12px]">
               {selectedCompanion &&
                 (onlineUsers.includes(selectedCompanion.user.id) ? (
-                  <span className="text-green-400">{userStatus === 'typing' ? 'Typing...' : 'Online'}</span>
+                  <span className="text-green-400">Online</span>
                 ) : (
                   'Offline'
                 ))}
@@ -141,7 +140,7 @@ const MainChatPage: React.FC = () => {
           </div>
         </div>
 
-        <Chat changeStatus={setUserStatus} refetchChats={refetch} selectedCompanion={selectedCompanion} />
+        <Chat refetchChats={refetch} selectedCompanion={selectedCompanion} />
       </div>
     </div>
   );

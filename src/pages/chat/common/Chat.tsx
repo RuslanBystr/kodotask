@@ -1,6 +1,6 @@
 import EmojiPicker from 'emoji-picker-react';
 import { Mic, PaperclipIcon, ReplyIcon, SendHorizonalIcon, SmileIcon, Square, XIcon } from 'lucide-react';
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
@@ -22,11 +22,9 @@ import { socket } from '@/utils/socket';
 import { useChatMicro } from '../hooks/useChatMicro';
 
 export function Chat({
-  changeStatus,
   refetchChats,
   selectedCompanion,
 }: {
-  changeStatus: Dispatch<SetStateAction<string>>;
   refetchChats: () => void;
   selectedCompanion?: { id: string };
 }) {
@@ -41,14 +39,14 @@ export function Chat({
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [reply, setReply] = useState<IMessageResponse | null>(null);
-
+  const [isTypes, setIsTyping] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { data: initialMessages, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 30 });
 
   const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
   useFetchMessages(id, page, refetch);
   useInitMessages({ initialMessages, setMessages });
-  useChatMessage({ refetchChats, chatId: id, setMessages, setPage, userData, changeStatus });
+  useChatMessage({ refetchChats, chatId: id, setMessages, setPage, userData, setIsTyping });
   const { fileUUId, setFileUUId, selectedFile, handleSendFile, handleFileSelect, isModalOpen, closeModal } =
     useSendFileMessage();
 
@@ -105,6 +103,7 @@ export function Chat({
             setLoading={setLoading}
             fetchMoreMessages={fetchMoreMessages}
             setReply={setReply}
+            typing={isTypes}
           />
         ) : loading ? (
           <div className="flex justify-center items-center h-[calc(100vh-142px)]">
@@ -168,9 +167,11 @@ export function Chat({
           </Button>
         </div>
       </div>
-      <div className="hidden z-10 lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-[#384D54]/90">
-        {selectedCompanion && <VideoChat receiverId={selectedCompanion?.id} chatId={id} />}
-      </div>
+      {selectedCompanion && (
+        <div className="hidden z-10 lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-[#384D54]/90">
+          {selectedCompanion && <VideoChat receiverId={selectedCompanion?.id} chatId={id} />}
+        </div>
+      )}
     </div>
   ) : (
     <div className="flex justify-center items-center w-full h-full">Select a chat to start messaging</div>
