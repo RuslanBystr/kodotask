@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
-import { TaskStatusEnum } from '@/constants/enums/task-status.enum';
+import { TaskStatusEnum } from '@/enums/task-status.enum';
 import { TaskDiagram } from '@/pages/task/TaskInfo/Radar';
 import { SpendTime } from '@/pages/task/TaskInfo/SpendTime';
 import { TaskActivity } from '@/pages/task/TaskInfo/TaskActivity';

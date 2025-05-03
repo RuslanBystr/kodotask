@@ -206,9 +206,9 @@ export const Message = ({
                 <CornerDownLeft className="h-4" />
               </div>
             )}
-            {!isSender && <p className="text-[12px] text-green-100">{message.sender.firstName}</p>}
+            {!isSender && <p className="text-[12px] text-green-100">{message?.sender.firstName}</p>}
             <p className="text-sm break-all">{message.content}</p>
-            {message.voiceMessage !== null && <AudioPlayer src={`${api}/file/${message.voiceMessage.uuid}`} />}
+            {message.voiceMessage !== null && <AudioPlayer src={`${api}/file/${message?.voiceMessage.uuid}`} />}
             {message.reaction && (
               <Button
                 onClick={() => handleReaction(null)}
