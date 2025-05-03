@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { IUserResponse } from '@/types/responses/IUserResponse';
@@ -25,7 +25,7 @@ export const useChatMessage = ({
 
   const handleNewMessage = useCallback(
     async (message: IMessageResponse) => {
-      if (message.chat.id !== Number(chatId)) {
+      if ((message.chat.id as unknown as string) !== chatId) {
         refetchChats();
         return;
       }
@@ -82,6 +82,17 @@ export const useChatMessage = ({
     [userData?.id, setIsTyping],
   );
 
+  const eventHandlers = useMemo(
+    () => ({
+      newMessage: handleNewMessage,
+      updateMessage: updateMessageHandler,
+      cleanMessage: removeMessageHandler,
+      typing: handleTyping,
+      messageRead: updateMessageHandler,
+    }),
+    [handleNewMessage, updateMessageHandler, removeMessageHandler, handleTyping],
+  );
+
   useEffect(() => {
     if (!chatId) return undefined;
 
@@ -94,14 +105,6 @@ export const useChatMessage = ({
 
     socket.emit('joinChat', chatId);
 
-    const eventHandlers = {
-      newMessage: handleNewMessage,
-      updateMessage: updateMessageHandler,
-      cleanMessage: removeMessageHandler,
-      typing: handleTyping,
-      messageRead: updateMessageHandler,
-    };
-
     Object.entries(eventHandlers).forEach(([event, handler]) => {
       socket.off(event, handler);
       socket.on(event, handler);
@@ -113,5 +116,5 @@ export const useChatMessage = ({
       });
       socket.emit('leaveChat', chatId);
     };
-  }, [chatId, handleNewMessage, updateMessageHandler, removeMessageHandler, handleTyping, setMessages, setPage]);
+  }, [chatId, eventHandlers, setMessages, setPage]);
 };

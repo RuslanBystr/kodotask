@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { TaskStatusEnum } from '@/constants/enums/task-status.enum';
+import { TaskStatusEnum } from '@/enums/task-status.enum';
 import { useEditTaskMutation } from '@/services/task';
 
 const TaskStatus = ({ id, defaultStatus }: { id: string; defaultStatus: TaskStatusEnum }) => {

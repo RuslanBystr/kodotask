@@ -39,12 +39,12 @@ export const messagesApi = baseApi.injectEndpoints({
         result
           ? [
               ...result.items.map(({ id }) => ({
-                type: 'Chats' as const,
+                type: 'Groups' as const,
                 id,
               })),
-              { type: 'Chats', id: 'LIST' },
+              { type: 'Groups', id: 'LIST' },
             ]
-          : [{ type: 'Chats', id: 'LIST' }],
+          : [{ type: 'Groups', id: 'LIST' }],
       keepUnusedDataFor: 1,
     }),
 

@@ -14,6 +14,6 @@ export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: getBaseQuery(),
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Users', 'Projects', 'Tasks', 'Chats', 'Messages'],
+  tagTypes: ['Users', 'Projects', 'Tasks', 'Chats', 'Groups', 'Messages'],
   endpoints: () => ({}),
 });

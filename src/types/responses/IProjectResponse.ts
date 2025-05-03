@@ -1,5 +1,5 @@
-import { TaskPriorityEnum } from '@/constants/enums/task-priority.enum';
-import { TaskStatusEnum } from '@/constants/enums/task-status.enum';
+import { TaskPriorityEnum } from '@/enums/task-priority.enum';
+import { TaskStatusEnum } from '@/enums/task-status.enum';
 
 export interface Task {
   id: string;
