@@ -1,30 +1,30 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface IUsersState {
-  isDeleteUserModalOpen: boolean;
-  selectedUserForModal: null;
+interface OnlineUsersState {
+  users: string[];
 }
 
-const initialState: IUsersState = {
-  isDeleteUserModalOpen: false,
-  selectedUserForModal: null,
+const initialState: OnlineUsersState = {
+  users: [],
 };
 
-export const usersSlice = createSlice({
-  name: 'users',
+export const onlineUsersSlice = createSlice({
+  name: 'onlineUsers',
   initialState,
   reducers: {
-    openDeleteUserModal(state: IUsersState, { payload: user }) {
-      state.isDeleteUserModalOpen = true;
-      state.selectedUserForModal = user;
+    setOnlineUsers: (state, action: PayloadAction<string[]>) => {
+      state.users = action.payload;
     },
-    closeDeleteUserModal(state: IUsersState) {
-      state.isDeleteUserModalOpen = false;
-      state.selectedUserForModal = null;
+    addOnlineUser: (state, action: PayloadAction<string>) => {
+      if (!state.users.includes(action.payload)) {
+        state.users.push(action.payload);
+      }
+    },
+    removeOnlineUser: (state, action: PayloadAction<string>) => {
+      state.users = state.users.filter((id) => id !== action.payload);
     },
   },
 });
 
-export const { openDeleteUserModal, closeDeleteUserModal } = usersSlice.actions;
-
-export default usersSlice.reducer;
+export const { setOnlineUsers, addOnlineUser, removeOnlineUser } = onlineUsersSlice.actions;
+export default onlineUsersSlice.reducer;

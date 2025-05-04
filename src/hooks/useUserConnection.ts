@@ -1,16 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
+import { setOnlineUsers } from '@/store/users';
 import { socket } from '@/utils/socket';
 
 export const useUserConnection = ({ userId }: { userId: number | undefined }) => {
-  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!userId) return;
 
     socket.emit('userConnected', userId);
 
-    const handleOnlineUsers = (users: string[]) => setOnlineUsers(users);
+    const handleOnlineUsers = (users: string[]) => {
+      dispatch(setOnlineUsers(users));
+    };
 
     socket.on('onlineUsers', handleOnlineUsers);
 
@@ -18,7 +22,5 @@ export const useUserConnection = ({ userId }: { userId: number | undefined }) =>
     return () => {
       socket.off('onlineUsers', handleOnlineUsers);
     };
-  }, [userId]);
-
-  return onlineUsers;
+  }, [userId, dispatch]);
 };

@@ -131,7 +131,10 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
           />
         )}
         <div className="sticky h-20 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom bg-[#384D54]/90">
-          <Button className="w-10 bg-[#557799] rounded-full" onClick={() => fileInputRef.current?.click()}>
+          <Button
+            className="w-10 bg-[#557799] rounded-full transition-all active:scale-95"
+            onClick={() => fileInputRef.current?.click()}
+          >
             <PaperclipIcon />
           </Button>
           <Input className="hidden" type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" />
@@ -143,7 +146,10 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
             onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
           />
           <div className="hidden md:block">
-            <Button className="bg-[#336677] w-10 rounded-full" onClick={() => setShowPicker(!showPicker)}>
+            <Button
+              className="bg-[#336677] w-10 rounded-full transition-all active:scale-95"
+              onClick={() => setShowPicker(!showPicker)}
+            >
               <SmileIcon />
             </Button>
             {showPicker && (
@@ -152,10 +158,13 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
               </div>
             )}
           </div>
-          <Button onClick={recording ? stopRecording : startRecording} className="bg-[#336677] w-10 rounded-full">
+          <Button
+            onClick={recording ? stopRecording : startRecording}
+            className="bg-[#336677] w-10 rounded-full transition-all active:scale-95"
+          >
             {recording ? <Square size={24} /> : <Mic size={24} />}
           </Button>
-          <Button className="bg-[#668899] w-10 rounded-full" onClick={sendMessage}>
+          <Button className="bg-[#668899] w-10 rounded-full transition-all active:scale-90" onClick={sendMessage}>
             <SendHorizonalIcon />
           </Button>
         </div>

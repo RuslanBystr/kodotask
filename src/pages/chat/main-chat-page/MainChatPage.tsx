@@ -12,14 +12,14 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { ChatTypeEnum } from '@/enums/chat-type.enum';
-import { useUserConnection } from '@/hooks/useUserConnection';
 import { Chat } from '@/pages/chat/common/Chat';
 import VideoChat from '@/pages/chat/common/VideoChat';
 import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
 import { useMainChatsPage } from '@/pages/chat/hooks/useMainChatsPage';
 import { ChatItem } from '@/pages/chat/main-chat-page/ChatItem';
 import { useDeletePrivateChatMutation } from '@/services/chat';
-import { selectAuthenticatedUserSelector } from '@/store';
+import { selectAuthenticatedUserSelector, useAppSelector } from '@/store';
+import { selectOnlineUsers } from '@/store/users/selectors';
 import { IChatResponse, IUserChat } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { getEnv } from '@/utils';
@@ -32,7 +32,8 @@ const MainChatPage: React.FC = () => {
   const userId = userData?.id;
 
   const { chats, refetch } = useMainChatsPage({ chatTypeQuery: ChatTypeEnum.PRIVATE });
-  const onlineUsers = useUserConnection({ userId });
+
+  const onlineUsers = useAppSelector(selectOnlineUsers);
   const { filterValue, filteredChats } = useFilterChats(chats?.items);
 
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
