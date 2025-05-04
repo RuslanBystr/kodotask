@@ -24,7 +24,7 @@ export function CallModal({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          className="rounded-none bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
+          className="rounded-none bg-[--main-button] transition-all active:scale-90 hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
           onClick={() => setOpen(true)}
         >
           <PhoneCall />

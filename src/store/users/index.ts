@@ -1,3 +1,2 @@
-export * as usersSelectors from './selectors';
-export { default as usersReducer } from './slice';
-export * from './types';
+export { default as onlineUsersReducer } from './slice';
+export { addOnlineUser, removeOnlineUser, setOnlineUsers } from './slice';

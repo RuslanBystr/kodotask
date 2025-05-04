@@ -6,14 +6,14 @@ import { fileUploadApi } from '@/services/file';
 import { usersApi } from '@/services/users';
 
 import { authReducer } from './auth';
-import { usersReducer } from './users';
+import { onlineUsersReducer } from './users';
 
 const rootReducer = combineReducers({
   [baseApi.reducerPath]: baseApi.reducer,
   [usersApi.reducerPath]: usersApi.reducer,
   [fileUploadApi.reducerPath]: fileUploadApi.reducer,
   auth: authReducer,
-  users: usersReducer,
+  onlineUsers: onlineUsersReducer,
 });
 export const setupStore = () =>
   configureStore({

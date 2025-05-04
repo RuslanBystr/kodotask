@@ -1,17 +1,3 @@
-import { createSelector } from '@reduxjs/toolkit';
+import { RootState } from '@/store';
 
-import type { RootState } from '@/store';
-
-import type { IUsersState } from './types';
-
-export const usersStateSelector = (state: RootState) => state.users;
-
-export const selectedUserForModalSelector = createSelector(
-  usersStateSelector,
-  (state: IUsersState) => state.selectedUserForModal,
-);
-
-export const isDeleteUserModalOpenSelector = createSelector(
-  usersStateSelector,
-  (state: IUsersState) => state.isDeleteUserModalOpen,
-);
+export const selectOnlineUsers = (state: RootState) => state.onlineUsers.users;

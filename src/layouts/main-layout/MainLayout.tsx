@@ -1,12 +1,18 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 
 import { AppSidebar } from '@/components/app-sidebar';
 import { ChatNotifier } from '@/components/notifier';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { useUserConnection } from '@/hooks/useUserConnection';
+import { selectAuthenticatedUserSelector } from '@/store';
 import { socket } from '@/utils/socket';
 
 export const MainLayout = () => {
+  const userData = useSelector(selectAuthenticatedUserSelector);
+  const userId = userData?.id;
+
   useEffect(() => {
     socket.connect();
 
@@ -14,6 +20,7 @@ export const MainLayout = () => {
       socket.disconnect();
     };
   }, []);
+  useUserConnection({ userId });
 
   return (
     <SidebarProvider>

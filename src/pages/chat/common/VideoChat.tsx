@@ -155,7 +155,7 @@ const VideoChat = ({
         clipPath: `polygon(
             10px 0%,  
             calc(100% - 10px) 0%, 
-            100% 10px,  
+            100% 10px,
             100% calc(100% - 10px), 
             calc(100% - 10px) 100%, 
             10px 100%, 
@@ -191,7 +191,10 @@ const VideoChat = ({
             End Call
           </Button>
         ) : (
-          <Button className="mt-4 bg-[--main-button] rounded-none cut cut-left-5 cut-right-5" onClick={handleCallUser}>
+          <Button
+            className="mt-4 bg-[--main-button] rounded-none transition-all active:scale-95 cut cut-left-5 cut-right-5"
+            onClick={handleCallUser}
+          >
             <VideoIcon className="mr-2" />
             {callState === 'idle' ? 'Start Call' : 'Calling...'}
           </Button>
