@@ -56,6 +56,7 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
   }, [fetchMessages, loading]);
 
   useEffect(() => {
+    setLoading(false);
     const container = messagesContainerRef.current;
     if (!container) return;
     container.scrollTop = (container.scrollHeight - container.clientHeight) / 2;
@@ -66,7 +67,7 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
         behavior: 'smooth',
       });
     }, 100);
-  }, [typing]);
+  }, [setLoading, typing]);
 
   useEffect(() => {
     const container = messagesContainerRef.current;
