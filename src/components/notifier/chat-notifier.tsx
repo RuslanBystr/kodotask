@@ -1,15 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { getEnv } from '@/utils';
 import { socket } from '@/utils/socket';
 
 const { api } = getEnv();
 
 export const ChatNotifier = () => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
-    socket.on('notifyNewMessage', (message) => {
+    audioRef.current = new Audio('/sounds/notification.mp3');
+
+    const handleNewMessage = (message: IMessageResponse) => {
+      audioRef.current?.play().catch((err) => {
+        toast('Failed to play sound:', err);
+      });
+
       toast(
         <div className="flex gap-2">
           <div className="flex items-end mr-1">
@@ -36,10 +45,12 @@ export const ChatNotifier = () => {
           },
         },
       );
-    });
+    };
+
+    socket.on('notifyNewMessage', handleNewMessage);
 
     return () => {
-      socket.off('notifyNewMessage');
+      socket.off('notifyNewMessage', handleNewMessage);
     };
   }, []);
 

@@ -125,7 +125,7 @@ const SidebarProvider = React.forwardRef<
             } as React.CSSProperties
           }
           className={cn(
-            'group/sidebar-wrapper flex min-h-svh w-full w overflow-hidden has-[[data-variant=inset]]:bg-sidebar animated-bg',
+            'group/sidebar-wrapper flex min-h-svh w-full w z-0 overflow-hidden has-[[data-variant=inset]]:bg-sidebar animated-bg',
             className,
           )}
           ref={ref}
@@ -175,7 +175,7 @@ const Sidebar = React.forwardRef<
           }
           side={side}
         >
-          <div className="flex h-full w-full flex-col bg-[#495D64]">{children}</div>
+          <div className="flex h-full w-full flex-col bg-[#3a4d55]">{children}</div>
         </SheetContent>
       </Sheet>
     );
@@ -185,7 +185,7 @@ const Sidebar = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        'group peer hidden md:block text-sidebar-foreground bg-[#2F3D44]',
+        'group peer hidden md:block text-sidebar-foreground bg-[#3a4d55]',
         state === 'collapsed' ? 'w-auto' : 'w-[15rem]',
       )}
       data-state={state}

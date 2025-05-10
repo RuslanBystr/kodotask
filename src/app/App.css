@@ -69,8 +69,8 @@
   .animated-bg {
     position: relative;
     overflow: hidden;
+    background: #3d5059;
   }
-
   .animated-bg::before {
     content: '';
     position: absolute;
@@ -78,23 +78,23 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(66, 131, 218, 0.22) 10%, transparent 70%),
-      radial-gradient(circle, rgba(230, 149, 224, 0.15) 10%, transparent 70%),
-      radial-gradient(circle, rgba(107, 243, 107, 0.22) 10%, transparent 70%);
-    animation: moveBackground 30s ease-in-out infinite;
+    background:
+            radial-gradient(circle at 50% 30%, rgba(109, 207, 179, 0.07) 150px, transparent 200px),
+            radial-gradient(circle at 30% 40%, rgba(156, 255, 232, 0.07) 120px, transparent 350px),
+            radial-gradient(circle at 70% 60%, rgba(109, 207, 184, 0.06) 150px, transparent 600px),
+            radial-gradient(circle at 50% 80%, rgba(178, 218, 178, 0.08) 100px, transparent 450px);
     filter: blur(50px);
     z-index: -1;
     will-change: transform;
   }
-  .neon {
-    background-color: rgba(173, 173, 173, 0.23);
-  }
+
   .neon-particles {
     position: absolute;
     inset: 0;
     background: radial-gradient(circle, rgba(0, 255, 255, 0.15) 1%, transparent 40%);
     animation: particlesMove 20s linear infinite;
   }
+
   .custom-scrollbar {
     scrollbar-width: thin; /* Firefox */
     scrollbar-color: rgba(55, 120, 120, 0.53) transparent; /* Thumb and track color for Firefox */
