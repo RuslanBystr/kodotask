@@ -36,20 +36,36 @@ export function ActivityChart() {
         <CardTitle>User Activity</CardTitle>
         <CardDescription>Logged time per day</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer className="flex justify-center h-[30vh]" config={chartConfig}>
-          <BarChart data={formattedData} width={600} height={300}>
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis dataKey="date" tickLine={false} tickMargin={10} axisLine={false} />
-            <YAxis tickMargin={10} axisLine={false} tickFormatter={(value) => timeFormat(value)} />
-            <Tooltip content={<ChartTooltipContent />} />
-            <Bar dataKey="totaltime" fill="var(--color-chart-1)" radius={4} />
-          </BarChart>
-        </ChartContainer>
+
+      <CardContent className="w-full overflow-x-auto">
+        <div className="flex">
+          <div className="sticky left-0 z-10 border-r">
+            <BarChart width={70} height={300} data={formattedData} margin={{ top: 2, bottom: 2, left: 2, right: 2 }}>
+              <YAxis
+                tick={{ fill: 'var(--color-chart-1)', fontSize: 14 }}
+                tickMargin={5}
+                axisLine={false}
+                tickFormatter={(value) => timeFormat(value)}
+              />
+              <Bar className="hidden" dataKey="totaltime" fill="red" />
+            </BarChart>
+          </div>
+
+          <div className="overflow-x-auto">
+            <ChartContainer className="h-[30vh] min-w-[700px]" config={chartConfig}>
+              <BarChart data={formattedData} width={Math.max(formattedData.length * 40, 700)} height={300}>
+                <CartesianGrid vertical={false} strokeDasharray="10 10" />
+                <XAxis dataKey="date" tickLine={false} tickMargin={5} axisLine={false} />
+                <Tooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="totaltime" fill="var(--color-chart-1)" radius={4} />
+              </BarChart>
+            </ChartContainer>
+          </div>
+        </div>
       </CardContent>
+
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">Showing logged time per day</div>
-        {/* <div className="leading-none text-muted-foreground">Showing logged time per day</div> */}
       </CardFooter>
     </Card>
   );

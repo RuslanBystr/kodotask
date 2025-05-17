@@ -16,11 +16,11 @@ export const useMainTaskPage = () => {
   const [selectProject, setSelectProject] = useState<number | undefined>(undefined);
   const [filters] = useTableFilters(columnFilters);
   const [sortBy, isOrderByAsc] = useTableSorting(sorting);
-  const paginateParams = usePagination(filters);
+  const paginateParams = usePagination(filters, 50);
 
   const { page, rowsPerPage: limit } = paginateParams;
 
-  const { data: projects } = useGetProjectsQuery({ limit: 20, page: 1 });
+  const { data: projects } = useGetProjectsQuery({ limit: 50, page: 1 });
 
   const { data: tasks, isLoading } = useGetTasksQuery({
     limit,
