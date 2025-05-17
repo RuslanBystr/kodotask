@@ -56,7 +56,7 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const navigate = useNavigate();
-  const { page, onPageChange } = paginateParams;
+  const { page, onPageChange, rowsPerPage } = paginateParams;
 
   const table = useReactTable({
     data,
@@ -74,11 +74,15 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination: {
+        pageIndex: page,
+        pageSize: rowsPerPage,
+      },
     },
   });
 
   return (
-    <div className="w-full my-2">
+    <div className="w-full my-2 max-h-[70vh]">
       {selectColumns && (
         <div className="flex items-center justify-end py-4">
           <DropdownMenu>
@@ -105,55 +109,67 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
           </DropdownMenu>
         </div>
       )}
-      <div className="rounded-none cut cut-left-10 cut-right-10 overflow-x-auto w-auto shadow-[1px_0_0_2px_#1f2937]">
-        <Table className="">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => {
-                const rowId = row.original.id ?? '';
-                return (
-                  <TableRow
-                    key={rowId}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                    onClick={() => {
-                      if (rowClickNavigateId && rowId) {
-                        navigate(rowId.toString());
-                      }
-                    }}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+      <div className="w-full max-h-[70vh] overflow-hidden">
+        <div className="overflow-x-auto custom-scrollbar">
+          <div className="min-w-full inline-block align-middle">
+            <Table className="table-fixed w-full border-collapse">
+              <TableHeader className="sticky top-0 z-10">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id} className="w-[200px] text-left">
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
                     ))}
                   </TableRow>
-                );
-              })
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {isLoading ? (
-                    <div className="flex justify-center">
-                      <Loading size={32} />
-                    </div>
+                ))}
+              </TableHeader>
+            </Table>
+
+            <div className="max-h-[70vh] overflow-y-auto custom-scrollbar">
+              <Table className="table-fixed w-full border-collapse">
+                <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => {
+                      const rowId = row.original.id ?? '';
+                      return (
+                        <TableRow
+                          key={rowId}
+                          onClick={() => {
+                            if (rowClickNavigateId && rowId) {
+                              navigate(rowId.toString());
+                            }
+                          }}
+                          className="hover:bg-muted cursor-pointer"
+                        >
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id} className="w-[200px]">
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      );
+                    })
                   ) : (
-                    'No results.'
+                    <tr>
+                      <td colSpan={columns.length} className="h-24 text-center">
+                        {isLoading ? (
+                          <div className="flex justify-center">
+                            <Loading size={32} />
+                          </div>
+                        ) : (
+                          'No results.'
+                        )}
+                      </td>
+                    </tr>
                   )}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </div>
       </div>
+
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="space-x-2 flex flex-row">
           <Select

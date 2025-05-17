@@ -44,9 +44,8 @@ export const columns: ColumnDef<Task>[] = [
       const { icon: Icon, color } = priorities[row.original.priority] || priorities.Medium;
 
       return (
-        <div className="flex justify-center">
+        <div className="flex">
           <Icon className={color} />
-          <p className={color}>{row.original.priority}</p>
         </div>
       );
     },

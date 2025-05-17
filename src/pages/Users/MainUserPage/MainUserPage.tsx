@@ -29,7 +29,7 @@ const MainUserPage: React.FC = () => {
   const admin = useSelector(selectAuthenticatedUserSelector);
 
   return (
-    <div className="p-2">
+    <div className="flex flex-col h-screen p-2">
       <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
@@ -41,29 +41,28 @@ const MainUserPage: React.FC = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </header>
+
       {admin?.role !== AdminRoleEnum.VIEWER && (
         <Button
-          className="mt-5 rounded-none transition-all active:scale-95 bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
+          className="mt-5 w-40 rounded-none transition-all active:scale-95 bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
           onClick={goToCreateUserPage}
         >
           <PlusIcon />
           Create User
         </Button>
       )}
-      <div className="flex justify-center max-h-[75vh] overflow-auto">
-        <CustomDataTable
-          columns={columns}
-          data={users?.items || []}
-          isLoading={isLoading}
-          meta={meta}
-          sorting={sorting}
-          setSorting={setSorting}
-          columnFilters={columnFilters}
-          setColumnFilters={setColumnFilters}
-          paginateParams={paginateParams}
-          selectColumns={false}
-        />
-      </div>
+      <CustomDataTable
+        columns={columns}
+        data={users?.items || []}
+        isLoading={isLoading}
+        meta={meta}
+        sorting={sorting}
+        setSorting={setSorting}
+        columnFilters={columnFilters}
+        setColumnFilters={setColumnFilters}
+        paginateParams={paginateParams}
+        selectColumns={false}
+      />
     </div>
   );
 };

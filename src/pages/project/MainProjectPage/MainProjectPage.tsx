@@ -49,7 +49,7 @@ const MainProjectPage: React.FC = () => {
             onClick={goToCreateProjectPage}
           >
             <PlusIcon />
-            START A NEW PROJECT
+            LET&apos;S CREATE A PROJECT
           </Button>
         </div>
       )}

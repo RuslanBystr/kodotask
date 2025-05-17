@@ -45,16 +45,34 @@ const MainTaskPage: React.FC = () => {
         </Breadcrumb>
       </header>
       <div className="h-[calc(100vh-72px)] overflow-y-auto">
-        {admin?.role !== AdminRoleEnum.VIEWER && (
-          <Button
-            className="mt-5 rounded-none transition-all active:scale-95 bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
-            onClick={goToCreateTaskPage}
-          >
-            <PlusIcon />
-            Add Task
-          </Button>
-        )}
-        <div className="flex border-b">
+        <div className="flex justify-between">
+          {admin?.role !== AdminRoleEnum.VIEWER && (
+            <Button
+              className="mt-5 rounded-none transition-all active:scale-95 bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
+              onClick={goToCreateTaskPage}
+            >
+              <PlusIcon />
+              Add Task
+            </Button>
+          )}
+          <div className="mt-5 md:hidden">
+            <select
+              className="w-full px-4 text-white h-full bg-[--main-button] focus:outline-none focus:ring-2 focus:ring-[--main-button] cut cut-right-5 cut-left-5"
+              value={selectProject}
+              onChange={(e) => setSelectProject(e.target.value as unknown as number)}
+            >
+              <option className="text-white" value="" disabled>
+                Select a project
+              </option>
+              {projects?.items.map((project) => (
+                <option className="text-white" key={project.id} value={project.id}>
+                  {project.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="flex flex-col md:flex-row border-b">
           <CustomDataTable
             columns={columns}
             data={tasks?.items || []}
