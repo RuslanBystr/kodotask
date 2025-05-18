@@ -21,7 +21,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PaginationParams } from '@/hooks/usePagination';
 import { IMetaResponse } from '@/types';
 import { Loading } from '@/ui-kit/loading/Loading';
@@ -109,65 +108,53 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
           </DropdownMenu>
         </div>
       )}
-      <div className="w-full max-h-[70vh] overflow-hidden">
-        <div className="overflow-x-auto custom-scrollbar">
-          <div className="min-w-full inline-block align-middle">
-            <Table className="table-fixed w-full border-collapse">
-              <TableHeader className="sticky top-0 z-10">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id} className="w-[200px] text-left">
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                      </TableHead>
-                    ))}
-                  </TableRow>
+      <div className="w-full max-h-[70vh] overflow-auto custom-scrollbar">
+        <table className="table-auto w-full border-collapse">
+          <thead className="sticky top-0 z-10 bg-[#3D5059]">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th key={header.id} className="text-left whitespace-nowrap px-4 py-2">
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
                 ))}
-              </TableHeader>
-            </Table>
-
-            <div className="max-h-[70vh] overflow-y-auto custom-scrollbar">
-              <Table className="table-fixed w-full border-collapse">
-                <TableBody>
-                  {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) => {
-                      const rowId = row.original.id ?? '';
-                      return (
-                        <TableRow
-                          key={rowId}
-                          onClick={() => {
-                            if (rowClickNavigateId && rowId) {
-                              navigate(rowId.toString());
-                            }
-                          }}
-                          className="hover:bg-muted cursor-pointer"
-                        >
-                          {row.getVisibleCells().map((cell) => (
-                            <TableCell key={cell.id} className="w-[200px]">
-                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      );
-                    })
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  onClick={() => {
+                    if (rowClickNavigateId && row.original.id) {
+                      navigate(row.original.id.toString());
+                    }
+                  }}
+                  className="hover:bg-muted cursor-pointer border-b"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className="px-4 py-2 whitespace-nowrap">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={columns.length} className="h-24 text-center">
+                  {isLoading ? (
+                    <div className="flex justify-center">
+                      <Loading size={32} />
+                    </div>
                   ) : (
-                    <tr>
-                      <td colSpan={columns.length} className="h-24 text-center">
-                        {isLoading ? (
-                          <div className="flex justify-center">
-                            <Loading size={32} />
-                          </div>
-                        ) : (
-                          'No results.'
-                        )}
-                      </td>
-                    </tr>
+                    'No results.'
                   )}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-        </div>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       <div className="flex items-center justify-end space-x-2 py-4">

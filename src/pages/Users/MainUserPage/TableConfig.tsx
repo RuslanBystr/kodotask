@@ -10,17 +10,15 @@ export const columns: ColumnDef<IUserResponse>[] = [
     header: getDefaultColumnHeader({ name: 'id' }),
   },
   {
-    accessorKey: 'avatar',
-    header: getDefaultColumnHeader({ name: 'Avatar', sort: false, search: false }),
-    cell: ({ row }) => <AvatarCell row={row} />,
-  },
-  {
     accessorKey: 'firstName',
-    header: getDefaultColumnHeader({ name: 'First name' }),
-  },
-  {
-    accessorKey: 'lastName',
-    header: getDefaultColumnHeader({ name: 'Last name' }),
+    header: getDefaultColumnHeader({ name: 'Name' }),
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <AvatarCell row={row} />
+        <p>{row.original.firstName}</p>
+        <p>{row.original.lastName}</p>
+      </div>
+    ),
   },
   {
     accessorKey: 'email',
@@ -30,11 +28,6 @@ export const columns: ColumnDef<IUserResponse>[] = [
     accessorKey: 'createdAt',
     header: getDefaultColumnHeader({ name: 'Created', search: false }),
     cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString(),
-  },
-  {
-    accessorKey: 'updatedAt',
-    header: getDefaultColumnHeader({ name: 'Updated', search: false }),
-    cell: ({ row }) => new Date(row.original.updatedAt).toLocaleDateString(),
   },
   {
     accessorKey: 'options',
