@@ -3,6 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { CustomDataTable } from '@/components/table/CustomTable';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -10,8 +11,11 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminRoleEnum } from '@/enums';
 import { useMainTaskPage } from '@/pages/task/MainTaskPage/useMainTaskPage';
 import { selectAuthenticatedUserSelector } from '@/store';
+import { getEnv } from '@/utils';
 
 import { columns } from './TableConfig';
+
+const { api } = getEnv();
 
 const MainTaskPage: React.FC = () => {
   const {
@@ -55,7 +59,7 @@ const MainTaskPage: React.FC = () => {
               Add Task
             </Button>
           )}
-          <div className="mt-5 md:hidden">
+          <div className="mt-5 lg:hidden">
             <select
               className="w-full px-4 text-white h-full bg-[--main-button] focus:outline-none focus:ring-2 focus:ring-[--main-button] cut cut-right-5 cut-left-5"
               value={selectProject}
@@ -86,18 +90,23 @@ const MainTaskPage: React.FC = () => {
             selectColumns={false}
             rowClickNavigateId
           />
-          <div className="hidden md:block border-l ml-2 w-[20vw]">
+          <div className="hidden lg:block border-l ml-2 w-[320px]">
             {projects?.items.map((project) => (
               <Button
                 key={project.id}
-                className={`w-full rounded-none ${
+                className={`w-full rounded-none justify-start items-center  ${
                   selectProject === project.id
                     ? 'bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5'
                     : 'bg-transparent hover:bg-transparent/10'
                 }`}
                 onClick={() => setSelectProject(project.id)}
               >
-                {project?.name}
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-7 w-7 rounded-lg">
+                    <AvatarImage src={`${api}/file/${project?.image}`} alt="file" />
+                  </Avatar>
+                  <p>{project?.name}</p>
+                </div>
               </Button>
             ))}
           </div>
