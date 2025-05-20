@@ -77,7 +77,7 @@ export const useChatMessage = ({
 
       typingTimeoutRef.current = setTimeout(() => {
         setIsTyping(false);
-      }, 1600);
+      }, 400);
     },
     [userData?.id, setIsTyping],
   );

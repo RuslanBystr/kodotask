@@ -56,10 +56,16 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
   }, [fetchMessages, loading]);
 
   useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    container.scrollTop = (container.scrollHeight - container.clientHeight) / 2;
+  }, []);
+
+  useEffect(() => {
     setLoading(false);
     const container = messagesContainerRef.current;
     if (!container) return;
-    container.scrollTop = (container.scrollHeight - container.clientHeight) / 2;
 
     setTimeout(() => {
       container.scrollTo({

@@ -34,7 +34,7 @@ export const ChatNotifier = () => {
         </div>,
         {
           position: 'bottom-right',
-          autoClose: 5000,
+          autoClose: 3500,
           style: {
             padding: '5px',
             borderBottomLeftRadius: 15,
