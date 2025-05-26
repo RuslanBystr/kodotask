@@ -69,7 +69,7 @@ export const SignInForm = () => {
 
   return (
     <div className={cn('flex flex-col gap-6')}>
-      <Card className="bg-transparent/30 shadow-md p-2">
+      <Card className="bg-transparent/30 shadow-md p-2 border-0 rounded-none cut cut-left-10 cut-right-10">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
         </CardHeader>
@@ -89,7 +89,11 @@ export const SignInForm = () => {
                   <Input id="password" type="password" {...register('password')} />
                   {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="w-full bg-[--main-button] hover:bg-[--main-button-hover]"
+                  disabled={isLoading}
+                >
                   {isLoading ? 'Loading...' : 'Login'}
                 </Button>
                 <Button variant="outline" className="w-full" onClick={handleGoogleAuth}>
