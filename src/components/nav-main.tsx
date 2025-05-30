@@ -66,7 +66,7 @@ export function NavMain({
                     )}
                   >
                     {item.icon && <item.icon />}
-                    <span>{item.title}</span>
+                    <span className="select-none">{item.title}</span>
                     {item.items && (
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     )}

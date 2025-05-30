@@ -2,7 +2,6 @@ import { CheckCheckIcon, CircleDotIcon, CodeXmlIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { TaskStatusEnum } from '@/enums/task-status.enum';
 import { useEditTaskMutation } from '@/services/task';
 
@@ -18,18 +17,18 @@ const TaskStatus = ({ id, defaultStatus }: { id: string; defaultStatus: TaskStat
   return (
     <div className="w-full h-[40vh] max-w-sm lg:max-w-full p-4 flex items-center justify-between">
       <Button
-        className="w-[8em] bg-transparent flex items-center space-x-1 cursor-pointer"
+        className="w-[8em] bg-transparent rounded-none hover:bg-[--main-button-hover] flex items-center space-x-1 cursor-pointer cut cut-right-5 cut-left-5"
         onClick={() => handleStatusChange(TaskStatusEnum.TODO)}
       >
         {status === TaskStatusEnum.TODO || status === TaskStatusEnum.IN_PROGRESS || status === TaskStatusEnum.DONE ? (
           <>
             <CircleDotIcon className="text-red-200" />
-            <Label className="font-medium text-red-200">To Do</Label>
+            <p className="font-medium text-red-200">To Do</p>
           </>
         ) : (
           <>
             <CircleDotIcon className="text-green-300" />
-            <Label className="font-medium text-red-200">To Do</Label>
+            <p className="font-medium text-red-200">To Do</p>
           </>
         )}
       </Button>
@@ -41,18 +40,18 @@ const TaskStatus = ({ id, defaultStatus }: { id: string; defaultStatus: TaskStat
         }`}
       />
       <Button
-        className="w-[8em] bg-transparent flex items-center space-x-1 cursor-pointer"
+        className="w-[8em] bg-transparent rounded-none hover:bg-[--main-button-hover] flex items-center space-x-1 cursor-pointer cut cut-right-5 cut-left-5"
         onClick={() => handleStatusChange(TaskStatusEnum.IN_PROGRESS)}
       >
         {status === TaskStatusEnum.IN_PROGRESS || status === TaskStatusEnum.DONE ? (
           <>
             <CodeXmlIcon className="text-yellow-100" />
-            <Label className="font-medium text-yellow-100">In Progress</Label>
+            <p className="font-medium text-yellow-100">In Progress</p>
           </>
         ) : (
           <>
             <CodeXmlIcon className="text-gray-400" />
-            <Label className="font-medium text-gray-400">In Progress</Label>
+            <p className="font-medium text-gray-400">In Progress</p>
           </>
         )}
       </Button>
@@ -62,18 +61,18 @@ const TaskStatus = ({ id, defaultStatus }: { id: string; defaultStatus: TaskStat
         }`}
       />
       <Button
-        className="w-[8em] bg-transparent flex items-center space-x-1 cursor-pointer"
+        className="w-[8em] bg-transparent rounded-none hover:bg-[--main-button-hover] flex items-center space-x-1 cursor-pointer cut cut-right-5 cut-left-5"
         onClick={() => handleStatusChange(TaskStatusEnum.DONE)}
       >
         {status === TaskStatusEnum.DONE ? (
           <>
             <CheckCheckIcon className="text-green-200" />
-            <Label className="font-medium text-green-200">Done</Label>
+            <p className="font-medium text-green-200">Done</p>
           </>
         ) : (
           <>
             <CheckCheckIcon className="text-gray-400" />
-            <Label className="font-medium text-gray-400">Done</Label>
+            <p className="font-medium text-gray-400">Done</p>
           </>
         )}
       </Button>

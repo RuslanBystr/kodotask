@@ -67,7 +67,10 @@ export function PaymentModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <SidebarMenuButton className="rounded-none bg-transparent hover:bg-[#88aabb]" onClick={() => setOpen(true)}>
+        <SidebarMenuButton
+          className="rounded-none select-none bg-transparent hover:bg-[#88aabb]"
+          onClick={() => setOpen(true)}
+        >
           <DollarSign />
           Support us
         </SidebarMenuButton>

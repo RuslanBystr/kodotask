@@ -49,7 +49,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </Elements>
         <SidebarMenuButton className="hover:bg-muted/50" tooltip="Logout" onClick={onLogoutClick}>
           <LogOut />
-          <span>Logout</span>
+          <span className="select-none">Logout</span>
         </SidebarMenuButton>
       </SidebarFooter>
       <SidebarRail />

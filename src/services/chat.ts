@@ -56,6 +56,14 @@ export const messagesApi = baseApi.injectEndpoints({
       }),
     }),
 
+    createGroupChat: builder.mutation<IChatResponse, unknown>({
+      query: ({ groupName }) => ({
+        url: `chats/group`,
+        body: { groupName },
+        method: 'POST',
+      }),
+    }),
+
     getMessages: builder.query<IResponse<IMessageResponse>, IChatRequestParams>({
       query: (params) => ({
         url: `${API_ROUTES.MESSAGES}`,
@@ -118,6 +126,7 @@ export const {
   useGetUserChatsQuery,
   useGetUserGroupChatsQuery,
   useCreatePrivateChatMutation,
+  useCreateGroupChatMutation,
   useGetMessagesQuery,
   useDeletePrivateChatMutation,
   useDeleteMessageMutation,

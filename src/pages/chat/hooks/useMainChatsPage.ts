@@ -35,11 +35,11 @@ export const useMainChatsPage = ({ chatTypeQuery }: { chatTypeQuery: ChatTypeEnu
   switch (chatTypeQuery) {
     case ChatTypeEnum.PRIVATE:
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      queryResult = useGetUserChatsQuery(queryParams);
+      queryResult = useGetUserChatsQuery(queryParams, { skip: !userData?.id });
       break;
     case ChatTypeEnum.GROUP:
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      queryResult = useGetUserGroupChatsQuery(queryParams);
+      queryResult = useGetUserGroupChatsQuery(queryParams, { skip: !userData?.id });
       break;
     default:
       throw new Error('Invalid chat type');

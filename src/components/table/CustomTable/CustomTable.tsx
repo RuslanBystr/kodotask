@@ -131,7 +131,7 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
                       navigate(row.original.id.toString());
                     }
                   }}
-                  className="hover:bg-muted cursor-pointer border-b"
+                  className="hover:bg-transparent/10 cursor-pointer border-b"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-4 py-2 whitespace-nowrap">

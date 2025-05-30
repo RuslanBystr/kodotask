@@ -17,7 +17,9 @@ export interface IProjectFormParams {
   description: string;
   image?: string;
 }
+
 const { api } = getEnv();
+
 const ProjectForm: React.FC<IFormProps<IProjectFormParams>> = ({
   validationSchema,
   isLoading,

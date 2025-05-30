@@ -3,16 +3,20 @@ import { PlusIcon } from 'lucide-react';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
+import { CreateGroupModal } from '@/components/modals/create-group-modal/CreateGroupModal';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarMenuButton, SidebarTrigger } from '@/components/ui/sidebar';
+import { AdminRoleEnum } from '@/enums';
 import { ChatTypeEnum } from '@/enums/chat-type.enum';
 import { Chat } from '@/pages/chat/common/Chat';
 import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
+import { useCreateGroupChatMutation } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IChatResponse } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
@@ -27,6 +31,9 @@ const MainGroupChatPage: React.FC = () => {
   const userData = useSelector(selectAuthenticatedUserSelector);
   const userId = userData?.id;
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
+  const [createGroupChat] = useCreateGroupChatMutation();
+  const [openCreateGroupModal, setOpenCreateGroupModal] = useState(false);
+  const [groupName, setGroupName] = useState('');
 
   const { chats, refetch } = useMainChatsPage({ chatTypeQuery: ChatTypeEnum.GROUP });
   const { filterValue, filteredChats } = useFilterChats(chats?.items);
@@ -38,6 +45,15 @@ const MainGroupChatPage: React.FC = () => {
     },
     [navigate],
   );
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await createGroupChat(groupName);
+    } catch (err) {
+      toast.error('fetch error');
+    }
+  };
 
   const renderChatList = () => {
     if (!filteredChats) {
@@ -116,9 +132,28 @@ const MainGroupChatPage: React.FC = () => {
 
         <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
           <div className="md:flex md:flex-row-reverse w-full gap-1">
-            <Button className="transition-all active:scale-95 bg-[--main-button] hover:bg-[--main-button-hover] rounded-none cut cut-left-5 cut-right-5">
-              <PlusIcon />
-            </Button>
+            {userData?.role === AdminRoleEnum.ADMIN && (
+              <Button
+                className="transition-all active:scale-95 bg-[--main-button] hover:bg-[--main-button-hover] rounded-none cut cut-left-5 cut-right-5"
+                onClick={() => setOpenCreateGroupModal(true)}
+              >
+                <PlusIcon />
+              </Button>
+            )}
+            <CreateGroupModal open={openCreateGroupModal} setOpen={setOpenCreateGroupModal}>
+              <form onSubmit={handleSubmit}>
+                <Input
+                  className="rounded-none"
+                  placeholder="Group Chat Name"
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                />
+                <Button type="submit" className="bg-[--main-button] rounded-none cut cut-left-5 cut-right-5">
+                  Create
+                </Button>
+              </form>
+            </CreateGroupModal>
+
             <Input className="p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
           </div>
           <div className="h-[85vh] w-full overflow-auto custom-scrollbar">{renderChatList()}</div>
