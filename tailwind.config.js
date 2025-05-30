@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const plugin = require('tailwindcss/plugin');
 
 module.exports = {
@@ -6,6 +7,15 @@ module.exports = {
   content: ['./src/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      keyframes: {
+        'slide-in-left': {
+          '0%': { transform: 'translateX(20%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+      },
+      animation: {
+        'slide-in-left-slow': 'slide-in-left 1s ease-out',
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
