@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Form } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -68,35 +69,60 @@ export const SignInForm = () => {
   };
 
   return (
-    <div className={cn('flex flex-col gap-6')}>
-      <Card className="bg-transparent/30 shadow-md p-2 border-0 rounded-none cut cut-left-10 cut-right-10">
+    <div className="relative flex flex-col gap-6">
+      <Card
+        className={cn(
+          'relative z-10 bg-transparent/30 border-none rounded-xl backdrop-blur-md overflow-hidden p-6',
+          'cut cut-left-10 cut-right-10',
+        )}
+      >
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl text-[--main-text]">Login</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="m@example.com" {...register('email')} />
-                  {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                  <Label htmlFor="email" className="text-[--main-text]">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    className="rounded-none"
+                    type="email"
+                    placeholder="m@example.com"
+                    {...register('email')}
+                  />
+                  <p className="text-red-500 text-xs h-4">{errors.email ? errors.email.message : ''}</p>
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password" className="text-[--main-text]">
+                      Password
+                    </Label>
                   </div>
-                  <Input id="password" type="password" {...register('password')} />
-                  {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+                  <Input
+                    id="password"
+                    className="rounded-none"
+                    type="password"
+                    autoComplete="new-password"
+                    {...register('password')}
+                  />
+                  <p className="text-red-500 text-xs h-4">{errors.password ? errors.password.message : ''}</p>
                 </div>
-                <Button
-                  type="submit"
-                  className="w-full bg-[--main-button] hover:bg-[--main-button-hover]"
-                  disabled={isLoading}
-                >
+                <div className="flex items-center gap-2" data-testid="remember-me" data-cy="remember-me">
+                  <Checkbox className="h-5 w-5" />
+                  <p className="text-[--main-text]">Remember me</p>
+                </div>
+                <Button type="submit" className="w-full rounded-none" disabled={isLoading}>
                   {isLoading ? 'Loading...' : 'Login'}
                 </Button>
-                <Button variant="outline" className="w-full" onClick={handleGoogleAuth}>
+                <Button
+                  variant="outline"
+                  className="w-full rounded-none text-[--main-text] bg-[--main-button-dark]"
+                  onClick={handleGoogleAuth}
+                >
                   Login with Google
                 </Button>
               </div>

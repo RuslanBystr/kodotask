@@ -26,8 +26,12 @@
     --destructive-foreground: 0 0% 35%;
     --ring: 200 100% 50%;
     --radius: 0.6rem;
+    --main-text: #bbe1e2;
     --main-button: #4f9496;
+    --main-button-dark: #2f3b3b;
     --main-button-hover: #5fa8a9;
+    --main-button-text: #e0f7f7;
+    --main-button-shadow: rgba(95, 168, 169, 0.35);
     --color-chart-1: #a5d2dc;
   }
 
@@ -69,8 +73,9 @@
   .animated-bg {
     position: relative;
     overflow: hidden;
-    background: #3d5059;
+    background: #2f3e46;
   }
+
   .animated-bg::before {
     content: '';
     position: absolute;
@@ -79,54 +84,64 @@
     width: 200%;
     height: 200%;
     background:
-            radial-gradient(circle at 50% 30%, rgba(109, 207, 179, 0.07) 150px, transparent 200px),
-            radial-gradient(circle at 30% 40%, rgba(156, 255, 232, 0.07) 120px, transparent 350px),
-            radial-gradient(circle at 70% 60%, rgba(109, 207, 184, 0.06) 150px, transparent 600px),
-            radial-gradient(circle at 50% 80%, rgba(178, 218, 178, 0.08) 100px, transparent 450px);
-    filter: blur(50px);
+            radial-gradient(circle at 50% 30%, rgba(0, 255, 200, 0.05) 180px, transparent 300px),
+            radial-gradient(circle at 30% 60%, rgba(0, 220, 255, 0.04) 150px, transparent 400px),
+            radial-gradient(circle at 70% 50%, rgba(0, 255, 180, 0.04) 220px, transparent 600px),
+            radial-gradient(circle at 50% 80%, rgba(0, 255, 180, 0.05) 180px, transparent 450px);
+    filter: blur(60px);
     z-index: -1;
     will-change: transform;
+    animation: bgMove 30s linear infinite;
   }
 
   .neon-particles {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, rgba(0, 255, 255, 0.15) 1%, transparent 40%);
-    animation: particlesMove 20s linear infinite;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.08) 0.8%, transparent 40%);
+    animation: particlesMove 25s linear infinite;
+    opacity: 0.5;
+    mix-blend-mode: screen;
   }
 
-  .custom-scrollbar {
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: rgba(55, 120, 120, 0.53) transparent; /* Thumb and track color for Firefox */
+  @keyframes bgMove {
+    0% {
+      transform: rotate(0deg) scale(1);
+    }
+    100% {
+      transform: rotate(360deg) scale(1.1);
+    }
   }
 
-  /* Chrome, Edge, and Safari */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: #425b5e; /* Dark background */
-    border-radius: 4px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #00ffff26; /* Indigo thumb */
-    border-radius: 4px;
-    border: 2px solid #425b5e; /* Padding around thumb */
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #00ffff26; /* Lighter on hover */
-  }
   @keyframes particlesMove {
-    from {
+    0% {
       background-position: 0 0;
     }
-    to {
-      background-position: 1000px 1000px;
+    100% {
+      background-position: 200% 200%;
     }
+  }
+}
+
+@layer components {
+  .main-btn {
+    @apply px-5 py-2 rounded-xl text-[15px] font-semibold transition-all duration-300;
+
+    background-color: var(--main-button);
+    color: var(--main-button-text);
+    box-shadow: 0 4px 12px var(--main-button-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+  }
+
+  .main-btn:hover {
+    background-color: var(--main-button-hover);
+    box-shadow: 0 6px 20px rgba(95, 168, 169, 0.5);
+    transform: scale(1.01);
+  }
+
+  .main-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(95, 168, 169, 0.4);
   }
 }
 
@@ -144,6 +159,24 @@ input[type='number']::-webkit-outer-spin-button {
 
 input[type='number'] {
   -moz-appearance: textfield;
+}
+
+::placeholder {
+  color: var(--main-text);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+  -webkit-text-fill-color: var(--main-text) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+::selection {
+  background: #4f9496;
+  color: white;
 }
 
 .rsc .rs__control {
