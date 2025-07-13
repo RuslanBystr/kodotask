@@ -2,6 +2,7 @@ import { FC, MouseEventHandler, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
+import GoogleIcon from '@/assets/icons/GoogleIcon';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -124,6 +125,7 @@ export const SignUpForm: FC<Props> = ({ onFlip }) => {
                   className="w-full rounded-none text-[--main-text] bg-[--main-button-dark]"
                   onClick={handleGoogleAuth}
                 >
+                  <GoogleIcon />
                   Register with Google
                 </Button>
 

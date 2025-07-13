@@ -3,6 +3,7 @@ import { FC, MouseEventHandler, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
+import GoogleIcon from '@/assets/icons/GoogleIcon';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -127,6 +128,7 @@ export const SignInForm: FC<Props> = ({ onFlip }) => {
                   className="w-full rounded-none text-[--main-text] bg-[--main-button-dark]"
                   onClick={handleGoogleAuth}
                 >
+                  <GoogleIcon />
                   Login with Google
                 </Button>
                 <button type="button" onClick={onFlip} className="text-xs text-blue-400 hover:underline mt-2">
