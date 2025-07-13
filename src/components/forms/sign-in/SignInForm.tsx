@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MouseEventHandler, useCallback, useEffect } from 'react';
+import { FC, MouseEventHandler, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,7 +22,11 @@ import { signInSchema } from './schema';
 
 const { api } = getEnv();
 
-export const SignInForm = () => {
+type Props = {
+  onFlip: () => void;
+};
+
+export const SignInForm: FC<Props> = ({ onFlip }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -72,7 +76,7 @@ export const SignInForm = () => {
     <div className="relative flex flex-col gap-6">
       <Card
         className={cn(
-          'relative z-10 bg-transparent/30 border-none rounded-xl backdrop-blur-md overflow-hidden p-6',
+          'relative z-10 bg-transparent/40 border-none rounded-xl backdrop-blur-md overflow-hidden p-6',
           'cut cut-left-10 cut-right-10',
         )}
       >
@@ -125,6 +129,9 @@ export const SignInForm = () => {
                 >
                   Login with Google
                 </Button>
+                <button type="button" onClick={onFlip} className="text-xs text-blue-400 hover:underline mt-2">
+                  Don’t have an account? Register
+                </button>
               </div>
             </form>
           </Form>

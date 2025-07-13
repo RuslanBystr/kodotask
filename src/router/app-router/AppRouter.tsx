@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 
+import { FlippableAuthCard } from '@/components/forms/sign-in/FlipForm';
 import { AuthGuard, GuestGuard } from '@/guards';
 import { AuthLayout, MainLayout } from '@/layouts';
 import ActivityPage from '@/pages/activity/Activity';
@@ -11,7 +12,6 @@ import { NotFoundPage } from '@/pages/not-found';
 import { CreateProjectPage } from '@/pages/project/CreateProjectPage';
 import { EditProjectPage } from '@/pages/project/EditProjectPage';
 import MainProjectPage from '@/pages/project/MainProjectPage/MainProjectPage';
-import { SignIn } from '@/pages/sign-in';
 import CreateTaskPage from '@/pages/task/CreateTaskPage/CreateTaskPage';
 import MainTaskPage from '@/pages/task/MainTaskPage/MainTaskPage';
 import TaskInfoPage from '@/pages/task/TaskInfo/TaskInfo';
@@ -31,7 +31,7 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
       children: [
         {
           path: ROUTES.AUTH.ROOT,
-          element: <SignIn />,
+          element: <FlippableAuthCard />,
         },
         {
           path: `${ROUTES.AUTH.SUCCESS}`,
