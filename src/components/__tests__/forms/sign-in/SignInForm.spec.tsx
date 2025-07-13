@@ -16,7 +16,7 @@ describe('SignInForm', () => {
   it('renders form in document', () => {
     render(
       <Provider store={store}>
-        <SignInForm />
+        <SignInForm onFlip={() => true} />
       </Provider>,
     );
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
