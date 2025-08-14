@@ -82,7 +82,7 @@ export const SignInForm: FC<Props> = ({ onFlip }) => {
         )}
       >
         <CardHeader>
-          <CardTitle className="text-2xl text-[--main-text]">Login</CardTitle>
+          <CardTitle className="text-2xl text-[--main-text]">Sign In</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...methods}>

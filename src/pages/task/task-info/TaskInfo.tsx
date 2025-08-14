@@ -15,10 +15,10 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
 import { TaskStatusEnum } from '@/enums/task-status.enum';
-import { TaskDiagram } from '@/pages/task/TaskInfo/Radar';
-import { SpendTime } from '@/pages/task/TaskInfo/SpendTime';
-import { TaskActivity } from '@/pages/task/TaskInfo/TaskActivity';
-import TaskStatus from '@/pages/task/TaskInfo/TaskStatusBlock';
+import { TaskDiagram } from '@/pages/task/task-info/Radar';
+import { SpendTime } from '@/pages/task/task-info/SpendTime';
+import { TaskActivity } from '@/pages/task/task-info/TaskActivity';
+import TaskStatus from '@/pages/task/task-info/TaskStatusBlock';
 import { useEditTaskMutation, useGetTaskByIdQuery } from '@/services/task';
 
 export default function TaskInfoPage() {

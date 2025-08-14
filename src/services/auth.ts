@@ -12,6 +12,13 @@ export const authApi = baseApi.injectEndpoints({
         body: credentials,
       }),
     }),
+    signUp: build.mutation({
+      query: (credentials) => ({
+        url: `${API_ROUTES.AUTH}/register`,
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
     getProfile: build.query<IUserResponse, string>({
       query: (token) => ({
         url: `${API_ROUTES.PROFILE}`,
@@ -24,4 +31,4 @@ export const authApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useSignInMutation, useGetProfileQuery } = authApi;
+export const { useSignInMutation, useSignUpMutation, useGetProfileQuery } = authApi;

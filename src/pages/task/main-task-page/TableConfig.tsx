@@ -2,7 +2,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { CheckCheckIcon, ChevronDown, ChevronRight, ChevronUp, CircleIcon } from 'lucide-react';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
-import { AvatarCell } from '@/pages/task/MainTaskPage/сells/AvatarCell';
+import { AvatarCell } from '@/pages/task/main-task-page/сells/AvatarCell';
 import { Task } from '@/types/responses/IProjectResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 
