@@ -1,9 +1,7 @@
 import { ArrowLeft } from 'lucide-react';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import ProjectForm from '@/components/forms/project/ProjectForm';
-import { projectEditFormSchema } from '@/components/forms/project/schemas';
+import TaskForm from '@/components/forms/task/TaskForm';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,10 +12,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useEditProjectPage } from '@/pages/project/EditProjectPage/useEditProjectPage';
+import { useCreateTaskPage } from '@/pages/task/create-task-page/useCreateTaskPage';
 
-const EditProjectPage: React.FC = () => {
-  const { initialProjectValues, isEditProjectLoading, onProjectSubmit } = useEditProjectPage();
+export default function CreateTaskPage() {
+  const props = useCreateTaskPage();
 
   const navigate = useNavigate();
 
@@ -33,28 +31,23 @@ const EditProjectPage: React.FC = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden md:block" />
             <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="/">Update</BreadcrumbLink>
+              <BreadcrumbLink href="">Create</BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-      <div className="h-[10vh] p-5">
-        <Button variant="outline" onClick={() => navigate(-1)}>
-          <ArrowLeft />
-          Cancel
-        </Button>
-      </div>
-      <div className="flex flex-col content-center items-center w-full">
-        <h1 className="text-[20px]">Edit project</h1>
-        <ProjectForm
-          validationSchema={projectEditFormSchema}
-          initialValues={initialProjectValues}
-          isLoading={isEditProjectLoading}
-          onSubmit={onProjectSubmit}
-        />
+      <div className="h-full w-full flex flex-col  overflow-x-auto">
+        <div className="h-[10vh] p-5">
+          <Button variant="outline" onClick={() => navigate(-1)}>
+            <ArrowLeft />
+            Cancel
+          </Button>
+        </div>
+        <div className="flex flex-col content-center items-center w-full h-[75vh]">
+          <h1 className="text-[20px]">Add Task</h1>
+          <TaskForm {...props} />
+        </div>
       </div>
     </div>
   );
-};
-
-export default EditProjectPage;
+}

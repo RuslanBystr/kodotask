@@ -86,8 +86,8 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
 
   return id ? (
     <div className="relative w-full grid grid-cols-1 lg:grid-cols-3 gap-y-4">
-      <div className="absolute inset-0 bg-[#C8A27E]/30 pointer-events-none" />
-      <div className="relative col-span-3 bg-[#446976]/30 lg:col-span-2 flex flex-col h-[calc(100vh-72px)] w-full">
+      <div className="absolute inset-0 bg-transparent/10 pointer-events-none" />
+      <div className="relative col-span-3 bg-transparent lg:col-span-2 flex flex-col h-[calc(100vh-72px)] w-full">
         {/* eslint-disable-next-line no-nested-ternary */}
         {messages.length ? (
           <Messages
@@ -108,7 +108,7 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
 
         <div>
           {reply && (
-            <div className="flex justify-between bg-[#394E56] p-2">
+            <div className="flex justify-between bg-transparent p-2">
               <ReplyIcon />
               <div>
                 <p className="text-[#4FA3B8]">Reply to {reply.sender.firstName}</p>

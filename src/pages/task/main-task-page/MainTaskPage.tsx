@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminRoleEnum } from '@/enums';
-import { useMainTaskPage } from '@/pages/task/MainTaskPage/useMainTaskPage';
+import { useMainTaskPage } from '@/pages/task/main-task-page/useMainTaskPage';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { getEnv } from '@/utils';
 

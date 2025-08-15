@@ -1,7 +1,9 @@
 import { ArrowLeft } from 'lucide-react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import TaskForm from '@/components/forms/task/TaskForm';
+import ProjectForm from '@/components/forms/project/ProjectForm';
+import { projectEditFormSchema } from '@/components/forms/project/schemas';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,10 +14,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useCreateTaskPage } from '@/pages/task/CreateTaskPage/useCreateTaskPage';
+import { useEditProjectPage } from '@/pages/project/edit-project-page/useEditProjectPage';
 
-export default function CreateTaskPage() {
-  const props = useCreateTaskPage();
+const EditProjectPage: React.FC = () => {
+  const { initialProjectValues, isEditProjectLoading, onProjectSubmit } = useEditProjectPage();
 
   const navigate = useNavigate();
 
@@ -31,23 +33,28 @@ export default function CreateTaskPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden md:block" />
             <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="">Create</BreadcrumbLink>
+              <BreadcrumbLink href="/">Update</BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-      <div className="h-full w-full flex flex-col  overflow-x-auto">
-        <div className="h-[10vh] p-5">
-          <Button variant="outline" onClick={() => navigate(-1)}>
-            <ArrowLeft />
-            Cancel
-          </Button>
-        </div>
-        <div className="flex flex-col content-center items-center w-full h-[75vh]">
-          <h1 className="text-[20px]">Add Task</h1>
-          <TaskForm {...props} />
-        </div>
+      <div className="h-[10vh] p-5">
+        <Button variant="outline" onClick={() => navigate(-1)}>
+          <ArrowLeft />
+          Cancel
+        </Button>
+      </div>
+      <div className="flex flex-col content-center items-center w-full">
+        <h1 className="text-[20px]">Edit project</h1>
+        <ProjectForm
+          validationSchema={projectEditFormSchema}
+          initialValues={initialProjectValues}
+          isLoading={isEditProjectLoading}
+          onSubmit={onProjectSubmit}
+        />
       </div>
     </div>
   );
-}
+};
+
+export default EditProjectPage;

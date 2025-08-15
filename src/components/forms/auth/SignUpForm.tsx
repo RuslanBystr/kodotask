@@ -8,9 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { ROUTES } from '@/router/constants';
-import { useSignInMutation } from '@/services/auth';
+import { useSignUpMutation } from '@/services/auth';
 import { useAppDispatch } from '@/store';
 import { authSlice } from '@/store/auth';
 import { getEnv } from '@/utils';
@@ -18,20 +17,28 @@ import { cn } from '@/utils/utils';
 
 const { api } = getEnv();
 
-type Props = {
-  onFlip: () => void;
+type Props = { onFlip: () => void };
+
+type FormValues = {
+  firstName: string;
+  lastName: string;
+  register_email: string;
+  register_password: string;
+  confirmPassword: string;
+  terms?: boolean;
 };
 
 export const SignUpForm: FC<Props> = ({ onFlip }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/no-unused-vars
-  const [_, { data: registerData, isLoading }] = useSignInMutation();
+  const [signUp, { data: registerData, isLoading, error }] = useSignUpMutation();
 
-  const methods = useForm({
+  const methods = useForm<FormValues>({
     defaultValues: {
-      email: '',
-      password: '',
+      firstName: '',
+      lastName: '',
+      register_email: '',
+      register_password: '',
       confirmPassword: '',
     },
   });
@@ -40,13 +47,30 @@ export const SignUpForm: FC<Props> = ({ onFlip }) => {
     handleSubmit,
     register,
     formState: { errors },
+    setError,
   } = methods;
 
-  const onSubmit = useCallback(() => {}, []);
+  const onSubmit = useCallback(
+    async (values: FormValues) => {
+      if (values.register_password !== values.confirmPassword) {
+        setError('confirmPassword', { message: 'Passwords do not match' });
+        return;
+      }
+
+      const credentials = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.register_email,
+        password: values.register_password,
+      };
+
+      await signUp(credentials).unwrap();
+    },
+    [setError, signUp],
+  );
 
   useEffect(() => {
     if (!registerData) return;
-
     dispatch(
       authSlice.actions.setAccessToken({
         token: registerData.token,
@@ -70,55 +94,82 @@ export const SignUpForm: FC<Props> = ({ onFlip }) => {
         )}
       >
         <CardHeader>
-          <CardTitle className="text-2xl text-[--main-text]">Register</CardTitle>
+          <CardTitle className="text-2xl text-[--main-text]">Sign Up</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="flex flex-col gap-4">
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Input
+                      id="firstName"
+                      className="rounded-none"
+                      type="text"
+                      placeholder="First Name"
+                      {...register('firstName', { required: 'Required' })}
+                    />
+                    <p className="text-red-500 text-xs h-4">{errors.firstName?.message}</p>
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                      id="lastName"
+                      className="rounded-none"
+                      type="text"
+                      placeholder="Last Name"
+                      {...register('lastName', { required: 'Required' })}
+                    />
+                    <p className="text-red-500 text-xs h-4">{errors.lastName?.message}</p>
+                  </div>
+                </div>
+
                 <div className="grid gap-2">
-                  <Label htmlFor="email" className="text-[--main-text]">
-                    Email
-                  </Label>
                   <Input
-                    id="email"
+                    id="register_email"
                     className="rounded-none"
                     type="email"
-                    placeholder="m@example.com"
-                    {...register('email')}
+                    placeholder="mail@example.com"
+                    {...register('register_email', { required: 'Required' })}
                   />
-                  <p className="text-red-500 text-xs h-4">{errors.email?.message}</p>
+                  <p className="text-red-500 text-xs h-4">{errors.register_email?.message}</p>
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="password" className="text-[--main-text]">
-                    Password
-                  </Label>
-                  <Input id="password" className="rounded-none" type="password" {...register('password')} />
-                  <p className="text-red-500 text-xs h-4">{errors.password?.message}</p>
+                  <Input
+                    id="register_password"
+                    className="rounded-none"
+                    type="password"
+                    placeholder="Password"
+                    {...register('register_password', {
+                      required: 'Required',
+                      minLength: { value: 6, message: 'Min 6 characters' },
+                    })}
+                  />
+                  <p className="text-red-500 text-xs h-4">{errors.register_password?.message}</p>
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="confirmPassword" className="text-[--main-text]">
-                    Confirm Password
-                  </Label>
                   <Input
                     id="confirmPassword"
                     className="rounded-none"
                     type="password"
-                    {...register('confirmPassword')}
+                    placeholder="Confirm Password"
+                    {...register('confirmPassword', { required: 'Required' })}
                   />
                   <p className="text-red-500 text-xs h-4">{errors.confirmPassword?.message}</p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Checkbox className="h-5 w-5" />
+                  <Checkbox className="h-5 w-5" {...register('terms')} />
                   <p className="text-[--main-text]">I agree to the terms</p>
                 </div>
+                {errors.terms && <p className="text-red-500 text-xs">{errors.terms.message}</p>}
 
                 <Button type="submit" className="w-full rounded-none" disabled={isLoading}>
                   {isLoading ? 'Creating...' : 'Create Account'}
                 </Button>
+
+                {error && <p className="text-red-500 text-xs">Registration failed</p>}
 
                 <Button
                   variant="outline"
