@@ -121,7 +121,7 @@ const MainChatPage: React.FC = () => {
         }}
       >
         <div className="flex flex-col w-full">
-          <div className="flex h-[72px] border-b bg-[#374C53]/90 items-center justify-between gap-2 px-2">
+          <div className="flex h-[72px] border-b bg-transparent items-center justify-between gap-2 px-2">
             <div className="flex">
               {selectedCompanion && (
                 <Avatar className="h-12 w-12 mr-2">
