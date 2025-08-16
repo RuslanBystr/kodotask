@@ -57,10 +57,11 @@ export const messagesApi = baseApi.injectEndpoints({
     }),
 
     createGroupChat: builder.mutation<IChatResponse, unknown>({
-      query: ({ groupName }) => ({
+      query: ({ groupName, userIds }) => ({
         url: `chats/group`,
-        body: { groupName },
         method: 'POST',
+        body: { groupName, userIds },
+        invalidatesTags: ['Chats'],
       }),
     }),
 

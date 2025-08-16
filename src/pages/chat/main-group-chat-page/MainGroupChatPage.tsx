@@ -46,12 +46,13 @@ const MainGroupChatPage: React.FC = () => {
     [navigate],
   );
 
-  const handleSubmit = async (e) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
-      await createGroupChat(groupName);
+      const data = await createGroupChat({ groupName, userIds: [userId] }).unwrap();
+      toast.success(`Group created: ${data.groupName}`);
     } catch (err) {
-      toast.error('fetch error');
+      toast.error('Group creating is failed');
     }
   };
 
