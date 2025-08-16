@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
@@ -88,31 +89,37 @@ export default function TaskInfoPage() {
       <div className="p-0 w-full h-auto max-h-screen overflow-y-auto custom-scrollbar">
         <div className="w-full grid md:grid-cols-3 h-auto md:h-[93vh]">
           <div className="w-full border-r row-span-1 md:col-span-2 flex flex-col max-h-[93vh]">
-            <div className="h-auto w-full bg-muted/20">
-              <div className="flex space-x-2 p-2">
-                {tabs.map((tab) => (
-                  <Button
-                    key={tab.id}
-                    className={`border-b-2 rounded-none cut cut-top-right-5 cut-top-left-5 hover:bg-accent/20 ${
-                      activeTab === tab.id ? 'bg-accent' : 'bg-transparent'
-                    }`}
-                    onClick={() => setActiveTab(tab.id)}
-                  >
-                    {tab.label}
-                  </Button>
-                ))}
-              </div>
-              <div>
-                <div className="p-4 text-center">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
-              </div>
-            </div>
-            <Label className="my-2 ml-2">Notes</Label>
-            <Textarea
-              className="h-full border-none rounded-none bg-muted/20"
-              value={description}
-              onChange={handleDescChange}
-              rows={6}
-            />
+            <ResizablePanelGroup className="h-auto w-full bg-muted/20" direction="vertical">
+              <ResizablePanel>
+                <div className="flex space-x-2 p-2">
+                  {tabs.map((tab) => (
+                    <Button
+                      key={tab.id}
+                      className={`border-b-2 rounded-none cut cut-top-right-5 cut-top-left-5 hover:bg-accent/20 ${
+                        activeTab === tab.id ? 'bg-accent' : 'bg-transparent'
+                      }`}
+                      onClick={() => setActiveTab(tab.id)}
+                    >
+                      {tab.label}
+                    </Button>
+                  ))}
+                </div>
+                <div>
+                  <div className="p-4 text-center">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
+                </div>
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel className="shadow-md">
+                <Label className="my-2 ml-2">Notes</Label>
+
+                <Textarea
+                  className="h-full border-none rounded-none bg-muted/20"
+                  value={description}
+                  onChange={handleDescChange}
+                  rows={6}
+                />
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </div>
           <div className="w-full mb-16">
             <div className="flex justify-end">{id && <DeleteTaskDialog taskId={id} />}</div>

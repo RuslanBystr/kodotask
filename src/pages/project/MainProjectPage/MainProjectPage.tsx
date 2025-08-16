@@ -65,6 +65,7 @@ const MainProjectPage: React.FC = () => {
           setColumnFilters={setColumnFilters}
           paginateParams={paginateParams}
           selectColumns={false}
+          rowClickNavigateId
         />
       </div>
     </div>

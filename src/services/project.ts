@@ -3,6 +3,7 @@ import { API_ROUTES } from '@/constants/api-routes';
 import { baseApi } from '@/services/base';
 import { IRequestParams, IResponse } from '@/types';
 import { IProjectResponse } from '@/types/responses/IProjectResponse';
+import { IUserResponse } from '@/types/responses/IUserResponse';
 
 export const projectsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -51,6 +52,12 @@ export const projectsApi = baseApi.injectEndpoints({
         method: 'POST',
       }),
     }),
+    getMembers: builder.query<IResponse<IUserResponse>, { id: string }>({
+      query: (params) => ({
+        url: `${API_ROUTES.PROJECT}/${params.id}/members`,
+        params,
+      }),
+    }),
   }),
 });
 
@@ -60,4 +67,5 @@ export const {
   useGetProjectByIdQuery,
   useEditProjectMutation,
   useCreateProjectMutation,
+  useGetMembersQuery,
 } = projectsApi;
