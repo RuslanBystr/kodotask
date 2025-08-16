@@ -1,3 +1,3 @@
-import { SignInForm } from '@/components';
+import { FlippableAuthCard } from '@/components/forms/auth/FlipForm';
 
-export const SignIn = () => <SignInForm />;
+export const SignIn = () => <FlippableAuthCard />;

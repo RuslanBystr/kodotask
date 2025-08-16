@@ -5,7 +5,7 @@
 @layer base {
   :root {
     --background: 220 15% 10%;
-    --sidebar-background: 120, 0%, 35%;
+    --sidebar-background: #ааа;
     --foreground: 210 5% 80%;
     --muted: 220 20% 25%;
     --muted-foreground: 215 15% 50%;
@@ -31,7 +31,7 @@
     --main-button-dark: #2f3b3b;
     --main-button-hover: #5fa8a9;
     --main-button-text: #e0f7f7;
-    --main-button-shadow: rgba(95, 168, 169, 0.35);
+    --main-button-shadow: rgba(120, 234, 236, 0.35);
     --color-chart-1: #a5d2dc;
   }
 
@@ -73,7 +73,7 @@
   .animated-bg {
     position: relative;
     overflow: hidden;
-    background: #2f3e46;
+    background: #132A3F;
   }
 
   .animated-bg::before {
@@ -91,7 +91,6 @@
     filter: blur(60px);
     z-index: -1;
     will-change: transform;
-    animation: bgMove 30s linear infinite;
   }
 
   .neon-particles {
@@ -129,7 +128,7 @@
     background-color: var(--main-button);
     color: var(--main-button-text);
     box-shadow: 0 4px 12px var(--main-button-shadow);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(236, 226, 213, 0.1);
     backdrop-filter: blur(6px);
   }
 
@@ -209,4 +208,31 @@ input:-webkit-autofill:active {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+@keyframes float {
+  0% { transform: translateY(0) scale(1); opacity: 0.6; }
+  50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
+  100% { transform: translateY(-40px) scale(1); opacity: 0.3; }
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  animation: float 8s ease-in-out infinite;
+}
+.perspective {
+  perspective: 1000px;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
 }

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminRoleEnum } from '@/enums';
-import { useMainProjectPage } from '@/pages/project/MainProjectPage/useMainProjectPage';
+import { useMainProjectPage } from '@/pages/project/main-project-page/useMainProjectPage';
 import { selectAuthenticatedUserSelector } from '@/store';
 
 import { columns } from './TableConfig';

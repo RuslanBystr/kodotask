@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 
+import { FlippableAuthCard } from '@/components/forms/auth/FlipForm';
 import { AuthGuard, GuestGuard } from '@/guards';
 import { AuthLayout, MainLayout } from '@/layouts';
 import ActivityPage from '@/pages/activity/Activity';
@@ -8,13 +9,12 @@ import AuthSuccess from '@/pages/auth-success/AuthSuccess';
 import MainChatPage from '@/pages/chat/main-chat-page/MainChatPage';
 import MainGroupChatPage from '@/pages/chat/main-group-chat-page/MainGroupChatPage';
 import { NotFoundPage } from '@/pages/not-found';
-import { CreateProjectPage } from '@/pages/project/CreateProjectPage';
-import { EditProjectPage } from '@/pages/project/EditProjectPage';
-import MainProjectPage from '@/pages/project/MainProjectPage/MainProjectPage';
-import { SignIn } from '@/pages/sign-in';
-import CreateTaskPage from '@/pages/task/CreateTaskPage/CreateTaskPage';
-import MainTaskPage from '@/pages/task/MainTaskPage/MainTaskPage';
-import TaskInfoPage from '@/pages/task/TaskInfo/TaskInfo';
+import { CreateProjectPage } from '@/pages/project/create-project-page';
+import { EditProjectPage } from '@/pages/project/edit-project-page';
+import MainProjectPage from '@/pages/project/main-project-page/MainProjectPage';
+import CreateTaskPage from '@/pages/task/create-task-page/CreateTaskPage';
+import MainTaskPage from '@/pages/task/main-task-page/MainTaskPage';
+import TaskInfoPage from '@/pages/task/task-info/TaskInfo';
 import { ROUTES } from '@/router/constants';
 
 import { CreateUserPage, EditUserPage, MainUserPage } from '../../pages/Users';
@@ -31,7 +31,7 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
       children: [
         {
           path: ROUTES.AUTH.ROOT,
-          element: <SignIn />,
+          element: <FlippableAuthCard />,
         },
         {
           path: `${ROUTES.AUTH.SUCCESS}`,

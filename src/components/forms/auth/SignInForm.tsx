@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MouseEventHandler, useCallback, useEffect } from 'react';
+import { FC, MouseEventHandler, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
+import GoogleIcon from '@/assets/icons/GoogleIcon';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -22,7 +23,11 @@ import { signInSchema } from './schema';
 
 const { api } = getEnv();
 
-export const SignInForm = () => {
+type Props = {
+  onFlip: () => void;
+};
+
+export const SignInForm: FC<Props> = ({ onFlip }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -72,12 +77,12 @@ export const SignInForm = () => {
     <div className="relative flex flex-col gap-6">
       <Card
         className={cn(
-          'relative z-10 bg-transparent/30 border-none rounded-xl backdrop-blur-md overflow-hidden p-6',
+          'relative z-10 bg-transparent/40 border-none rounded-xl backdrop-blur-md overflow-hidden p-6',
           'cut cut-left-10 cut-right-10',
         )}
       >
         <CardHeader>
-          <CardTitle className="text-2xl text-[--main-text]">Login</CardTitle>
+          <CardTitle className="text-2xl text-[--main-text]">Sign In</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...methods}>
@@ -123,8 +128,12 @@ export const SignInForm = () => {
                   className="w-full rounded-none text-[--main-text] bg-[--main-button-dark]"
                   onClick={handleGoogleAuth}
                 >
+                  <GoogleIcon />
                   Login with Google
                 </Button>
+                <button type="button" onClick={onFlip} className="text-xs text-blue-400 hover:underline mt-2">
+                  Don’t have an account? Register
+                </button>
               </div>
             </form>
           </Form>

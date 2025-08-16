@@ -110,7 +110,7 @@ export function CustomDataTable<TData extends { id: number | string }, TValue>({
       )}
       <div className="w-full max-h-[70vh] overflow-auto custom-scrollbar">
         <table className="table-auto w-full border-collapse">
-          <thead className="sticky top-0 z-10 bg-[#3D5059]">
+          <thead className="sticky top-0 z-10 bg-[#3E5462]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (

@@ -152,7 +152,7 @@ const Sidebar = React.forwardRef<
   if (collapsible === 'none') {
     return (
       <div
-        className={cn('flex h-full w-[--sidebar-width] flex-col bg-[#2F3D44] text-sidebar-foreground', className)}
+        className={cn('flex h-full w-[--sidebar-width] flex-col text-sidebar-foreground', className)}
         ref={ref}
         {...props}
       >
@@ -175,7 +175,7 @@ const Sidebar = React.forwardRef<
           }
           side={side}
         >
-          <div className="flex h-full w-full flex-col bg-[#3a4d55]">{children}</div>
+          <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
       </Sheet>
     );
@@ -185,7 +185,7 @@ const Sidebar = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        'group peer hidden md:block text-sidebar-foreground bg-[#3a4d55]',
+        'group peer hidden md:block text-sidebar-foreground bg-[#3F536255]',
         state === 'collapsed' ? 'w-auto' : 'w-[15rem]',
       )}
       data-state={state}
