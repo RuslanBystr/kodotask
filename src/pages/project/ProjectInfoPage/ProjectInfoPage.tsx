@@ -20,6 +20,8 @@ const { api } = getEnv();
 
 export default function ProjectInfoPage() {
   const { id } = useParams<string>();
+  if (!id) return null;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data, isSuccess } = useGetMembersQuery({ id });
 
   return (

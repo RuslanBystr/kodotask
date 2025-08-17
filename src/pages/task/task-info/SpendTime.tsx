@@ -71,7 +71,7 @@ export const SpendTime = ({
   };
 
   return (
-    <div className="h-[40vh] flex flex-col justify-between max-w-[720px]">
+    <div className="h-auto flex flex-col justify-between max-w-[720px]">
       <div ref={logContainerRef} className="flex-1 overflow-y-auto bg-muted/20 p-2">
         {logs.length > 0 ? (
           logs.map((log) => (

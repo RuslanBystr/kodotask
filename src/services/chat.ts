@@ -4,6 +4,9 @@ import { IChatRequestParams, IResponse } from '@/types';
 import { IChatResponse } from '@/types/responses/IChatResponse';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 
+type AddChatMembersRes = { added: number[]; skipped: number[] };
+type AddChatMembersArg = { chatId: number; userIds: number[] };
+
 export const messagesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getChatDataById: builder.query<IChatResponse, unknown>({
@@ -63,6 +66,15 @@ export const messagesApi = baseApi.injectEndpoints({
         body: { groupName, userIds },
         invalidatesTags: ['Chats'],
       }),
+    }),
+
+    addChatMembers: builder.mutation<AddChatMembersRes, AddChatMembersArg>({
+      query: ({ chatId, userIds }) => ({
+        url: `chats/${chatId}/members`,
+        method: 'POST',
+        body: { userIds },
+      }),
+      invalidatesTags: (_r, _e, { chatId }) => [{ type: 'Chat', id: chatId }, 'Chats'],
     }),
 
     getMessages: builder.query<IResponse<IMessageResponse>, IChatRequestParams>({
@@ -128,6 +140,7 @@ export const {
   useGetUserGroupChatsQuery,
   useCreatePrivateChatMutation,
   useCreateGroupChatMutation,
+  useAddChatMembersMutation,
   useGetMessagesQuery,
   useDeletePrivateChatMutation,
   useDeleteMessageMutation,

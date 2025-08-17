@@ -2,14 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import { ReactNode } from 'react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 export function CreateGroupModal({
   open,
@@ -31,10 +24,9 @@ export function CreateGroupModal({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="w-full min-h-[200px] bg-[#374C53] rounded-none">
+      <DialogContent className="w-full min-h-[200px] bg-[#3F536255] rounded-none">
         <DialogHeader>
           <DialogTitle>Create Group</DialogTitle>
-          <DialogDescription>Call if your companion</DialogDescription>
         </DialogHeader>
         {children}
       </DialogContent>

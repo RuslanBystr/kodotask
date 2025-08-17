@@ -16,7 +16,7 @@ export const FlippableAuthCard = () => {
       >
         <div
           aria-hidden={flipped}
-          inert={flipped ? '' : undefined}
+          inert={flipped}
           className={`absolute inset-0 backface-hidden transition-opacity duration-300 ${
             flipped ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
           }`}
@@ -26,7 +26,7 @@ export const FlippableAuthCard = () => {
 
         <div
           aria-hidden={!flipped}
-          inert={!flipped ? '' : undefined}
+          inert={!flipped}
           className={`absolute inset-0 rotate-y-180 backface-hidden transition-opacity duration-300 ${
             flipped ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}

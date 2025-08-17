@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 220 15% 10%;
+    --background: #3F5362;
     --sidebar-background: #ааа;
     --foreground: 210 5% 80%;
     --muted: 220 20% 25%;

@@ -89,35 +89,41 @@ export default function TaskInfoPage() {
       <div className="p-0 w-full h-auto max-h-screen overflow-y-auto custom-scrollbar">
         <div className="w-full grid md:grid-cols-3 h-auto md:h-[93vh]">
           <div className="w-full border-r row-span-1 md:col-span-2 flex flex-col max-h-[93vh]">
-            <ResizablePanelGroup className="h-auto w-full bg-muted/20" direction="vertical">
-              <ResizablePanel>
-                <div className="flex space-x-2 p-2">
-                  {tabs.map((tab) => (
-                    <Button
-                      key={tab.id}
-                      className={`border-b-2 rounded-none cut cut-top-right-5 cut-top-left-5 hover:bg-accent/20 ${
-                        activeTab === tab.id ? 'bg-accent' : 'bg-transparent'
-                      }`}
-                      onClick={() => setActiveTab(tab.id)}
-                    >
-                      {tab.label}
-                    </Button>
-                  ))}
-                </div>
-                <div>
-                  <div className="p-4 text-center">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
+            <ResizablePanelGroup direction="vertical" className="h-[70vh] w-full bg-muted/20 min-h-0">
+              <ResizablePanel defaultSize={60} minSize={20}>
+                <div className="h-full flex flex-col min-h-0">
+                  <div className="shrink-0 flex space-x-2 p-2">
+                    {tabs.map((tab) => (
+                      <Button
+                        key={tab.id}
+                        className={`border-b-2 rounded-none cut cut-top-right-5 cut-top-left-5 hover:bg-accent/20 ${
+                          activeTab === tab.id ? 'bg-accent' : 'bg-transparent'
+                        }`}
+                        onClick={() => setActiveTab(tab.id)}
+                      >
+                        {tab.label}
+                      </Button>
+                    ))}
+                  </div>
+
+                  <div className="flex-1 min-h-0 h-full w-full overflow-y-auto custom-scrollbar">
+                    <div className="p-4 text-center">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
+                  </div>
                 </div>
               </ResizablePanel>
-              <ResizableHandle />
-              <ResizablePanel className="shadow-md">
-                <Label className="my-2 ml-2">Notes</Label>
 
-                <Textarea
-                  className="h-full border-none rounded-none bg-muted/20"
-                  value={description}
-                  onChange={handleDescChange}
-                  rows={6}
-                />
+              <ResizableHandle withHandle />
+
+              <ResizablePanel defaultSize={40} minSize={10} className="shadow-md">
+                <div className="h-full flex flex-col min-h-0">
+                  <Label className="shrink-0 my-2 ml-2">Notes</Label>
+
+                  <Textarea
+                    className="flex-1 min-h-0 h-auto resize-none border-none rounded-none bg-muted/20"
+                    value={description}
+                    onChange={handleDescChange}
+                  />
+                </div>
               </ResizablePanel>
             </ResizablePanelGroup>
           </div>

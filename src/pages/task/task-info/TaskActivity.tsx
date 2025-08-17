@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,9 +20,22 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function TaskActivity({ data }: { data: ITaskLog[] }) {
-  const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>('duration');
+  const [activeChart, setActiveChart] = useState<keyof typeof chartConfig>('duration');
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const total = React.useMemo(
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver(() => {
+      containerRef.current!.scrollTop = containerRef.current!.scrollHeight;
+    });
+
+    observer.observe(containerRef.current);
+
+    // eslint-disable-next-line consistent-return
+    return () => observer.disconnect();
+  }, []);
+  const total = useMemo(
     () => ({
       duration: data.reduce((acc, curr) => acc + curr.duration, 0),
     }),
@@ -30,7 +43,7 @@ export function TaskActivity({ data }: { data: ITaskLog[] }) {
   );
 
   return (
-    <div>
+    <div className="h-auto">
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <CardTitle>Task Activity Overview</CardTitle>
@@ -56,7 +69,7 @@ export function TaskActivity({ data }: { data: ITaskLog[] }) {
           })}
         </div>
       </CardHeader>
-      <CardContent className="px-2 sm:p-6">
+      <CardContent className="px-2 sm:p-6" ref={containerRef}>
         <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
           <BarChart
             accessibilityLayer

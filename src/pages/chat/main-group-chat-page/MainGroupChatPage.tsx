@@ -16,7 +16,8 @@ import { AdminRoleEnum } from '@/enums';
 import { ChatTypeEnum } from '@/enums/chat-type.enum';
 import { Chat } from '@/pages/chat/common/Chat';
 import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
-import { useCreateGroupChatMutation } from '@/services/chat';
+import { useAddChatMembersMutation, useCreateGroupChatMutation } from '@/services/chat';
+import { useGetUsersQuery } from '@/services/users';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IChatResponse } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
@@ -32,11 +33,19 @@ const MainGroupChatPage: React.FC = () => {
   const userId = userData?.id;
   const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
   const [createGroupChat] = useCreateGroupChatMutation();
+  const [addChatMembers, { isLoading: isAdding }] = useAddChatMembersMutation();
+  const { data: usersData, isLoading: isUsersLoading } = useGetUsersQuery({ limit: 10, page: 1 });
+
   const [openCreateGroupModal, setOpenCreateGroupModal] = useState(false);
   const [groupName, setGroupName] = useState('');
+  const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
 
   const { chats, refetch } = useMainChatsPage({ chatTypeQuery: ChatTypeEnum.GROUP });
   const { filterValue, filteredChats } = useFilterChats(chats?.items);
+
+  const toggleUser = (id: number) => {
+    setSelectedUserIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
 
   const handleSelectedChat = useCallback(
     (chat: IChatResponse) => {
@@ -53,6 +62,28 @@ const MainGroupChatPage: React.FC = () => {
       toast.success(`Group created: ${data.groupName}`);
     } catch (err) {
       toast.error('Group creating is failed');
+    }
+  };
+
+  const handleAddMembersToActive = async () => {
+    if (!activeChat) return;
+    if (selectedUserIds.length === 0) {
+      toast.info('Select at least one user');
+      return;
+    }
+
+    try {
+      const { added, skipped } = await addChatMembers({
+        chatId: activeChat.id,
+        userIds: selectedUserIds,
+      }).unwrap();
+
+      if (added.length) toast.success(`Added ${added.length} member(s)`);
+      if (skipped.length) toast.info(`Skipped ${skipped.length} (already in chat or not found)`);
+
+      setSelectedUserIds([]);
+    } catch (err) {
+      toast.error('Adding members failed');
     }
   };
 
@@ -131,8 +162,8 @@ const MainGroupChatPage: React.FC = () => {
           </Breadcrumb>
         </header>
 
-        <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
-          <div className="md:flex md:flex-row-reverse w-full gap-1">
+        <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col pt-2 bg-muted/10">
+          <div className="md:flex md:flex-row-reverse w-[95%] gap-1">
             {userData?.role === AdminRoleEnum.ADMIN && (
               <Button
                 className="transition-all active:scale-95 bg-[--main-button] hover:bg-[--main-button-hover] rounded-none cut cut-left-5 cut-right-5"
@@ -149,6 +180,38 @@ const MainGroupChatPage: React.FC = () => {
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                 />
+                <div className="flex items-center w-full min-h-16 pl-6 border-b gap-3">
+                  <p className="font-medium">{activeChat?.groupName}</p>
+                  {activeChat && (
+                    <>
+                      <Button size="sm" variant="outline" disabled={isAdding} onClick={handleAddMembersToActive}>
+                        {isAdding ? 'Adding…' : 'Add members'}
+                      </Button>
+                      <span className="text-[12px] opacity-70">Members</span>
+                    </>
+                  )}
+                </div>
+                <div className="max-h-60 overflow-auto border p-2 rounded">
+                  {isUsersLoading ? (
+                    <div className="flex justify-center">
+                      <Loading size={16} />
+                    </div>
+                  ) : (
+                    usersData?.items.map((user) => {
+                      const checked = selectedUserIds.includes(Number(user.id));
+                      return (
+                        // eslint-disable-next-line jsx-a11y/label-has-associated-control
+                        <label key={user.id} className="flex items-center gap-2 py-1 cursor-pointer">
+                          <input type="checkbox" checked={checked} onChange={() => toggleUser(Number(user.id))} />
+                          <span>
+                            {user.firstName} {user.lastName}
+                          </span>
+                        </label>
+                      );
+                    })
+                  )}
+                </div>
+
                 <Button type="submit" className="bg-[--main-button] rounded-none cut cut-left-5 cut-right-5">
                   Create
                 </Button>
@@ -157,7 +220,11 @@ const MainGroupChatPage: React.FC = () => {
 
             <Input className="p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
           </div>
-          <div className="h-[85vh] w-full overflow-auto custom-scrollbar">{renderChatList()}</div>
+          <div className="h-[85vh] w-full overflow-auto custom-scrollbar">
+            <div className="w-[95%]" style={{ maxHeight: '100%' }}>
+              {renderChatList()}
+            </div>
+          </div>
         </div>
       </div>
 
