@@ -33,60 +33,79 @@ export function NavMain({
   const location = useLocation();
   const { setOpenMobile } = useSidebar();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const menuButtonHandler = (item: any) => {
-    navigate(item.url);
-    if (!item.items) {
-      setOpenMobile(false);
-    }
-  };
-
-  const menuSubButtonHandler = (url: string) => {
-    navigate(url);
-    setOpenMobile(false);
-  };
-
   return (
     <SidebarGroup>
       <SidebarMenu>
         {items.map((item) => {
-          const isActiveItem = location.pathname.startsWith(item.url);
+          const hasChildren = !!item.items?.length;
+          const isActiveItem = location.pathname === item.url || location.pathname.startsWith(`${item.url}/`);
+
           return (
-            <Collapsible key={item.title} asChild defaultOpen={item.isActive} className="group/collapsible">
+            <Collapsible
+              key={item.title}
+              asChild
+              defaultOpen={isActiveItem && hasChildren}
+              className="group/collapsible"
+            >
               <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
+                {hasChildren ? (
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton
+                      tooltip={item.title}
+                      className={clsx(
+                        'py-4 rounded-none',
+                        'bg-[#4A6070]/60 hover:bg-[--main-button]',
+                        'data-[active=true]:bg-[--main-button]',
+                        'group-data-[state=open]/collapsible:bg-[--main-button]/60',
+                      )}
+                      data-active={isActiveItem}
+                    >
+                      {item.icon && <item.icon />}
+                      <span className="select-none">{item.title}</span>
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                ) : (
                   <SidebarMenuButton
                     tooltip={item.title}
-                    onClick={() => menuButtonHandler(item)}
+                    onClick={() => {
+                      navigate(item.url);
+                      setOpenMobile(false);
+                    }}
                     className={clsx(
-                      'py-4 border transition-all duration-200 ease-in-out transform hover:bg-[#425D68]',
-                      {
-                        'font-bold bg-[#425D68] border-gray-400': isActiveItem,
-                      },
+                      'py-4 rounded-none transition-all duration-100 ease-in-out transform',
+                      'bg-[#172F45]/20 hover:bg-[#425D68] border rounded-md',
+                      'data-[active=true]:bg-[#425D68]',
                     )}
+                    data-active={isActiveItem}
                   >
                     {item.icon && <item.icon />}
                     <span className="select-none">{item.title}</span>
-                    {item.items && (
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                    )}
                   </SidebarMenuButton>
-                </CollapsibleTrigger>
-                {item.items && (
+                )}
+
+                {hasChildren && (
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      {item.items?.map((subItem) => {
-                        const isActiveSubItem = location.pathname === `/${subItem.url}`;
+                      {item.items!.map((sub) => {
+                        const isActiveSub =
+                          location.pathname === sub.url || location.pathname.startsWith(`${sub.url}/`);
+
                         return (
-                          <SidebarMenuSubItem key={subItem.title}>
+                          <SidebarMenuSubItem key={sub.title}>
                             <SidebarMenuSubButton
-                              className={clsx('cursor-pointer hover:bg-muted/50 shadow', {
-                                'font-bold bg-muted/100 border-b-2 shadow': isActiveSubItem,
-                              })}
-                              onClick={() => menuSubButtonHandler(subItem.url)}
+                              onClick={() => {
+                                navigate(sub.url);
+                                setOpenMobile(false);
+                              }}
+                              className={clsx(
+                                'cursor-pointer hover:bg-[--main-button]/20',
+                                'data-[active=true]:bg-[--main-button]/30',
+                              )}
+                              data-active={isActiveSub}
                             >
-                              {subItem?.icon && <subItem.icon />}
-                              <span>{subItem.title}</span>
+                              {sub.icon && <sub.icon />}
+                              <span>{sub.title}</span>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         );

@@ -7,7 +7,7 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarMenuButton, SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminRoleEnum } from '@/enums';
 import { useMainTaskPage } from '@/pages/task/main-task-page/useMainTaskPage';
 import { selectAuthenticatedUserSelector } from '@/store';
@@ -92,7 +92,7 @@ const MainTaskPage: React.FC = () => {
           />
           <div className="hidden lg:block border-l ml-2 w-[320px]">
             {projects?.items.map((project) => (
-              <Button
+              <SidebarMenuButton
                 key={project.id}
                 className={`w-full rounded-none justify-start items-center  ${
                   selectProject === project.id
@@ -107,7 +107,7 @@ const MainTaskPage: React.FC = () => {
                   </Avatar>
                   <p>{project?.name}</p>
                 </div>
-              </Button>
+              </SidebarMenuButton>
             ))}
           </div>
         </div>
