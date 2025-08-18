@@ -101,7 +101,7 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
     <div
       ref={messagesContainerRef}
       onScroll={handleScroll}
-      className="messages-container flex-1  overflow-y-auto p-4 space-y-2 h-[calc(100vh-142px)] custom-scrollbar"
+      className="messages-container flex-1 min-h-0 overflow-y-auto p-4 space-y-2 space-y-reverse h-[calc(100vh-142px)] custom-scrollbar flex flex-col-reverse"
     >
       {loading && (
         <div className="flex justify-center items-center text-center text-gray-400 p-2">
@@ -109,9 +109,9 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
           <p>Loading...</p>
         </div>
       )}
-      {messageDetails.map((message) => (
-        <Message message={message} key={`${message.id}-${message.createdAt}`} setReply={setReply} />
-      ))}
+      {messageDetails
+        .map((message) => <Message message={message} key={`${message.id}-${message.createdAt}`} setReply={setReply} />)
+        .reverse()}
       {typing && (
         <div className="flex justify-start items-center text-center text-gray-400 p-2">
           <Loading size={45} color="#a5d2dc" />
