@@ -11,7 +11,7 @@ import { timeFormat } from '@/utils/time-format';
 const chartConfig = {
   duration: {
     label: 'Total time',
-    color: 'hsl(var(--chart-1))',
+    color: 'var(--color-chart-1)',
   },
   // loggedAt: {
   //   label: 'Development Tasks',

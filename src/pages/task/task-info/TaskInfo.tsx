@@ -86,11 +86,11 @@ export default function TaskInfoPage() {
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-      <div className="p-0 w-full h-auto max-h-screen overflow-y-auto custom-scrollbar">
+      <div className="p-0 w-full h-auto max-h-screen">
         <div className="w-full grid md:grid-cols-3 h-auto md:h-[93vh]">
           <div className="w-full border-r row-span-1 md:col-span-2 flex flex-col max-h-[93vh]">
             <ResizablePanelGroup direction="vertical" className="h-[70vh] w-full bg-muted/20 min-h-0">
-              <ResizablePanel defaultSize={60} minSize={20}>
+              <ResizablePanel defaultSize={30} minSize={20}>
                 <div className="h-full flex flex-col min-h-0">
                   <div className="shrink-0 flex space-x-2 p-2">
                     {tabs.map((tab) => (
@@ -106,7 +106,7 @@ export default function TaskInfoPage() {
                     ))}
                   </div>
 
-                  <div className="flex-1 min-h-0 h-full w-full overflow-y-auto custom-scrollbar">
+                  <div className="flex-1 flex flex-col-reverse min-h-0 h-full w-full overflow-y-auto custom-scrollbar">
                     <div className="p-4 text-center">{tabs.find((tab) => tab.id === activeTab)?.content}</div>
                   </div>
                 </div>
@@ -114,7 +114,7 @@ export default function TaskInfoPage() {
 
               <ResizableHandle withHandle />
 
-              <ResizablePanel defaultSize={40} minSize={10} className="shadow-md">
+              <ResizablePanel defaultSize={60} minSize={20} className="shadow-md">
                 <div className="h-full flex flex-col min-h-0">
                   <Label className="shrink-0 my-2 ml-2">Notes</Label>
 
