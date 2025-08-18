@@ -30,12 +30,15 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
   const [messages, setMessages] = useState<IMessageResponse[]>([]);
   const [showPicker, setShowPicker] = useState(false);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
   const [reply, setReply] = useState<IMessageResponse | null>(null);
   const [isTypes, setIsTyping] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { data: initialMessages, refetch } = useGetMessagesQuery({ chatId: id, page, limit: 30 });
-
+  const {
+    data: initialMessages,
+    refetch,
+    isLoading,
+    isFetching,
+  } = useGetMessagesQuery({ chatId: id as string, page, limit: 30 }, { skip: !id });
   const [recording, startRecording, stopRecording] = useChatMicro({ setNewVoiceMessage });
   useFetchMessages(id, page, refetch);
   useInitMessages({ initialMessages, setMessages });
@@ -92,13 +95,12 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
         {messages.length ? (
           <Messages
             messageDetails={messages}
-            loading={loading}
-            setLoading={setLoading}
+            loading={isFetching}
             fetchMoreMessages={fetchMoreMessages}
             setReply={setReply}
             typing={isTypes}
           />
-        ) : loading ? (
+        ) : isLoading || isFetching ? (
           <div className="flex justify-center items-center h-[calc(100vh-142px)]">
             <Loading />
           </div>

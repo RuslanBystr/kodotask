@@ -10,12 +10,11 @@ interface MessagesProps {
   messageDetails: IMessageResponse[];
   fetchMoreMessages: () => void;
   loading: boolean;
-  setLoading: (loading: boolean) => void;
   setReply: (reply: IMessageResponse) => void;
   typing: boolean;
 }
 
-function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setReply, typing }: MessagesProps) {
+function Messages({ messageDetails, loading, fetchMoreMessages, setReply, typing }: MessagesProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevScrollHeight = useRef<number>(0);
   const isFetching = useRef(false);
@@ -32,7 +31,6 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
     fetchMoreMessages();
 
     isFetching.current = false;
-    setLoading(false);
 
     const observer = new MutationObserver(() => {
       if (container) {
@@ -44,7 +42,7 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
     });
 
     observer.observe(container, { childList: true, subtree: true });
-  }, [fetchMoreMessages, setLoading]);
+  }, [fetchMoreMessages]);
 
   const handleScroll = useCallback(() => {
     const container = messagesContainerRef.current;
@@ -63,7 +61,6 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
   }, []);
 
   useEffect(() => {
-    setLoading(false);
     const container = messagesContainerRef.current;
     if (!container) return;
 
@@ -73,7 +70,7 @@ function Messages({ messageDetails, loading, setLoading, fetchMoreMessages, setR
         behavior: 'smooth',
       });
     }, 100);
-  }, [setLoading, typing]);
+  }, [typing]);
 
   useEffect(() => {
     const container = messagesContainerRef.current;
