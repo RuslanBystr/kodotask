@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: #3F5362;
+    --background: #233a47;
     --sidebar-background: #ааа;
     --foreground: 210 5% 80%;
     --muted: 220 20% 25%;
@@ -16,7 +16,7 @@
     --popover-foreground: 215 15% 50%;
     --border: 220 10% 40%;
     --input: 220 10% 40%;
-    --card: 220 15% 15%;
+    --card: 210 35% 12%;
     --card-foreground: 210 5% 80%;
     --primary: 220 80% 60%;
     --primary-foreground: 0 0% 100%;

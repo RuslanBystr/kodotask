@@ -1,9 +1,9 @@
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { DollarSign } from 'lucide-react';
-import { FormEvent, useState } from 'react';
+import { Check, DollarSign } from 'lucide-react';
+import { FormEvent, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -12,56 +12,94 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { SidebarMenuButton } from '@/components/ui/sidebar';
 import { getEnv } from '@/utils';
 
 const { api } = getEnv();
 
+type PlanId = 'free' | 'pro' | 'professional';
+
+const PLANS: Array<{
+  id: PlanId;
+  name: string;
+  priceCents: number; // Stripe expects smallest currency unit
+  priceLabel: string;
+  description: string;
+  features: string[];
+  cta?: string;
+}> = [
+  {
+    id: 'free',
+    name: 'Free',
+    priceCents: 0,
+    priceLabel: '$0',
+    description: 'Perfect for getting started with basic tasks.',
+    features: ['Up to 3 projects', 'Up to 3 members per project', 'Basic messenger'],
+    cta: 'Continue with Free',
+  },
+  {
+    id: 'pro',
+    name: 'Pro',
+    priceCents: 900,
+    priceLabel: '$9',
+    description: 'Best for freelancers and small teams.',
+    features: ['Unlimited projects', 'Up to 10 team members', 'Priority messenger', 'Advanced analytics'],
+  },
+  {
+    id: 'professional',
+    name: 'Professional',
+    priceCents: 1900,
+    priceLabel: '$19',
+    description: 'For teams that need scale and control.',
+    features: [
+      'Unlimited projects and members',
+      'Roles and permissions',
+      'Integrations (Slack, GitHub, Jira)',
+      'Premium support',
+    ],
+  },
+];
+
 export function PaymentModal() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [amount, setAmount] = useState<number>(0);
-  const stripe = useStripe();
-  const elements = useElements();
+  const [selectedPlan, setSelectedPlan] = useState<PlanId>('free');
+  const amount = useMemo(() => PLANS.find((p) => p.id === selectedPlan)!.priceCents, [selectedPlan]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    if (amount <= 0) {
+      toast.success('Free plan selected. Continue with Free');
+      setOpen(false);
+      return;
+    }
+
     setLoading(true);
-
     try {
-      if (amount <= 0) {
-        toast.error('Amount must be greater than zero.');
-        setLoading(false);
-        return;
-      }
-
       const response = await fetch(`${api}/payments/create-payment-intent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount }),
       });
 
+      if (!response.ok) {
+        throw new Error('Failed to create payment intent');
+      }
+
       const clientSecret = await response.json();
 
-      if (!clientSecret.client_secret) toast.error('Failed to get client secret');
-
-      const result = await stripe?.confirmCardPayment(clientSecret.client_secret, {
-        payment_method: { card: elements!.getElement(CardElement)! },
-      });
-
-      if (result?.error) {
-        toast.error(result.error.message);
+      if (!clientSecret?.client_secret) {
+        toast.error('Failed to get client secret');
       } else {
-        setOpen(false);
-        toast.success('Payment successful!');
+        toast.success('Payment intent created');
       }
     } catch (err) {
       toast.error('Payment error');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -72,32 +110,88 @@ export function PaymentModal() {
           onClick={() => setOpen(true)}
         >
           <DollarSign />
-          Support us
+          Select a plan
         </SidebarMenuButton>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px] min-h-[200px] bg-[#374C53] rounded-none cut cut-left-15 cut-right-10">
+      <DialogContent className="sm:max-w-[720px] bg-[--background] border-none rounded-none cut cut-left-10 cut-right-10">
         <DialogHeader>
-          <DialogTitle>Support the Developer</DialogTitle>
-          <DialogDescription>Are you sure you want to proceed with the payment?</DialogDescription>
+          <DialogTitle>Select a plan</DialogTitle>
+          <DialogDescription>Choose the plan that fits your workflow.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <CardElement className="p-2 border rounded-md" />
-          <Input
-            type="number"
-            placeholder="Amount"
-            name="amount"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-          />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {PLANS.map((plan) => {
+              const isSelected = selectedPlan === plan.id;
+              return (
+                <Card
+                  key={plan.id}
+                  role="radio"
+                  aria-checked={isSelected}
+                  tabIndex={0}
+                  onClick={() => setSelectedPlan(plan.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedPlan(plan.id);
+                    }
+                  }}
+                  className={[
+                    'cursor-pointer transition-all border-none bg-[#465c70] rounded-none cut cut-left-5 cut-right-5',
+                    isSelected ? 'ring-2 ring-[--main-button] shadow-lg' : 'hover:ring-1 hover:ring-[--border]',
+                  ].join(' ')}
+                >
+                  <CardHeader className="space-y-1">
+                    <CardTitle className="flex items-baseline justify-between">
+                      <span>{plan.name}</span>
+                      <span className="text-xl font-semibold">
+                        {plan.priceLabel}
+                        <span className="text-sm text-muted-foreground">/mo</span>
+                      </span>
+                    </CardTitle>
+                    <CardDescription>{plan.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {plan.features.map((f) => (
+                        <li key={f} className="flex items-center gap-2 text-sm">
+                          <Check className="h-4 w-4" />
+                          <span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                  <CardFooter>
+                    <Button
+                      type="button"
+                      variant={isSelected ? 'default' : 'outline'}
+                      className={[
+                        'w-full rounded-none border-none cut cut-left-3 cut-right-3',
+                        isSelected ? 'bg-[--main-button] text[--main-button-text] hover:bg-[--main-button-hover]' : '',
+                      ].join(' ')}
+                      onClick={() => setSelectedPlan(plan.id)}
+                    >
+                      {plan.cta ?? (isSelected ? 'Selected' : 'Choose')}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              );
+            })}
+          </div>
+
           <Button
             type="submit"
-            className="mt-5 w-full rounded-none bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
+            className="mt-2 w-full rounded-none border-none bg-[--main-button] text[--main-button-text] hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
             variant="outline"
             disabled={loading}
           >
-            {loading ? 'Processing...' : 'Pay'}
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {amount <= 0
+              ? PLANS.find((p) => p.id === selectedPlan)?.cta ?? 'Continue'
+              : loading
+                ? 'Processing...'
+                : `Pay ${PLANS.find((p) => p.id === selectedPlan)?.priceLabel}`}
           </Button>
         </form>
       </DialogContent>

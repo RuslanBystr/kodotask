@@ -110,7 +110,7 @@ const MainGroupChatPage: React.FC = () => {
         <SidebarMenuButton
           key={chat.id}
           className={clsx(
-            'h-[3em] hover:bg-[#557080] rounded-none border-b transition-all active:scale-95 active:bg-[#557080] shadow-md cut cut-right-5 cut-left-5',
+            'h-[4em] hover:bg-[#557080] rounded-none border-b transition-all active:scale-95 active:bg-[#557080] shadow-md cut cut-right-5 cut-left-5',
             {
               'bg-[#557080]': activeChat?.id === chat.id,
             },

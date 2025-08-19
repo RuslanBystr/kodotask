@@ -1,5 +1,3 @@
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 import { LogOut } from 'lucide-react';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
@@ -28,8 +26,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const stripePromise = loadStripe(import.meta.env.PUBLIC_STRIPE_KEY || '');
-
   const onLogoutClick = () => {
     dispatch(logout());
     navigate(ROUTES.AUTH.ROOT);
@@ -44,9 +40,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <Elements stripe={stripePromise}>
-          <PaymentModal />
-        </Elements>
+        <PaymentModal />
         <SidebarMenuButton className="hover:bg-muted/50" tooltip="Logout" onClick={onLogoutClick}>
           <LogOut />
           <span className="select-none">Logout</span>
