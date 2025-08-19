@@ -132,7 +132,7 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
             handleSendFile={handleSendFile}
           />
         )}
-        <div className="sticky h-20 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom bg-[#384D54]/90">
+        <div className="sticky h-20 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom">
           <Button
             className="w-10 bg-[#557799] rounded-full transition-all active:scale-95"
             onClick={() => fileInputRef.current?.click()}
@@ -171,7 +171,7 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
           </Button>
         </div>
       </div>
-      <div className="hidden z-10 lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-[#384D54]/90" />
+      <div className="hidden z-10 lg:block col-span-0 lg:col-span-1 p-2 w-full border-l bg-transparent/10" />
     </div>
   ) : (
     <div className="flex justify-center items-center w-full h-full">Select a chat to start messaging</div>

@@ -3,7 +3,7 @@ interface LoadingProps {
   color?: string;
 }
 
-export const Loading = ({ size = 64, color = '#5889DB' }: LoadingProps) => (
+export const Loading = ({ size = 64, color = '#5FA8A9FF' }: LoadingProps) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width={size} height={size}>
     <rect fill={color} stroke={color} strokeWidth="15" width="30" height="30" x="25" y="50">
       <animate
