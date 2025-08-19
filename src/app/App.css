@@ -1,3 +1,5 @@
+@import 'react-quill/dist/quill.snow.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -275,4 +277,27 @@ input:-webkit-autofill:active {
 }
 .transform-style-preserve-3d {
   transform-style: preserve-3d;
+}
+
+.custom-quill .ql-container {
+  border: none !important;
+  background: transparent !important;
+  color: hsl(var(--main-button)) !important;
+  font-size: 0.95rem;
+}
+
+.custom-quill .ql-toolbar {
+  border: none !important;
+  background: hsl(var(--main-button)) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.5rem 0.5rem 0 0;
+  padding: 0.25rem;
+}
+
+.custom-quill.ql-snow .ql-toolbar,
+.custom-quill.ql-snow .ql-toolbar .ql-picker,
+.custom-quill.ql-snow .ql-toolbar .ql-picker-label,
+.custom-quill.ql-snow .ql-toolbar .ql-picker-item,
+.custom-quill.ql-snow .ql-toolbar button {
+  color: hsl(var(--main-button)) !important;
 }

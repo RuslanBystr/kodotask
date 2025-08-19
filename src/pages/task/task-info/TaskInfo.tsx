@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import ReactQuill from 'react-quill';
 import { useParams } from 'react-router-dom';
 
 import { DeleteTaskDialog } from '@/components/modals/task-modal';
@@ -14,7 +15,6 @@ import { Label } from '@/components/ui/label';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Textarea } from '@/components/ui/textarea';
 import { TaskStatusEnum } from '@/enums/task-status.enum';
 import { TaskDiagram } from '@/pages/task/task-info/Radar';
 import { SpendTime } from '@/pages/task/task-info/SpendTime';
@@ -35,11 +35,6 @@ export default function TaskInfoPage() {
       setDescription(data?.description);
     }
   }, [data]);
-
-  const handleDescChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(e.target.value);
-    editTask({ id: taskId, description: e.target.value });
-  };
 
   const tabs = [
     { id: 'tab1', label: 'Time', content: <SpendTime logs={data?.timeLogger} refreshTask={refetch} /> },
@@ -118,10 +113,14 @@ export default function TaskInfoPage() {
                 <div className="h-full flex flex-col min-h-0">
                   <Label className="shrink-0 my-2 ml-2">Notes</Label>
 
-                  <Textarea
-                    className="flex-1 min-h-0 h-auto resize-none border-none rounded-none bg-muted/20"
+                  <ReactQuill
+                    className="flex-1 min-h-0 h-auto bg-muted/20 border-none rounded-none custom-quill"
+                    theme="snow"
                     value={description}
-                    onChange={handleDescChange}
+                    onChange={(content) => {
+                      setDescription(content);
+                      editTask({ id: taskId, description: content });
+                    }}
                   />
                 </div>
               </ResizablePanel>
