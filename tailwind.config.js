@@ -8,12 +8,12 @@ module.exports = {
     extend: {
       keyframes: {
         'slide-in-left': {
-          '0%': { transform: 'translateX(20%)', opacity: '0' },
+          '0%': { transform: 'translateX(10%)', opacity: '0' },
           '100%': { transform: 'translateX(0)', opacity: '1' },
         },
       },
       animation: {
-        'slide-in-left-slow': 'slide-in-left 1s ease-out',
+        'slide-in-left-slow': 'slide-in-left 0.3s ease-out',
       },
       colors: {
         border: 'hsl(var(--border))',

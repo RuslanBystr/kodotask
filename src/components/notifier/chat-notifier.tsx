@@ -13,6 +13,7 @@ export const ChatNotifier = () => {
 
   useEffect(() => {
     audioRef.current = new Audio('/sounds/notification.mp3');
+    audioRef.current.volume = 0.3;
 
     const handleNewMessage = (message: IMessageResponse) => {
       audioRef.current?.play().catch((err) => {
@@ -34,7 +35,7 @@ export const ChatNotifier = () => {
         </div>,
         {
           position: 'bottom-right',
-          autoClose: 3500,
+          autoClose: 3000,
           style: {
             padding: '5px',
             borderBottomLeftRadius: 15,
