@@ -92,7 +92,7 @@ const MainChatPage: React.FC = () => {
   };
 
   return (
-    <div className="md:p-2 flex">
+    <div className="md:pl-2 flex">
       <div className="flex flex-col h-[100vh] w-min-content border-r">
         <header className="flex min-h-[72px] shrink-0 justify-center md:justify-start items-center border-b">
           <SidebarTrigger />

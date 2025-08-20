@@ -132,7 +132,7 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
             handleSendFile={handleSendFile}
           />
         )}
-        <div className="sticky h-20 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom">
+        <div className="sticky h-20 bg-transparent/10 border-t px-2 py-2 flex items-center gap-2 z-50 safe-bottom">
           <Button
             className="w-10 bg-[#557799] rounded-full transition-all active:scale-95"
             onClick={() => fileInputRef.current?.click()}

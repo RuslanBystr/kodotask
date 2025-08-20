@@ -8,10 +8,12 @@ import ActivityPage from '@/pages/activity/Activity';
 import AuthSuccess from '@/pages/auth-success/AuthSuccess';
 import MainChatPage from '@/pages/chat/main-chat-page/MainChatPage';
 import MainGroupChatPage from '@/pages/chat/main-group-chat-page/MainGroupChatPage';
+import { MainHomePage } from '@/pages/home';
 import { NotFoundPage } from '@/pages/not-found';
 import { CreateProjectPage } from '@/pages/project/create-project-page';
 import { EditProjectPage } from '@/pages/project/edit-project-page';
-import MainProjectPage from '@/pages/project/main-project-page/MainProjectPage';
+import { MainProjectPage } from '@/pages/project/main-project-page';
+import { ProjectInfoPage } from '@/pages/project/project-info-page';
 import CreateTaskPage from '@/pages/task/create-task-page/CreateTaskPage';
 import MainTaskPage from '@/pages/task/main-task-page/MainTaskPage';
 import TaskInfoPage from '@/pages/task/task-info/TaskInfo';
@@ -47,7 +49,11 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
         </AuthGuard>
       ),
       children: [
-        { index: true, element: <MainProjectPage /> },
+        { index: true, element: <MainHomePage /> },
+        {
+          path: ROUTES.HOME,
+          element: <MainHomePage />,
+        },
         {
           path: ROUTES.USERS,
           element: <MainUserPage />,
@@ -63,6 +69,10 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
         {
           path: ROUTES.PROJECTS,
           element: <MainProjectPage />,
+        },
+        {
+          path: `${ROUTES.PROJECTS}/:id`,
+          element: <ProjectInfoPage />,
         },
         {
           path: `${ROUTES.PROJECTS}/create`,

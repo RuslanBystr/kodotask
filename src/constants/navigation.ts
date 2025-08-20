@@ -2,6 +2,7 @@ import {
   FileCheckIcon,
   FolderCodeIcon,
   KanbanIcon,
+  LayoutDashboardIcon,
   MessageCircleCodeIcon,
   MessageSquareIcon,
   UsersIcon,
@@ -10,6 +11,11 @@ import {
 import { ROUTES } from '@/router';
 
 export const navigationList = [
+  {
+    title: 'Overview',
+    url: ROUTES.HOME,
+    icon: LayoutDashboardIcon,
+  },
   {
     title: 'Projects',
     url: ROUTES.PROJECTS,

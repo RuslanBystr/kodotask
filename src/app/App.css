@@ -75,7 +75,7 @@
   .animated-bg {
     position: relative;
     overflow: hidden;
-    background: #132A3F;
+    background: #132a3f;
   }
 
   .animated-bg::before {
@@ -85,11 +85,10 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background:
-            radial-gradient(circle at 50% 30%, rgba(0, 255, 200, 0.05) 180px, transparent 300px),
-            radial-gradient(circle at 30% 60%, rgba(0, 220, 255, 0.04) 150px, transparent 400px),
-            radial-gradient(circle at 70% 50%, rgba(0, 255, 180, 0.04) 220px, transparent 600px),
-            radial-gradient(circle at 50% 80%, rgba(0, 255, 180, 0.05) 180px, transparent 450px);
+    background: radial-gradient(circle at 50% 30%, rgba(0, 255, 200, 0.05) 180px, transparent 300px),
+      radial-gradient(circle at 30% 60%, rgba(0, 220, 255, 0.04) 150px, transparent 400px),
+      radial-gradient(circle at 70% 50%, rgba(0, 255, 180, 0.04) 220px, transparent 600px),
+      radial-gradient(circle at 50% 80%, rgba(0, 255, 180, 0.05) 180px, transparent 450px);
     filter: blur(60px);
     z-index: -1;
     will-change: transform;
@@ -252,11 +251,19 @@ input:-webkit-autofill:active {
   }
 }
 
-
 @keyframes float {
-  0% { transform: translateY(0) scale(1); opacity: 0.6; }
-  50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
-  100% { transform: translateY(-40px) scale(1); opacity: 0.3; }
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-40px) scale(1);
+    opacity: 0.3;
+  }
 }
 
 .bubble {
@@ -308,7 +315,7 @@ input:-webkit-autofill:active {
 .ql-snow .ql-toolbar .ql-picker-item:hover,
 .ql-snow.ql-toolbar .ql-picker-item.ql-selected,
 .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
-  color: #AAA !important;
+  color: #aaa !important;
 }
 .ql-snow.ql-toolbar button:hover .ql-fill,
 .ql-snow .ql-toolbar button:hover .ql-fill,
@@ -338,7 +345,7 @@ input:-webkit-autofill:active {
 .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill,
 .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill,
 .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill {
-  fill: #5FA8A9FF !important;
+  fill: #5fa8a9ff !important;
 }
 .ql-snow.ql-toolbar button:hover .ql-stroke,
 .ql-snow .ql-toolbar button:hover .ql-stroke,
@@ -368,45 +375,45 @@ input:-webkit-autofill:active {
 .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
 .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter,
 .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
-  stroke: #5FA8A9FF !important;
+  stroke: #5fa8a9ff !important;
 }
 @media (pointer: coarse) {
   .ql-snow.ql-toolbar button:hover:not(.ql-active),
   .ql-snow .ql-toolbar button:hover:not(.ql-active) {
-    color: #5FA8A9FF !important;
+    color: #5fa8a9ff !important;
   }
   .ql-snow.ql-toolbar button:hover:not(.ql-active) .ql-fill,
   .ql-snow .ql-toolbar button:hover:not(.ql-active) .ql-fill,
   .ql-snow.ql-toolbar button:hover:not(.ql-active) .ql-stroke.ql-fill,
   .ql-snow .ql-toolbar button:hover:not(.ql-active) .ql-stroke.ql-fill {
-    fill: #5FA8A9FF !important;
+    fill: #5fa8a9ff !important;
   }
   .ql-snow.ql-toolbar button:hover:not(.ql-active) .ql-stroke,
   .ql-snow .ql-toolbar button:hover:not(.ql-active) .ql-stroke,
   .ql-snow.ql-toolbar button:hover:not(.ql-active) .ql-stroke-miter,
   .ql-snow .ql-toolbar button:hover:not(.ql-active) .ql-stroke-miter {
-    stroke: #AAA !important;
+    stroke: #aaa !important;
   }
 }
 .ql-snow .ql-stroke {
   fill: none;
-  stroke: #AAA;
+  stroke: #aaa;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2;
 }
 .ql-snow .ql-stroke-miter {
   fill: none;
-  stroke: #AAA;
+  stroke: #aaa;
   stroke-miterlimit: 10;
   stroke-width: 2;
 }
 .ql-snow .ql-fill,
 .ql-snow .ql-stroke.ql-fill {
-  fill: #AAA;
+  fill: #aaa;
 }
 .ql-snow .ql-picker {
-  color: #AAA;
+  color: #aaa;
   display: inline-block;
   float: left;
   font-size: 14px;

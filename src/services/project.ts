@@ -5,6 +5,15 @@ import { IRequestParams, IResponse } from '@/types';
 import { IProjectResponse } from '@/types/responses/IProjectResponse';
 import { IUserResponse } from '@/types/responses/IUserResponse';
 
+export interface IAddProjectMemberDto {
+  userId?: string;
+  email?: string;
+}
+
+export interface IRemoveProjectMemberDto {
+  userId: string;
+}
+
 export const projectsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getProjects: builder.query<IResponse<IProjectResponse>, IRequestParams>({
@@ -58,6 +67,23 @@ export const projectsApi = baseApi.injectEndpoints({
         params,
       }),
     }),
+    addMember: builder.mutation<IUserResponse, { id: string; body: IAddProjectMemberDto }>({
+      query: ({ id, body }) => ({
+        url: `${API_ROUTES.PROJECT}/${id}/members`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_res, _err, arg) => [{ type: 'ProjectMembers', id: arg.id }],
+    }),
+
+    removeMember: builder.mutation<void, { id: string; body: IRemoveProjectMemberDto }>({
+      query: ({ id, body }) => ({
+        url: `${API_ROUTES.PROJECT}/${id}/members`,
+        method: 'DELETE',
+        body,
+      }),
+      invalidatesTags: (_res, _err, arg) => [{ type: 'ProjectMembers', id: arg.id }],
+    }),
   }),
 });
 
@@ -67,5 +93,7 @@ export const {
   useGetProjectByIdQuery,
   useEditProjectMutation,
   useCreateProjectMutation,
+  useAddMemberMutation,
   useGetMembersQuery,
+  useRemoveMemberMutation,
 } = projectsApi;
