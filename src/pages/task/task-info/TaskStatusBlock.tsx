@@ -15,7 +15,7 @@ const TaskStatus = ({ id, defaultStatus }: { id: string; defaultStatus: TaskStat
   };
 
   return (
-    <div className="w-full h-[40vh] max-w-sm lg:max-w-full p-4 flex items-center justify-between">
+    <div className="w-full h-auto max-w-sm lg:max-w-full p-4 flex items-center justify-between">
       <Button
         className="w-[8em] bg-transparent rounded-none hover:bg-[--main-button-hover] flex items-center space-x-1 cursor-pointer cut cut-right-5 cut-left-5"
         onClick={() => handleStatusChange(TaskStatusEnum.TODO)}
