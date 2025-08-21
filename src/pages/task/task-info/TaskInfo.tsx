@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
 import { useParams } from 'react-router-dom';
+import { debounce } from 'throttle-debounce';
 
 import { DeleteTaskDialog } from '@/components/modals/task-modal';
 import {
@@ -27,14 +28,44 @@ export default function TaskInfoPage() {
   const taskId = id ?? '';
   const { data, isLoading, refetch } = useGetTaskByIdQuery(taskId);
   const [editTask] = useEditTaskMutation();
-  const [activeTab, setActiveTab] = useState('tab1');
-  const [description, setDescription] = useState('');
+
+  // editor value (single source of truth for the editor)
+  const [localValue, setLocalValue] = useState('');
+  // optional: small save status
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
+  const lastSavedRef = useRef<string>('');
 
   useEffect(() => {
-    if (data?.description) {
-      setDescription(data?.description);
+    if (data?.description != null) {
+      setLocalValue(data.description);
+      lastSavedRef.current = data.description;
     }
-  }, [data]);
+  }, [data?.description]);
+
+  const debouncedSave = useMemo(
+    () =>
+      debounce(600, async (value: string) => {
+        try {
+          if (value === lastSavedRef.current) return;
+          setSaveState('saving');
+          await editTask({ id: taskId, description: value }).unwrap();
+          lastSavedRef.current = value;
+          setSaveState('saved');
+          setTimeout(() => setSaveState('idle'), 1000);
+        } catch {
+          setSaveState('error');
+        }
+      }),
+    [editTask, taskId],
+  );
+
+  useEffect(
+    () => () => {
+      debouncedSave.cancel();
+    },
+    [debouncedSave],
+  );
 
   const tabs = [
     { id: 'tab1', label: 'Time', content: <SpendTime logs={data?.timeLogger} refreshTask={refetch} /> },
@@ -45,6 +76,8 @@ export default function TaskInfoPage() {
     },
     { id: 'tab3', label: 'Activity', content: <TaskActivity data={data?.timeLogger || []} /> },
   ];
+
+  const [activeTab, setActiveTab] = useState('tab1');
 
   if (isLoading) {
     return (
@@ -64,6 +97,7 @@ export default function TaskInfoPage() {
       </div>
     );
   }
+
   return (
     <div className="p-2">
       <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -81,6 +115,7 @@ export default function TaskInfoPage() {
           </BreadcrumbList>
         </Breadcrumb>
       </header>
+
       <div className="p-0 w-full h-auto max-h-screen">
         <div className="w-full grid md:grid-cols-3 h-auto md:h-[93vh]">
           <div className="w-full border-r row-span-1 md:col-span-2 flex flex-col max-h-[93vh]">
@@ -111,21 +146,31 @@ export default function TaskInfoPage() {
 
               <ResizablePanel defaultSize={60} minSize={20} className="shadow-md">
                 <div className="h-full flex flex-col min-h-0">
-                  <Label className="shrink-0 my-2 ml-2">Notes</Label>
+                  <div className="flex items-center justify-between pr-3">
+                    <Label className="shrink-0 my-2 ml-2">Notes</Label>
+                    {/* tiny save indicator (optional) */}
+                    <span className="text-xs opacity-70">
+                      {saveState === 'saving' && 'Saving…'}
+                      {saveState === 'saved' && 'Saved'}
+                      {saveState === 'error' && 'Save failed'}
+                    </span>
+                  </div>
 
                   <ReactQuill
                     className="flex-1 min-h-0 h-auto bg-muted/20 border-none rounded-none custom-quill"
                     theme="snow"
-                    value={description}
+                    value={localValue}
                     onChange={(content) => {
-                      setDescription(content);
-                      editTask({ id: taskId, description: content });
+                      setLocalValue(content);
+                      debouncedSave(content);
                     }}
+                    onBlur={() => debouncedSave.cancel()}
                   />
                 </div>
               </ResizablePanel>
             </ResizablePanelGroup>
           </div>
+
           <div className="w-full mb-16">
             <div className="flex justify-end">{id && <DeleteTaskDialog taskId={id} />}</div>
             {data && <TaskDiagram data={data} />}
