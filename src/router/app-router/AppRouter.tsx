@@ -17,6 +17,7 @@ import { ProjectInfoPage } from '@/pages/project/project-info-page';
 import CreateTaskPage from '@/pages/task/create-task-page/CreateTaskPage';
 import MainTaskPage from '@/pages/task/main-task-page/MainTaskPage';
 import TaskInfoPage from '@/pages/task/task-info/TaskInfo';
+import { VerificationPage } from '@/pages/verification';
 import { ROUTES } from '@/router/constants';
 
 import { CreateUserPage, EditUserPage, MainUserPage } from '../../pages/Users';
@@ -38,6 +39,10 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
         {
           path: `${ROUTES.AUTH.SUCCESS}`,
           element: <AuthSuccess />,
+        },
+        {
+          path: `${ROUTES.AUTH.ROOT}/verification`,
+          element: <VerificationPage />,
         },
       ],
     },
