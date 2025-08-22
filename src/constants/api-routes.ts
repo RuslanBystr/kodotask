@@ -10,4 +10,5 @@ export const API_ROUTES = {
   TASK: `${ROOT_API}/task`,
   CHATS: `/chats`,
   MESSAGES: `/messages`,
+  LLM: '/llm',
 };

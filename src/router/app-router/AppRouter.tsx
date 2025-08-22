@@ -5,6 +5,7 @@ import { FlippableAuthCard } from '@/components/forms/auth/FlipForm';
 import { AuthGuard, GuestGuard } from '@/guards';
 import { AuthLayout, MainLayout } from '@/layouts';
 import ActivityPage from '@/pages/activity/Activity';
+import AIChat from '@/pages/ai-chat/ai-chat.page';
 import AuthSuccess from '@/pages/auth-success/AuthSuccess';
 import MainChatPage from '@/pages/chat/main-chat-page/MainChatPage';
 import MainGroupChatPage from '@/pages/chat/main-group-chat-page/MainGroupChatPage';
@@ -58,6 +59,10 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
         {
           path: ROUTES.HOME,
           element: <MainHomePage />,
+        },
+        {
+          path: ROUTES.AI_CHAT,
+          element: <AIChat />,
         },
         {
           path: ROUTES.USERS,

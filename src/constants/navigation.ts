@@ -5,6 +5,7 @@ import {
   LayoutDashboardIcon,
   MessageCircleCodeIcon,
   MessageSquareIcon,
+  Sparkles,
   UsersIcon,
 } from 'lucide-react';
 
@@ -15,6 +16,11 @@ export const navigationList = [
     title: 'Overview',
     url: ROUTES.HOME,
     icon: LayoutDashboardIcon,
+  },
+  {
+    title: 'AI Chat',
+    url: ROUTES.AI_CHAT,
+    icon: Sparkles,
   },
   {
     title: 'Projects',

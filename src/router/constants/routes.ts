@@ -6,6 +6,7 @@ export const ROUTES = {
     SUCCESS: `${AUTH_ROOT}/success`,
   },
   HOME: '/',
+  AI_CHAT: '/ai-chat',
   USERS: '/users',
   TASKS: '/tasks',
   ACTIVITY: '/activity',
