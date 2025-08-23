@@ -33,8 +33,8 @@ export const projectsApi = baseApi.injectEndpoints({
           : [{ type: 'Projects', id: 'LIST' }],
       keepUnusedDataFor: 1,
     }),
-    getProjectById: builder.query<IProjectResponse, string>({
-      query: (id) => ({
+    getProjectById: builder.query<IProjectResponse, { id: string }>({
+      query: ({ id }) => ({
         url: `${API_ROUTES.PROJECT}/${id}`,
       }),
       providesTags: () => ['Projects'],

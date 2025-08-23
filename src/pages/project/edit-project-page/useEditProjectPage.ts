@@ -8,7 +8,7 @@ import { useEditProjectMutation, useGetProjectByIdQuery } from '@/services/proje
 export const useEditProjectPage = () => {
   const params = useParams();
   const id = params.id as string;
-  const { data: project } = useGetProjectByIdQuery(id);
+  const { data: project } = useGetProjectByIdQuery({ id });
 
   const [editProject, { isLoading: isEditProjectLoading, ...editProjectRequestParams }] = useEditProjectMutation();
   useToastMessageRequest(editProjectRequestParams);

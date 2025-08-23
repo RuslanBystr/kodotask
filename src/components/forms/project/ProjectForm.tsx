@@ -7,6 +7,7 @@ import { defaultInitialValue } from '@/components/forms/project/constants';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { useUploadFileMutation } from '@/services/file';
 import type { IFormProps } from '@/types';
 import { getEnv } from '@/utils';
@@ -106,7 +107,7 @@ const ProjectForm: React.FC<IFormProps<IProjectFormParams>> = ({
               <FormItem>
                 <FormLabel>Project Description</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Textarea placeholder="" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
