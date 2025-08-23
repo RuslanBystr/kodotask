@@ -1,13 +1,21 @@
-import { Paperclip, Send, Sparkles, X } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Loader2, MessageSquare, Paperclip, RefreshCw, Search, Send, Sparkles, Trash2, X } from 'lucide-react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Bubble } from '@/pages/ai-chat/Buuble';
-import { useChatWithThreadMutation, useLazyGetChatHistoryQuery } from '@/services/llm';
+import {
+  useChatWithThreadMutation,
+  useCreateThreadMutation,
+  useDeleteThreadMutation,
+  useFindThreadsQuery,
+  useLazyGetChatHistoryQuery,
+} from '@/services/llm';
 import { cn } from '@/utils/utils';
 
 export type AIUserRole = 'user' | 'assistant' | 'system';
@@ -30,21 +38,40 @@ function shortId(id: string) {
 }
 
 export default function AIChat() {
+  const { threadId: paramId } = useParams();
   const [messages, setMessages] = useState<AIMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [threadId, setThreadId] = useState<string | undefined>(undefined);
+  const [createThread, { isLoading: creating }] = useCreateThreadMutation();
   const [chatWithThread, { isLoading: isChatLoading }] = useChatWithThreadMutation();
   const [fetchHistory] = useLazyGetChatHistoryQuery();
+  const [q, setQ] = useState('');
+  const [offset, setOffset] = useState(0);
+  const limit = 20;
 
-  const endRef = useRef<HTMLDivElement>(null);
+  const { data: threads, isLoading, isFetching, refetch } = useFindThreadsQuery({ offset, limit, q });
+
+  const [deleteThread, { isLoading: deleting }] = useDeleteThreadMutation();
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const scrollRootRef = useRef<HTMLDivElement>(null);
+  const justSwitchedRef = useRef(false);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, loading]);
+    if (paramId) setThreadId(paramId);
+  }, [paramId]);
+
+  useEffect(() => {
+    if (threadId) justSwitchedRef.current = true;
+  }, [threadId]);
+
+  const scrollToBottom = (smooth = true) => {
+    const vp = scrollRootRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLDivElement | null;
+    if (vp) vp.scrollTo({ top: vp.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
+  };
 
   useEffect(() => {
     if (!threadId) return;
@@ -58,6 +85,13 @@ export default function AIChat() {
     })();
   }, [threadId, fetchHistory]);
 
+  useLayoutEffect(() => {
+    if (!messages.length) return;
+    const smooth = !justSwitchedRef.current;
+    scrollToBottom(smooth);
+    justSwitchedRef.current = false;
+  }, [messages.length]);
+
   const canSend = useMemo(() => input.trim().length > 0 && !loading && !isChatLoading, [input, loading, isChatLoading]);
 
   const sendMessage = useCallback(async () => {
@@ -65,6 +99,7 @@ export default function AIChat() {
 
     const userMsg: AIMessage = { id: crypto.randomUUID(), role: 'user', content: input.trim() };
     setMessages((prev) => [...prev, userMsg]);
+    requestAnimationFrame(() => scrollToBottom(false));
     setInput('');
     setLoading(true);
     setError(null);
@@ -91,6 +126,10 @@ export default function AIChat() {
     }
   }, [canSend, input, chatWithThread, threadId]);
 
+  const onDelete = async (id: string) => {
+    await deleteThread(id).unwrap();
+  };
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -109,20 +148,27 @@ export default function AIChat() {
     setFiles((prev) => prev.filter((f) => f.name !== name));
   }
 
+  const canPrev = offset > 0;
+  const canNext = threads?.hasMore;
+  const onPrev = () => canPrev && setOffset(Math.max(0, offset - limit));
+  const onNext = () => canNext && setOffset((offset ?? 0) + limit);
+
+  const fmtDate = (iso?: string) => (iso ? new Date(iso).toLocaleString() : '');
+
   return (
-    <div className="flex h-full w-full flex-col bg-transparent/30">
-      <Card className="mx-auto flex ml-2 w-full max-auto flex-1 flex-col border-none rounded-none bg-transparent">
+    <div className="flex h-full w-full bg-transparent/30">
+      <Card className="mx-auto flex flex-1 ml-2 w-full max-auto flex-col border-none rounded-none bg-transparent">
         <CardHeader className="flex flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5" />
-            <CardTitle className="text-lg">AI Assistant</CardTitle>
+            <CardTitle className="text-lg">KodoTask Copilot</CardTitle>
           </div>
           {threadId && <div className="text-xs text-muted-foreground">thread: {shortId(threadId)}</div>}
         </CardHeader>
         <Separator />
 
         <CardContent className="flex h-full min-h-0 flex-1 flex-col p-0">
-          <ScrollArea className="flex-1 px-4">
+          <ScrollArea className="flex-1 px-4" ref={scrollRootRef}>
             <div className="mx-auto flex h-[80vh] w-full max-w-3xl flex-col gap-3 py-4">
               {messages.length === 0 && (
                 <div className="mx-auto rounded-xl border p-4 text-sm text-muted-foreground">
@@ -189,6 +235,103 @@ export default function AIChat() {
 
               <Button className="border-none" size="icon" onClick={sendMessage} disabled={!canSend}>
                 <Send className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="mx-auto ml-2 rounded-none border-none bg-transparent">
+        <CardHeader className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg">Threads</CardTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="default"
+                size="sm"
+                onClick={async () => {
+                  const t = await createThread().unwrap();
+                  setThreadId(t.threadId);
+                }}
+                disabled={creating}
+              >
+                New thread
+              </Button>
+              <Button variant="outline" size="icon" onClick={() => refetch()} disabled={isFetching}>
+                {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+              </Button>
+            </div>
+          </div>
+
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={q}
+              onChange={(e) => {
+                setQ(e.target.value);
+                setOffset(0);
+              }}
+              placeholder="Search threads…"
+              className="pl-8"
+            />
+          </div>
+        </CardHeader>
+
+        <CardContent className="flex-1 px-4">
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {isLoading ? (
+            <div className="space-y-3">
+              {[...Array(5)].map((_, i) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <div key={i} className="h-10 w-full animate-pulse rounded-lg bg-muted/40" />
+              ))}
+            </div>
+          ) : !threads || threads.items.length === 0 ? (
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
+              <MessageSquare className="mb-2 h-5 w-5 text-muted-foreground" />
+              <div className="text-sm text-muted-foreground">No threads yet</div>
+            </div>
+          ) : (
+            <div className="divide-y">
+              {threads.items.map((t) => (
+                <div
+                  key={t.id}
+                  className="flex items-start justify-between gap-4 py-3 cursor-pointer hover:bg-muted/30 px-2 cut cut-right-5 cut-left-5"
+                  onClick={() => setThreadId(t.id)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setThreadId(t.id)}
+                >
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-medium">{t.title || 'Untitled thread'}</div>
+                    {t.summary && <div className="truncate text-xs text-muted-foreground">{t.summary}</div>}
+                    <div className="mt-1 text-xs text-muted-foreground">Updated: {fmtDate(t.updated_at)}</div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <Button
+                      className="bg-transparent"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(t.id);
+                      }}
+                      disabled={deleting}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-4 flex items-center justify-between">
+            <div className="text-xs text-muted-foreground">{threads ? `Total: ${threads.total}` : ''}</div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={onPrev} disabled={!canPrev}>
+                Prev
+              </Button>
+              <Button variant="outline" size="sm" onClick={onNext} disabled={!canNext}>
+                Next
               </Button>
             </div>
           </div>

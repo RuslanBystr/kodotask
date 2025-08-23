@@ -65,6 +65,10 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
           element: <AIChat />,
         },
         {
+          path: `${ROUTES.AI_CHAT}/thread/:threadId`,
+          element: <AIChat />,
+        },
+        {
           path: ROUTES.USERS,
           element: <MainUserPage />,
         },

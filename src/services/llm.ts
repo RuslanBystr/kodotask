@@ -2,6 +2,16 @@ import { API_ROUTES } from '@/constants/api-routes';
 
 import { baseApi } from './base';
 
+export interface CreateThreadRequest {
+  title?: string;
+  systemPrompt?: string;
+}
+export interface CreateThreadResponse {
+  threadId: string;
+  title: string | null;
+  created_at: string;
+}
+
 export interface ChatWithThreadRequest {
   prompt: string;
   threadId?: string;
@@ -32,8 +42,38 @@ export interface ChatHistoryQuery {
   before?: string; // ISO
 }
 
+export interface FindThreadsQuery {
+  offset?: number;
+  limit?: number;
+  q?: string;
+}
+
+export interface ThreadItem {
+  id: string;
+  title: string | null;
+  system_prompt: string | null;
+  summary: string | null;
+  created_at: string; // ISO
+  updated_at: string; // ISO
+}
+
+export interface FindThreadsResponse {
+  total: number;
+  items: ThreadItem[];
+  nextOffset?: number;
+  hasMore: boolean;
+}
+
 export const llmApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
+    createThread: build.mutation<CreateThreadResponse, CreateThreadRequest | void>({
+      query: (body) => ({
+        url: `${API_ROUTES.LLM}/threads`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'Threads', id: 'LIST' }],
+    }),
     chatWithThread: build.mutation<ChatWithThreadResponse, ChatWithThreadRequest>({
       query: (body) => ({
         url: `${API_ROUTES.LLM}/chat`,
@@ -53,8 +93,43 @@ export const llmApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    findThreads: build.query<FindThreadsResponse, FindThreadsQuery | void>({
+      query: (args) => {
+        const { offset = 0, limit = 20, q } = args ?? {};
+        return {
+          url: `${API_ROUTES.LLM}/threads`,
+          method: 'GET',
+          params: { offset, limit, ...(q ? { q } : {}) },
+        };
+      },
+      providesTags: (res) =>
+        res
+          ? [
+              ...res.items.map((t) => ({ type: 'Threads' as const, id: t.id })),
+              { type: 'Threads' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Threads' as const, id: 'LIST' }],
+    }),
+
+    deleteThread: build.mutation<void, string>({
+      query: (threadId) => ({
+        url: `${API_ROUTES.LLM}/threads/${threadId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_res, _err, id) => [
+        { type: 'Threads' as const, id },
+        { type: 'Threads' as const, id: 'LIST' },
+      ],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useChatWithThreadMutation, useGetChatHistoryQuery, useLazyGetChatHistoryQuery } = llmApi;
+export const {
+  useCreateThreadMutation,
+  useFindThreadsQuery,
+  useChatWithThreadMutation,
+  useGetChatHistoryQuery,
+  useLazyGetChatHistoryQuery,
+  useDeleteThreadMutation,
+} = llmApi;

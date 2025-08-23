@@ -1,12 +1,15 @@
 'use client';
 
-import { TrendingUp } from 'lucide-react';
+import { ArrowRightIcon, Loader2 } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Cell, Label, Pie, PieChart } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ROUTES } from '@/router';
+import { useCreateThreadMutation } from '@/services/llm';
 import { ITaskResponse } from '@/types/responses/IProjectResponse';
 import { timeFormat } from '@/utils/time-format';
 
@@ -53,7 +56,29 @@ const calculateProgress = (spentTime: number, estimate: number) => {
   return Math.min((spentTime / estimate) * 100, 100);
 };
 
+const buildSystemPromptFromTask = (t: ITaskResponse) =>
+  `
+You are KodoTask Copilot.
+
+Current task context:
+- Project name: ${t.project.name}
+- Project description ${t.project.description}
+- title: ${t.title}
+- description: ${t.description}
+- assignee: ${t.assignedUser?.firstName ?? ''} ${t.assignedUser?.lastName ?? ''}
+- status: ${t.status}
+- priority: ${t.priority}
+
+Instructions:
+- Treat the task with id=${t.id} as the primary focus.
+- If user asks for changes, refer to this taskId.
+- Be concise; use bullet points when summarizing.
+`.trim();
+
 export function TaskDiagram({ data }: { data: ITaskResponse }) {
+  const navigate = useNavigate();
+  const [createThread, { isLoading: creating }] = useCreateThreadMutation();
+
   const progress = calculateProgress(data.spentTime, data.estimate);
   const topText = `${Math.round(progress)}%`;
   const bottomText = `${timeFormat(data.spentTime)} / ${timeFormat(data.estimate)}`;
@@ -68,7 +93,6 @@ export function TaskDiagram({ data }: { data: ITaskResponse }) {
     ];
   }, [data.spentTime, data.estimate]);
 
-  const totalTime = useMemo(() => chartDataMock.reduce((acc, curr) => acc + curr.tasks, 0), []);
   return (
     <Card className="flex flex-col bg-transparent border-none shadow-none">
       <CardHeader className="items-center py-4">
@@ -114,9 +138,23 @@ export function TaskDiagram({ data }: { data: ITaskResponse }) {
       </CardContent>
 
       <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          In Developing {totalTime}m <TrendingUp className="h-4 w-4" />
-        </div>
+        {/* eslint-disable-next-line react/button-has-type */}
+        <button
+          className="inline-flex items-center text-[--main-text] gap-2 font-medium leading-none underline-offset-4 hover:underline"
+          onClick={async (e) => {
+            e.stopPropagation?.();
+            const t = await createThread({
+              title: `T:${data.title}`,
+              systemPrompt: buildSystemPromptFromTask(data),
+            }).unwrap();
+            navigate(`${ROUTES.AI_CHAT}/thread/${t.threadId}`);
+          }}
+          disabled={creating}
+          aria-label="Start a new thread"
+        >
+          Start thread{' '}
+          {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRightIcon className="h-4 w-4" />}
+        </button>
 
         <div className="w-full p-3 rounded-md text-sm">
           <div className="grid grid-cols-2 gap-4">

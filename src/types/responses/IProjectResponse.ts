@@ -47,6 +47,7 @@ export interface ITaskResponse {
   project: {
     id: string;
     name: string;
+    description: string;
   };
   assignedUser: {
     id: number;
