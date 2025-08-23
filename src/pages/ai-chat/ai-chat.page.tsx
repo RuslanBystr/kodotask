@@ -1,12 +1,13 @@
 import { Paperclip, Send, Sparkles, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Bubble } from '@/pages/ai-chat/Buuble';
-import { useGenerateTextMutation } from '@/services/llm';
+import { useChatWithThreadMutation, useLazyGetChatHistoryQuery } from '@/services/llm';
 import { cn } from '@/utils/utils';
 
 export type AIUserRole = 'user' | 'assistant' | 'system';
@@ -16,6 +17,12 @@ interface AIMessage {
   role: AIUserRole;
   content: string;
 }
+
+const mapToAIMessage = (m: { id: string; role: 'user' | 'model' | 'system'; content: string }): AIMessage => ({
+  id: m.id,
+  role: m.role === 'model' ? 'assistant' : (m.role as AIUserRole),
+  content: m.content,
+});
 
 function shortId(id: string) {
   if (id.length <= 10) return id;
@@ -27,9 +34,10 @@ export default function AIChat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [threadId] = useState<string | undefined>(undefined);
   const [files, setFiles] = useState<File[]>([]);
-  const [generateText, { isLoading: isGenLoading }] = useGenerateTextMutation();
+  const [threadId, setThreadId] = useState<string | undefined>(undefined);
+  const [chatWithThread, { isLoading: isChatLoading }] = useChatWithThreadMutation();
+  const [fetchHistory] = useLazyGetChatHistoryQuery();
 
   const endRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -38,7 +46,19 @@ export default function AIChat() {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
-  const canSend = useMemo(() => input.trim().length > 0 && !loading && !isGenLoading, [input, loading, isGenLoading]);
+  useEffect(() => {
+    if (!threadId) return;
+    (async () => {
+      try {
+        const res = await fetchHistory({ threadId, limit: 30 }).unwrap();
+        setMessages(res.items.map(mapToAIMessage));
+      } catch {
+        toast.error('Failed to load chat history');
+      }
+    })();
+  }, [threadId, fetchHistory]);
+
+  const canSend = useMemo(() => input.trim().length > 0 && !loading && !isChatLoading, [input, loading, isChatLoading]);
 
   const sendMessage = useCallback(async () => {
     if (!canSend) return;
@@ -50,14 +70,16 @@ export default function AIChat() {
     setError(null);
 
     try {
-      const data = await generateText({ prompt: userMsg.content }).unwrap();
+      const { reply, threadId: returnedThreadId } = await chatWithThread({
+        prompt: userMsg.content,
+        threadId,
+      }).unwrap();
 
-      setMessages((prev) => [
-        ...prev,
-        { id: crypto.randomUUID(), role: 'assistant', content: data.generatedText ?? '…' },
-      ]);
+      if (!threadId && returnedThreadId) setThreadId(returnedThreadId);
+
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: 'assistant', content: reply }]);
       setFiles([]);
-    } catch (e) {
+    } catch {
       setError('Something went wrong');
       setMessages((prev) => [
         ...prev,
@@ -67,7 +89,7 @@ export default function AIChat() {
       setLoading(false);
       textareaRef.current?.focus();
     }
-  }, [canSend, input, generateText, setMessages, setInput, setLoading, setError, setFiles, textareaRef]);
+  }, [canSend, input, chatWithThread, threadId]);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
