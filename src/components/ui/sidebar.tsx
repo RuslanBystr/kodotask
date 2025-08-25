@@ -147,7 +147,15 @@ const Sidebar = React.forwardRef<
     collapsible?: 'offcanvas' | 'icon' | 'none';
   }
 >(({ side = 'left', variant = 'sidebar', collapsible = 'offcanvas', className, children, ...props }, ref) => {
-  const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+  const { isMobile, state, open, setOpen, openMobile, setOpenMobile } = useSidebar();
+
+  const handleHoverEnter = React.useCallback(() => {
+    if (!isMobile && state === 'collapsed') setOpen(true);
+  }, [isMobile, state, setOpen]);
+
+  const handleHoverLeave = React.useCallback(() => {
+    if (!isMobile && open) setOpen(false);
+  }, [isMobile, open, setOpen]);
 
   if (collapsible === 'none') {
     return (
@@ -167,7 +175,7 @@ const Sidebar = React.forwardRef<
         <SheetContent
           data-sidebar="sidebar"
           data-mobile="true"
-          className="w-[--sidebar-width] p-0 text-sidebar-foreground [&>button]:hidden bg-white"
+          className="w-[--sidebar-width] p-0 text-sidebar-foreground [&>button]:hidden bg-muted"
           style={
             {
               '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
@@ -193,8 +201,9 @@ const Sidebar = React.forwardRef<
       data-variant={variant}
       data-side={side}
     >
-      {/* This is what handles the sidebar gap on desktop */}
+      {/* spacer that reserves width; add enter here is optional */}
       <div
+        onMouseEnter={handleHoverEnter}
         className={cn(
           'duration-200 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-linear',
           'group-data-[collapsible=offcanvas]:w-0',
@@ -204,13 +213,16 @@ const Sidebar = React.forwardRef<
             : 'group-data-[collapsible=icon]:w-[--sidebar-width-icon]',
         )}
       />
+
+      {/* actual sidebar */}
       <div
+        onMouseEnter={handleHoverEnter}
+        onMouseLeave={handleHoverLeave}
         className={cn(
           'duration-100 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex',
           side === 'left'
             ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
             : 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',
-          // Adjust the padding for floating and inset variants.
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]'
             : 'group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l',

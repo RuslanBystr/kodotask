@@ -30,7 +30,7 @@ export function DeleteTaskDialog({ taskId }: { taskId: string }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          className="rounded-none bg-transparent hover:bg-[#88aabb] cut-bottom-left-5"
+          className="rounded-none bg-[#465c70] hover:bg-[#88aabb] cut-bottom-left-5"
           onClick={() => setOpen(true)}
         >
           <Trash />

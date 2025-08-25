@@ -13,12 +13,12 @@ import { ROUTES } from '@/router';
 
 export const navigationList = [
   {
-    title: 'Overview',
+    title: 'Dashboard',
     url: ROUTES.HOME,
     icon: LayoutDashboardIcon,
   },
   {
-    title: 'AI Chat',
+    title: 'AI Workspace',
     url: ROUTES.AI_CHAT,
     icon: Sparkles,
   },
@@ -28,27 +28,27 @@ export const navigationList = [
     icon: FolderCodeIcon,
   },
   {
-    title: 'Tasks',
+    title: 'Task Board',
     url: ROUTES.TASKS,
     icon: FileCheckIcon,
   },
   {
-    title: 'Activity',
+    title: 'Activity Log',
     url: ROUTES.ACTIVITY,
     icon: KanbanIcon,
   },
   {
-    title: 'Chats',
+    title: 'Direct Messages',
     icon: MessageSquareIcon,
     url: ROUTES.CHATS,
   },
   {
-    title: 'Groups',
+    title: 'Team Channels',
     icon: MessageCircleCodeIcon,
     url: ROUTES.GROUPS,
   },
   {
-    title: 'Peoples ',
+    title: 'Members',
     url: ROUTES.USERS,
     icon: UsersIcon,
   },

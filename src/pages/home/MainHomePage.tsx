@@ -10,11 +10,12 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { useCreateProjectMutation, useGetProjectsQuery } from '@/services/project';
 
 export default function HomePage() {
   const navigate = useNavigate();
-
+  const { isMobile } = useSidebar();
   // Recent projects
   const { data: projectsResp, isLoading } = useGetProjectsQuery({ limit: 6, page: 1, sortBy: '-createdAt' });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,9 +66,9 @@ export default function HomePage() {
     <div className="w-full h-full p-4 space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
+        {isMobile && <SidebarTrigger className="-ml-1" />}
         <div>
-          <h1 className="text-2xl md:text-3xl font-semibold">Overview</h1>
-          <p className="text-sm opacity-70">Overview, quick actions, and latest projects</p>
+          <h1 className="text-2xl md:text-3xl font-semibold">Dashboard</h1>
         </div>
         <div className="flex gap-2">
           <Dialog open={openCreate} onOpenChange={setOpenCreate}>
@@ -77,7 +78,7 @@ export default function HomePage() {
                 New project
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[480px]">
+            <DialogContent className="sm:max-w-[480px] bg-[#465c70]">
               <DialogHeader>
                 <DialogTitle>Create project</DialogTitle>
               </DialogHeader>

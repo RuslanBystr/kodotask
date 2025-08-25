@@ -10,7 +10,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/co
 import { ContextMenu, ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { ChatTypeEnum } from '@/enums/chat-type.enum';
 import { Chat } from '@/pages/chat/common/Chat';
 import VideoChat from '@/pages/chat/common/VideoChat';
@@ -28,6 +28,7 @@ const { api } = getEnv();
 
 const MainChatPage: React.FC = () => {
   const navigate = useNavigate();
+  const { isMobile } = useSidebar();
   const userData = useSelector(selectAuthenticatedUserSelector);
   const userId = userData?.id;
 
@@ -95,7 +96,7 @@ const MainChatPage: React.FC = () => {
     <div className="md:pl-2 flex">
       <div className="flex flex-col h-[100vh] w-min-content border-r">
         <header className="flex min-h-[72px] shrink-0 justify-center md:justify-start items-center border-b">
-          <SidebarTrigger />
+          {isMobile && <SidebarTrigger className="-ml-1" />}
           <Separator orientation="vertical" className="mr-4 h-4 hidden md:block" />
           <Breadcrumb>
             <BreadcrumbList>

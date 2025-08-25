@@ -13,10 +13,12 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { useEditProjectPage } from '@/pages/project/edit-project-page/useEditProjectPage';
 
 const EditProjectPage: React.FC = () => {
+  const { isMobile } = useSidebar();
+
   const { initialProjectValues, isEditProjectLoading, onProjectSubmit } = useEditProjectPage();
 
   const navigate = useNavigate();
@@ -24,7 +26,7 @@ const EditProjectPage: React.FC = () => {
   return (
     <div className="p-2">
       <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-        <SidebarTrigger className="-ml-1" />
+        {isMobile && <SidebarTrigger className="-ml-1" />}
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>

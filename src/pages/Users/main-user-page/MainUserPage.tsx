@@ -6,7 +6,7 @@ import { CustomDataTable } from '@/components/table/CustomTable';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { AdminRoleEnum } from '@/enums';
 import { selectAuthenticatedUserSelector } from '@/store';
 
@@ -14,6 +14,8 @@ import { columns } from './TableConfig';
 import { useMainUserPage } from './useMainUserPage';
 
 const MainUserPage: React.FC = () => {
+  const { isMobile } = useSidebar();
+
   const {
     users,
     goToCreateUserPage,
@@ -31,7 +33,7 @@ const MainUserPage: React.FC = () => {
   return (
     <div className="flex flex-col h-screen p-2">
       <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-        <SidebarTrigger className="-ml-1" />
+        {isMobile && <SidebarTrigger className="-ml-1" />}
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>

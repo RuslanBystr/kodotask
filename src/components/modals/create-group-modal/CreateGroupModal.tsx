@@ -24,7 +24,7 @@ export function CreateGroupModal({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="w-full min-h-[200px] bg-[#3F536255] rounded-none">
+      <DialogContent className="w-full min-h-[200px] bg-[#3F5362] rounded-none">
         <DialogHeader>
           <DialogTitle>Create Group</DialogTitle>
         </DialogHeader>

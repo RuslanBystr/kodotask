@@ -3,11 +3,13 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import { RightSidebar } from '@/components/right-sidebar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { Bubble } from '@/pages/ai-chat/Buuble';
 import {
   useChatWithThreadMutation,
@@ -39,6 +41,7 @@ function shortId(id: string) {
 
 export default function AIChat() {
   const { threadId: paramId } = useParams();
+  const { isMobile } = useSidebar();
   const [messages, setMessages] = useState<AIMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -159,6 +162,7 @@ export default function AIChat() {
     <div className="flex h-full w-full bg-transparent/30">
       <Card className="mx-auto flex flex-1 ml-2 w-full max-auto flex-col border-none rounded-none bg-transparent">
         <CardHeader className="flex flex-row items-center justify-between gap-3">
+          {isMobile && <SidebarTrigger className="-ml-1" />}
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5" />
             <CardTitle className="text-lg">KodoTask Copilot</CardTitle>
@@ -240,103 +244,105 @@ export default function AIChat() {
           </div>
         </CardContent>
       </Card>
-      <Card className="mx-auto ml-2 rounded-none border-none bg-transparent">
-        <CardHeader className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">Threads</CardTitle>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="default"
-                size="sm"
-                onClick={async () => {
-                  const t = await createThread().unwrap();
-                  setThreadId(t.threadId);
-                }}
-                disabled={creating}
-              >
-                New thread
-              </Button>
-              <Button variant="outline" size="icon" onClick={() => refetch()} disabled={isFetching}>
-                {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-              </Button>
-            </div>
-          </div>
-
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              value={q}
-              onChange={(e) => {
-                setQ(e.target.value);
-                setOffset(0);
-              }}
-              placeholder="Search threads…"
-              className="pl-8"
-            />
-          </div>
-        </CardHeader>
-
-        <CardContent className="flex-1 px-4">
-          {/* eslint-disable-next-line no-nested-ternary */}
-          {isLoading ? (
-            <div className="space-y-3">
-              {[...Array(5)].map((_, i) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <div key={i} className="h-10 w-full animate-pulse rounded-lg bg-muted/40" />
-              ))}
-            </div>
-          ) : !threads || threads.items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
-              <MessageSquare className="mb-2 h-5 w-5 text-muted-foreground" />
-              <div className="text-sm text-muted-foreground">No threads yet</div>
-            </div>
-          ) : (
-            <div className="divide-y">
-              {threads.items.map((t) => (
-                <div
-                  key={t.id}
-                  className="flex items-start justify-between gap-4 py-3 cursor-pointer hover:bg-muted/30 px-2 cut cut-right-5 cut-left-5"
-                  onClick={() => setThreadId(t.id)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setThreadId(t.id)}
+      <RightSidebar className="ml-2">
+        <Card className="mx-auto ml-2 rounded-none border-none bg-transparent">
+          <CardHeader className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg">Threads</CardTitle>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={async () => {
+                    const t = await createThread().unwrap();
+                    setThreadId(t.threadId);
+                  }}
+                  disabled={creating}
                 >
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-medium">{t.title || 'Untitled thread'}</div>
-                    {t.summary && <div className="truncate text-xs text-muted-foreground">{t.summary}</div>}
-                    <div className="mt-1 text-xs text-muted-foreground">Updated: {fmtDate(t.updated_at)}</div>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <Button
-                      className="bg-transparent"
-                      size="icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete(t.id);
-                      }}
-                      disabled={deleting}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                  New thread
+                </Button>
+                <Button variant="outline" size="icon" onClick={() => refetch()} disabled={isFetching}>
+                  {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                </Button>
+              </div>
             </div>
-          )}
 
-          <div className="mt-4 flex items-center justify-between">
-            <div className="text-xs text-muted-foreground">{threads ? `Total: ${threads.total}` : ''}</div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={onPrev} disabled={!canPrev}>
-                Prev
-              </Button>
-              <Button variant="outline" size="sm" onClick={onNext} disabled={!canNext}>
-                Next
-              </Button>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={q}
+                onChange={(e) => {
+                  setQ(e.target.value);
+                  setOffset(0);
+                }}
+                placeholder="Search threads…"
+                className="pl-8"
+              />
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardHeader>
+
+          <CardContent className="flex-1 px-4">
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {isLoading ? (
+              <div className="space-y-3">
+                {[...Array(5)].map((_, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <div key={i} className="h-10 w-full animate-pulse rounded-lg bg-muted/40" />
+                ))}
+              </div>
+            ) : !threads || threads.items.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
+                <MessageSquare className="mb-2 h-5 w-5 text-muted-foreground" />
+                <div className="text-sm text-muted-foreground">No threads yet</div>
+              </div>
+            ) : (
+              <div className="divide-y">
+                {threads.items.map((t) => (
+                  <div
+                    key={t.id}
+                    className="flex items-start justify-between gap-4 py-3 cursor-pointer hover:bg-muted/30 px-2 cut cut-right-5 cut-left-5"
+                    onClick={() => setThreadId(t.id)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setThreadId(t.id)}
+                  >
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-medium">{t.title || 'Untitled thread'}</div>
+                      {t.summary && <div className="truncate text-xs text-muted-foreground">{t.summary}</div>}
+                      <div className="mt-1 text-xs text-muted-foreground">Updated: {fmtDate(t.updated_at)}</div>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <Button
+                        className="bg-transparent"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(t.id);
+                        }}
+                        disabled={deleting}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-4 flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">{threads ? `Total: ${threads.total}` : ''}</div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={onPrev} disabled={!canPrev}>
+                  Prev
+                </Button>
+                <Button variant="outline" size="sm" onClick={onNext} disabled={!canNext}>
+                  Next
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </RightSidebar>
     </div>
   );
 }

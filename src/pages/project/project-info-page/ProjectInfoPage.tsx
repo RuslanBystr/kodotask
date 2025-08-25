@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import {
   useAddMemberMutation,
   useGetMembersQuery,
@@ -31,6 +31,7 @@ const { api } = getEnv();
 
 export default function ProjectInfoPage() {
   const { id } = useParams<string>();
+  const { isMobile } = useSidebar();
 
   const { data } = useGetProjectByIdQuery({ id: id! });
   const { data: members, isSuccess, isFetching } = useGetMembersQuery({ id: id! });
@@ -69,7 +70,7 @@ export default function ProjectInfoPage() {
   return (
     <div className="w-full h-full p-2">
       <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-        <SidebarTrigger className="-ml-1" />
+        {isMobile && <SidebarTrigger className="-ml-1" />}
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>

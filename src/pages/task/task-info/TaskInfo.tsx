@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Separator } from '@/components/ui/separator';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { TaskStatusEnum } from '@/enums/task-status.enum';
 import { TaskDiagram } from '@/pages/task/task-info/Radar';
 import { SpendTime } from '@/pages/task/task-info/SpendTime';
@@ -26,6 +26,8 @@ import { useEditTaskMutation, useGetTaskByIdQuery } from '@/services/task';
 export default function TaskInfoPage() {
   const { id } = useParams<string>();
   const taskId = id ?? '';
+  const { isMobile } = useSidebar();
+
   const { data, isLoading, refetch } = useGetTaskByIdQuery(taskId);
   const [editTask] = useEditTaskMutation();
 
@@ -83,7 +85,7 @@ export default function TaskInfoPage() {
     return (
       <div className="p-2">
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger className="-ml-1" />
+          {isMobile && <SidebarTrigger className="-ml-1" />}
           <Separator orientation="vertical" className="mr-2 h-4" />
           <Breadcrumb>
             <BreadcrumbList>
@@ -101,7 +103,7 @@ export default function TaskInfoPage() {
   return (
     <div className="p-2">
       <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-        <SidebarTrigger className="-ml-1" />
+        {isMobile && <SidebarTrigger className="-ml-1" />}
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>
