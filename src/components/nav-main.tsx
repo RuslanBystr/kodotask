@@ -74,13 +74,13 @@ export function NavMain({
                     }}
                     className={clsx(
                       'py-4 rounded-none transition-all duration-100 ease-in-out transform',
-                      'bg-[#172F45]/20 hover:bg-[#425D68] border rounded-md',
+                      'bg-[#172F45]/20 hover:bg-[#425D68] rounded-md',
                       'data-[active=true]:bg-[#425D68]',
                     )}
                     data-active={isActiveItem}
                   >
                     {item.icon && <item.icon />}
-                    <span className="select-none">{item.title}</span>
+                    <span className="select-none md:text-[16px]">{item.title}</span>
                   </SidebarMenuButton>
                 )}
 
