@@ -8,7 +8,7 @@ export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUsers: builder.query<IResponse<IUserResponse>, IRequestParams>({
       query: (params) => ({
-        url: API_ROUTES.USERS,
+        url: API_ROUTES.MEMBERS,
         params,
       }),
       providesTags: (result) =>
