@@ -60,11 +60,31 @@ function parseHighlightMeta(meta?: string): Set<number> {
 
 const alias: Record<string, Language> = {
   ts: 'tsx',
+  tsx: 'tsx',
+  typescript: 'tsx',
   js: 'jsx',
+  jsx: 'jsx',
+  javascript: 'jsx',
   sh: 'bash',
+  shell: 'bash',
+  bash: 'bash',
   yml: 'yaml',
+  yaml: 'yaml',
   md: 'markdown',
+  markdown: 'markdown',
   docker: 'docker',
+  dockerfile: 'docker',
+  json: 'json',
+  jsonc: 'json',
+  json5: 'json',
+  graphql: 'graphql',
+  sql: 'sql',
+  prisma: 'markup',
+  diff: 'diff',
+  http: 'markup',
+  txt: 'markup',
+  text: 'markup',
+  plaintext: 'markup',
 };
 
 type LiProps = React.ComponentPropsWithoutRef<'li'> & {
@@ -90,27 +110,72 @@ const getNodeMeta = (node: unknown): string | undefined => {
 };
 
 export function Code(props: CodeProps) {
-  const inlineRaw = (props as Record<string, unknown>).inline;
-  const isInline = typeof inlineRaw === 'boolean' ? inlineRaw : false;
-
   const { className, children, node } = props;
 
+  const inlineRaw = String(children ?? '');
+  const hasNewline = inlineRaw.includes('\n');
+  const hasLanguageClass = /language-([a-z0-9+#-]+)/i.test(className || '');
+  const inlineProp =
+    typeof props === 'object' && props && 'inline' in props
+      ? // eslint-disable-next-line react/destructuring-assignment
+        props.inline
+      : undefined;
+
+  const isInline = typeof inlineProp === 'boolean' ? inlineProp : !hasNewline && !hasLanguageClass;
+
   if (isInline) {
-    return <code className="px-1 py-0.5 rounded bg-white/10">{children}</code>;
+    return <code className="px-1 py-0.5 rounded bg-white/10">{inlineRaw}</code>;
   }
 
   const raw = String(children ?? '').replace(/\n$/, '');
-  const langFromClass = /language-(\w+)/.exec(className || '')?.[1];
+  const langFromClass = /language-([a-z0-9+#-]+)/i.exec(className || '')?.[1];
   const langId = (langFromClass ?? getNodeLang(node) ?? '').toLowerCase();
-  const language = (alias[langId] || langId) as Language;
 
-  if (!langId) return <div className="my-2 whitespace-pre-wrap leading-6">{raw}</div>;
+  let language = (alias[langId] || langId || 'markup') as Language;
+  const SAFE_FALLBACK: Language = 'markup';
+
+  const KNOWN: Language[] = [
+    'tsx',
+    'jsx',
+    'js',
+    'ts',
+    'bash',
+    'yaml',
+    'markdown',
+    'docker',
+    'json',
+    'graphql',
+    'sql',
+    'diff',
+    'markup',
+  ] as Language[];
+  if (!KNOWN.includes(language)) language = SAFE_FALLBACK;
+
+  if (!langId) {
+    return (
+      <div className="relative">
+        <CopyButton text={raw} />
+        <pre
+          className="p-3 rounded-lg overflow-x-auto text-[13px] leading-[1.5] border border-white/10"
+          data-language="markup"
+        >
+          <code className={cn(className)}>{raw}</code>
+        </pre>
+      </div>
+    );
+  }
 
   const meta = getNodeMeta(node);
 
   const activeLines = parseHighlightMeta(meta);
 
-  const prismTheme = themes.nightOwl;
+  const prismTheme = {
+    ...themes.nightOwl,
+    plain: {
+      ...themes.nightOwl.plain,
+      backgroundColor: 'transparent',
+    },
+  };
 
   try {
     return (
@@ -192,11 +257,9 @@ const mdComponents: MarkdownComponents = {
 
   ul: ({ children }) => <ul className="my-2 list-disc pl-5 space-y-1">{children}</ul>,
   ol: ({ children }) => <ol className="my-2 list-decimal pl-5 space-y-1">{children}</ol>,
-  // eslint-disable-next-line consistent-return
   li: (rawProps) => {
     const { children, className, ...restRaw } = rawProps as LiProps;
     const { checked } = rawProps as LiProps;
-
     const rest = restRaw as React.LiHTMLAttributes<HTMLLIElement>;
 
     if (typeof checked === 'boolean') {
@@ -214,6 +277,12 @@ const mdComponents: MarkdownComponents = {
         </li>
       );
     }
+
+    return (
+      <li className={cn('break-words', className)} {...rest}>
+        {children}
+      </li>
+    );
   },
 
   blockquote: ({ children }) => <blockquote className="my-3 border-l-2 pl-3 opacity-90 italic">{children}</blockquote>,
@@ -268,7 +337,7 @@ export function Bubble({ role, content }: { role: AIUserRole; content: string })
         className={cn(
           'rounded-2xl px-3 py-2 text-sm leading-relaxed shadow-sm selection:bg-white/20',
           'max-w-full break-words',
-          isUser ? 'max-w-[82%] rounded-tr-none bg-transparent/30 text-[--main-text]' : 'bg-black/10 rounded-none',
+          isUser ? 'max-w-[82%] rounded-tr-none bg-transparent/10 text-[--main-text]' : 'rounded-none',
         )}
       >
         <div className="prose prose-sm prose-invert max-w-none">

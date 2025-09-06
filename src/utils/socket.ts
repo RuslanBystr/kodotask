@@ -12,3 +12,12 @@ export const socket: Socket = io(wsApi, {
   reconnectionDelay: 2000,
   transports: ['websocket'],
 });
+
+export function connectSocket(token: string) {
+  socket.auth = { token: `Bearer ${token}` };
+  if (socket.disconnected) socket.connect();
+}
+
+export function disconnectSocket() {
+  if (socket.connected) socket.disconnect();
+}
