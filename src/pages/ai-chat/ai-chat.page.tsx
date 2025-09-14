@@ -193,11 +193,11 @@ export default function AIChat() {
         className="
           mx-auto grid h-full max-w-screen-2xl
           grid-cols-1
-          md:[grid-template-columns:minmax(0,1fr)_360px]
-          overflow-hidden
+          md:grid-cols-[minmax(0,1fr)_360px]
+          overflow-x-clip md:overflow-hidden
         "
       >
-        <Card className="col-span-1 flex min-h-0 w-full flex-col rounded-none border-none bg-transparent">
+        <Card className="col-span-1 flex min-w-0 min-h-0 w-full flex-col rounded-none border-none bg-transparent">
           <CardHeader className="flex flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <div className="md:hidden">
@@ -213,9 +213,9 @@ export default function AIChat() {
 
           <Separator />
 
-          <CardContent className="flex h-full min-h-0 flex-1 flex-col p-0">
-            <ScrollArea className="min-h-0 flex-1 px-3 sm:px-4 overflow-x-hidden" ref={scrollRootRef}>
-              <div className="mx-auto w-full max-w-none md:max-w-3xl flex flex-col gap-3 py-3 sm:py-4 min-w-0">
+          <CardContent className="flex w-full min-w-0 h-full min-h-0 flex-1 flex-col p-0">
+            <ScrollArea className="min-h-0 min-w-0 w-[100%] flex-1 px-3" ref={scrollRootRef}>
+              <div className="mx-auto w-full min-w-0 max-w-none flex flex-col gap-3 py-3 sm:py-4">
                 {messages.length === 0 && (
                   <div className="flex min-h-[60dvh] items-center justify-center">
                     <div className="mx-auto w-full max-w-sm sm:max-w-md rounded-xl border border-dashed bg-muted/10 p-6 text-center text-sm sm:text-base text-muted-foreground">
@@ -234,7 +234,7 @@ export default function AIChat() {
 
                 {loading && <TypingBubble />}
 
-                {error && <div className="mx-auto w-full max-w-2xl text-center text-xs text-red-500">{error}</div>}
+                {error && <div className="mx-auto w-full text-center text-xs text-red-500">{error}</div>}
               </div>
             </ScrollArea>
 
@@ -262,7 +262,7 @@ export default function AIChat() {
                 </div>
               )}
 
-              <div className="mx-auto flex w-full sm:max-w-2xl md:max-w-3xl items-end gap-2">
+              <div className="mx-auto flex w-full sm:max-w-full md:max-w-full items-end gap-2">
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label
                   className={cn(

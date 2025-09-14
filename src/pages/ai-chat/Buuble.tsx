@@ -31,7 +31,7 @@ function CopyButton({ text }: { text: string }) {
 
 function parseHighlightMeta(meta?: string): Set<number> {
   if (!meta) return new Set();
-  const match = /\{([\d,\-\s]+)\}/.exec(meta);
+  const match = /\{([\d,\-\s]+)}/.exec(meta);
   if (!match) return new Set();
   const set = new Set<number>();
   const toInt = (s: string): number | null => {
@@ -138,7 +138,11 @@ export function Code(props: CodeProps) {
   const isInline = typeof inlineProp === 'boolean' ? inlineProp : !hasNewline && !hasLanguageClass;
 
   if (isInline) {
-    return <code className="px-1 py-0.5 rounded bg-white/10">{inlineRaw}</code>;
+    return (
+      <code className="inline-block max-w-full align-middle px-1 py-0.5 rounded bg-white/10 break-words whitespace-pre-wrap">
+        {inlineRaw}
+      </code>
+    );
   }
 
   const raw = String(children ?? '').replace(/\n$/, '');
@@ -193,12 +197,17 @@ export function Code(props: CodeProps) {
 
   try {
     return (
-      <div className="relative">
+      <div className="relative w-full max-w-full overflow-hidden rounded-lg border border-white/10">
         <CopyButton text={raw} />
         <Highlight code={raw} language={language} theme={prismTheme}>
           {({ className: cls, style, tokens, getLineProps, getTokenProps }) => (
             <pre
-              className={cn('p-3 rounded-lg overflow-x-auto text-[13px] leading-[1.5] border border-white/10', cls)}
+              className={cn(
+                'w-full max-w-full box-border',
+                'overflow-x-auto overflow-y-hidden',
+                'py-4 px-3 text-[13px] leading-[1.5] whitespace-pre break-normal font-mono',
+                cls,
+              )}
               style={style as React.CSSProperties}
               data-language={language}
             >
@@ -212,7 +221,7 @@ export function Code(props: CodeProps) {
                     key={`line-${lineNumber}`}
                     {...lineProps}
                     className={cn(
-                      'px-2 -mx-2 border-l-2',
+                      'px-0 -mx-4 border-l-2',
                       isActive ? 'bg-white/10 border-[--main-button]' : 'border-transparent',
                     )}
                   >
@@ -235,8 +244,10 @@ export function Code(props: CodeProps) {
         <CopyButton text={raw} />
         <pre
           className={cn(
-            'p-3 rounded-lg bg-black/20 overflow-x-auto text-[13px] leading-[1.5] whitespace-pre',
-            'border border-white/10',
+            'w-full max-w-full py-4 px-0 rounded-lg',
+            'overflow-x-auto overflow-y-hidden',
+            'text-[13px] leading-[1.5] border border-white/10',
+            'whitespace-pre break-normal',
           )}
           data-language={language}
         >
@@ -298,9 +309,9 @@ const mdComponents: MarkdownComponents = {
       </li>
     );
   },
-
   blockquote: ({ children }) => <blockquote className="my-3 border-l-2 pl-3 opacity-90 italic">{children}</blockquote>,
-
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  pre: ({ children }) => <>{children}</>,
   code: (props) => <Code {...props} />,
 
   table: ({ children }) => (
@@ -317,15 +328,13 @@ const mdComponents: MarkdownComponents = {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="underline underline-offset-2 decoration-white/40 hover:decoration-white"
+      className="underline underline-offset-2 decoration-white/40 hover:decoration-white break-all"
     >
       {children}
     </a>
   ),
 
   img: ({ src, alt }) => (
-    // react-markdown passes only safe, sanitized attrs per schema
-    // Add graceful fallback
     <img
       src={src || ''}
       alt={alt || ''}
@@ -338,23 +347,34 @@ const mdComponents: MarkdownComponents = {
     />
   ),
 };
-
 export function Bubble({ role, content }: { role: AIUserRole; content: string }) {
   const isUser = role === 'user';
 
   return (
     <div
-      className={cn('flex w-full', isUser ? 'justify-end' : 'justify-start')}
+      className={cn('flex w-full min-w-0 overflow-x-hidden', isUser ? 'justify-end' : 'justify-start')}
       aria-label={isUser ? 'User message' : 'Assistant message'}
     >
       <div
         className={cn(
           'rounded-2xl px-3 py-2 text-sm leading-relaxed shadow-sm selection:bg-white/20',
-          'max-w-full break-words',
+          'max-w-full min-w-0 overflow-hidden break-words',
           isUser ? 'max-w-[82%] rounded-tr-none bg-transparent/10 text-[--main-text]' : 'rounded-none',
         )}
       >
-        <div className="prose prose-sm prose-invert max-w-none">
+        <div
+          className={cn(
+            'prose prose-sm prose-invert max-w-full min-w-0',
+            '[&]:overflow-wrap:anywhere [&]:break-words',
+            '[&_a]:break-all',
+            '[&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:overflow-y-hidden',
+            '[&_pre>code]:whitespace-pre',
+            '[&:not(pre)>code]:inline-block [&:not(pre)>code]:max-w-full',
+            '[&:not(pre)>code]:whitespace-pre-wrap [&:not(pre)>code]:break-words',
+            '[&_img]:max-w-full [&_img]:h-auto',
+            '[&_table]:w-full [&_table]:table-fixed [&_td]:break-words',
+          )}
+        >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[[rehypeSanitize, sanitizeSchema]]}

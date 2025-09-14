@@ -272,6 +272,13 @@ input:-webkit-autofill:active {
   background: rgba(255, 255, 255, 0.1);
   animation: float 8s ease-in-out infinite;
 }
+
+[data-radix-scroll-area-viewport] > div[style*="display: table"] {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
 .perspective {
   perspective: 1000px;
 }
