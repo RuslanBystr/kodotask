@@ -279,7 +279,7 @@ export default function AIChat() {
                     onKeyDown={handleKeyDown}
                     placeholder="Enter message ..."
                     rows={1}
-                    className="block w-full resize-none rounded-md border bg-background px-3 py-2 text-sm leading-5 shadow-sm outline-none"
+                    className="block w-full resize-none rounded-md text-4 border bg-background px-3 py-2 leading-5 shadow-sm outline-none"
                     style={{ maxHeight: '20svh', minHeight: 'auto' }}
                   />
                 </div>
