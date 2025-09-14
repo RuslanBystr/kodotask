@@ -255,8 +255,8 @@ const mdComponents: MarkdownComponents = {
   strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
   em: ({ children }) => <em className="opacity-90">{children}</em>,
 
-  ul: ({ children }) => <ul className="my-2 list-disc pl-5 space-y-1">{children}</ul>,
-  ol: ({ children }) => <ol className="my-2 list-decimal pl-5 space-y-1">{children}</ol>,
+  ul: ({ children }) => <ul className="my-2 list-disc space-y-1 pl-0 marker:text-foreground">{children}</ul>,
+  ol: ({ children }) => <ol className="my-2 list-decimal space-y-1 pl-0 marker:text-foreground">{children}</ol>,
   li: (rawProps) => {
     const { children, className, ...restRaw } = rawProps as LiProps;
     const { checked } = rawProps as LiProps;
