@@ -186,12 +186,11 @@ export function Code(props: CodeProps) {
   const meta = getNodeMeta(node);
 
   const activeLines = parseHighlightMeta(meta);
-
   const prismTheme = {
     ...themes.nightOwl,
     plain: {
       ...themes.nightOwl.plain,
-      backgroundColor: 'transparent',
+      backgroundColor: language === 'bash' ? '#282C34' : 'transparent',
     },
   };
 
