@@ -85,6 +85,20 @@ const alias: Record<string, Language> = {
   txt: 'markup',
   text: 'markup',
   plaintext: 'markup',
+  py: 'python',
+  python: 'python',
+  java: 'java',
+  go: 'go',
+  cpp: 'cpp',
+  cplusplus: 'cpp',
+  csharp: 'csharp',
+  cs: 'csharp',
+  rb: 'ruby',
+  ruby: 'ruby',
+  php: 'php',
+  swift: 'swift',
+  kt: 'kotlin',
+  kotlin: 'kotlin',
 };
 
 type LiProps = React.ComponentPropsWithoutRef<'li'> & {
