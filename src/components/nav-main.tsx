@@ -74,7 +74,7 @@ export function NavMain({
                     }}
                     className={clsx(
                       'py-4 rounded-none transition-all duration-100 ease-in-out transform',
-                      'bg-[#172F45]/20 hover:bg-[#425D68] rounded-md',
+                      'bg-[#172F45]/20 hover:bg-[#425D68] cut cut-right-5 cut-left-5',
                       'data-[active=true]:bg-[#425D68]',
                     )}
                     data-active={isActiveItem}
