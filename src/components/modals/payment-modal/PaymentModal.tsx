@@ -1,4 +1,4 @@
-import { Check, DollarSign } from 'lucide-react';
+import { Banknote, Check } from 'lucide-react';
 import { FormEvent, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -109,8 +109,8 @@ export function PaymentModal() {
           className="rounded-none select-none bg-transparent hover:bg-[#88aabb]"
           onClick={() => setOpen(true)}
         >
-          <DollarSign />
-          Select a plan
+          <Banknote />
+          Billing
         </SidebarMenuButton>
       </DialogTrigger>
 

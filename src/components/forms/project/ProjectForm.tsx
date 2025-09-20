@@ -65,58 +65,69 @@ const ProjectForm: React.FC<IFormProps<IProjectFormParams>> = ({
   }, [initialValues, reset]);
 
   return (
-    <div className=" p-5 max-w-[540px] w-[100%]">
+    <div className="">
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" className="">
           {initialValues.image && (
-            <div className="h-[200px] w-[200px] flex mx-auto">
+            <div className="h-full w-auto flex">
               <img className="w-full" src={`${api}/file/${initialValues.image}`} alt="Project" />
             </div>
           )}
-          <FormField
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image</FormLabel>
-                <Input type="file" onChange={handleImageChange} />
-                <FormControl>
-                  <Input type="hidden" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Project Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Project Description</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-2 gap-2 bg-blue-100">
+            <div className="row-span-2">
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem className="h-full">
+                    <FormLabel>Image</FormLabel>
 
+                    <div className="h-full rounded-none flex items-center justify-center">
+                      <Input type="file" onChange={handleImageChange} />
+                    </div>
+
+                    <FormControl>
+                      <Input type="hidden" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
           <Button
             type="submit"
-            className="mt-5 rounded-none bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
+            className="rounded-none bg-[--main-button] hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
             variant="outline"
             disabled={isLoading || !isDirty}
           >

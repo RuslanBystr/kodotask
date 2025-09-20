@@ -1,4 +1,4 @@
-import { LogOut } from 'lucide-react';
+import { HelpCircle, LogOut } from 'lucide-react';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -37,15 +37,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <NavUser />
       </SidebarHeader>
-      <SidebarContent className="pr-2">
+      <SidebarContent className="pr-2 pb-4">
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-t pt-4">
         <NotificationsModal />
         <PaymentModal />
         <SidebarMenuButton className="hover:bg-muted/50" tooltip="Logout" onClick={onLogoutClick}>
-          <LogOut />
-          <span className="select-none">Logout</span>
+          <HelpCircle />
+          <span className="select-none">Support</span>
+        </SidebarMenuButton>
+        <SidebarMenuButton className="hover:bg-muted/50" tooltip="Logout" onClick={onLogoutClick}>
+          <LogOut color="#f87171" />
+          <span className="select-none text-red-400">Logout</span>
         </SidebarMenuButton>
       </SidebarFooter>
       <SidebarRail />

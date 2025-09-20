@@ -262,7 +262,7 @@ export default function AIChat() {
                 </div>
               )}
 
-              <div className="mx-auto flex w-full sm:max-w-full md:max-w-full items-end gap-2">
+              <div className="mx-auto mb-2 flex w-full sm:max-w-full md:max-w-full items-end gap-2">
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label
                   className={cn(
@@ -283,12 +283,12 @@ export default function AIChat() {
                     onKeyDown={handleKeyDown}
                     placeholder="Enter message ..."
                     rows={1}
-                    className="block w-full resize-none rounded-md text-4 border bg-background px-3 py-2 leading-5 shadow-sm outline-none"
+                    className="block w-full resize-none rounded-none text-4 border bg-background px-3 py-2 leading-5 shadow-sm outline-none"
                     style={{ maxHeight: '20svh', minHeight: 'auto' }}
                   />
                 </div>
 
-                <Button className="border-none" onClick={sendMessage} disabled={!canSend}>
+                <Button className="border-none rounded-none cut cut-right-5" onClick={sendMessage} disabled={!canSend}>
                   <Send className="h-4 w-4" />
                 </Button>
               </div>

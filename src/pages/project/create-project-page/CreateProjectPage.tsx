@@ -30,17 +30,17 @@ export default function CreateProjectPage() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href=".">Users</BreadcrumbLink>
+              <BreadcrumbLink href=".">Projects</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden md:block" />
             <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="">Create</BreadcrumbLink>
+              <BreadcrumbLink href="">Create new</BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </header>
       <div className="h-[10vh] p-5">
-        <Button variant="outline" onClick={() => navigate(-1)}>
+        <Button className="rounded-none cut cut-left-5" onClick={() => navigate(-1)}>
           <ArrowLeft />
           Cancel
         </Button>

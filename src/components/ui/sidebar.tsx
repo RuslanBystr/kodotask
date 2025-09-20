@@ -147,15 +147,11 @@ const Sidebar = React.forwardRef<
     collapsible?: 'offcanvas' | 'icon' | 'none';
   }
 >(({ side = 'left', variant = 'sidebar', collapsible = 'offcanvas', className, children, ...props }, ref) => {
-  const { isMobile, state, open, setOpen, openMobile, setOpenMobile } = useSidebar();
+  const { isMobile, state, setOpen, openMobile, setOpenMobile } = useSidebar();
 
   const handleHoverEnter = React.useCallback(() => {
     if (!isMobile && state === 'collapsed') setOpen(true);
   }, [isMobile, state, setOpen]);
-
-  const handleHoverLeave = React.useCallback(() => {
-    if (!isMobile && open) setOpen(false);
-  }, [isMobile, open, setOpen]);
 
   if (collapsible === 'none') {
     return (
@@ -216,8 +212,8 @@ const Sidebar = React.forwardRef<
 
       {/* actual sidebar */}
       <div
-        onMouseEnter={handleHoverEnter}
-        onMouseLeave={handleHoverLeave}
+        // onMouseEnter={handleHoverEnter}
+        // onMouseLeave={handleHoverLeave}
         className={cn(
           'duration-100 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex',
           side === 'left'
@@ -355,10 +351,7 @@ const SidebarContent = React.forwardRef<HTMLDivElement, React.ComponentProps<'di
   <div
     ref={ref}
     data-sidebar="content"
-    className={cn(
-      'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
-      className,
-    )}
+    className={cn('flex min-h-0 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden', className)}
     {...props}
   />
 ));
