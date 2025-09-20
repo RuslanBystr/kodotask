@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { socket } from '@/utils/socket';
 
-const VideoChat = ({
+const VideoChat = async ({
   receiverId,
   chatId,
   open,
@@ -26,9 +26,40 @@ const VideoChat = ({
 
   const [error, setError] = useState<string | null>(null);
 
+  async function hmacSha1Base64(secret: string, msg: string): Promise<string> {
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-1' }, false, [
+      'sign',
+    ]);
+    const sig = await crypto.subtle.sign('HMAC', key, enc.encode(msg));
+    return btoa(String.fromCharCode(...new Uint8Array(sig)));
+  }
+
+  const TURN_HOST = '91.98.70.58';
+  const TTL = 3600;
+  const SECRET = '9a79493b4c3c6cd249e5cda343336b48f77a5796a7cb81b1142ad4249fed27a2';
+
+  const expiry = Math.floor(Date.now() / 1000) + TTL;
+  const username = `${expiry}:dev-user`;
+  const credential = await hmacSha1Base64(SECRET, username);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const ICE_SERVERS: RTCConfiguration = {
-    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+    iceServers: [
+      // { urls: ['stun:stun.l.google.com:19302'] },
+      {
+        urls: [
+          `turn:${TURN_HOST}:3478?transport=udp`,
+          `turn:${TURN_HOST}:3478?transport=tcp`,
+          // For TLS:
+          // `turns:${TURN_HOST}:5349?transport=tcp`,
+        ],
+        username,
+        credential,
+      },
+    ],
+    // щоб примусово їхати через TURN:
+    // iceTransportPolicy: 'relay',
   };
 
   const requestMediaAccess = async () => {
