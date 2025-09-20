@@ -10,7 +10,7 @@ export const useUserConnection = ({ userId }: { userId: number | undefined }) =>
   useEffect(() => {
     if (!userId) return;
 
-    socket.emit('userConnected', userId);
+    socket.emit('userConnected', String(userId));
 
     const handleOnlineUsers = (users: string[]) => {
       dispatch(setOnlineUsers(users));

@@ -1,57 +1,66 @@
 import { ContextMenuTrigger } from '@radix-ui/react-context-menu';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { VideoIcon } from 'lucide-react';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { CallModal } from '@/components/modals/call-modal';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
 import { ContextMenu, ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { ChatTypeEnum } from '@/enums/chat-type.enum';
 import { Chat } from '@/pages/chat/common/Chat';
-import VideoChat from '@/pages/chat/common/VideoChat';
 import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
 import { useMainChatsPage } from '@/pages/chat/hooks/useMainChatsPage';
 import { ChatItem } from '@/pages/chat/main-chat-page/ChatItem';
 import { useDeletePrivateChatMutation } from '@/services/chat';
 import { selectAuthenticatedUserSelector, useAppSelector } from '@/store';
+import { openCall } from '@/store/call';
 import { selectOnlineUsers } from '@/store/users/selectors';
 import { IChatResponse, IUserChat } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { getEnv } from '@/utils';
+import { socket } from '@/utils/socket';
 
 const { api } = getEnv();
 
 const MainChatPage: React.FC = () => {
   const navigate = useNavigate();
   const { isMobile } = useSidebar();
+  const dispatch = useDispatch();
+  const { id: routeChatId } = useParams<{ id: string }>();
+
   const userData = useSelector(selectAuthenticatedUserSelector);
   const userId = userData?.id;
 
   const { chats, refetch } = useMainChatsPage({ chatTypeQuery: ChatTypeEnum.PRIVATE });
-
   const onlineUsers = useAppSelector(selectOnlineUsers);
   const { filterValue, filteredChats } = useFilterChats(chats?.items);
 
-  const [activeChat, setActiveChat] = useState<IChatResponse | null>(null);
-  const [openVideoModal, setOpenVideoModal] = useState<boolean>(false);
+  const activeChat: IChatResponse | null = useMemo(() => {
+    if (!filteredChats || !routeChatId) return null;
+    return filteredChats.find((c) => String(c.id) === String(routeChatId)) ?? null;
+  }, [filteredChats, routeChatId]);
 
-  const [selectedCompanion, setSelectedCompanion] = useState<IUserChat | undefined>(undefined);
-  const [deleteChat] = useDeletePrivateChatMutation();
+  const selectedCompanion: IUserChat | undefined = useMemo(() => {
+    if (!activeChat || !userId) return undefined;
+    const myId = String(userId);
+    return activeChat.userChats?.find((uc) => String(uc.user.id) !== myId);
+  }, [activeChat, userId]);
 
   useEffect(() => {
-    if (!activeChat) return;
-    const companion = activeChat.userChats?.find((userChat) => Number(userChat.user.id) !== userId);
-    setSelectedCompanion(companion);
-  }, [activeChat, userId]);
+    if (!routeChatId) return;
+    socket.emit('joinChat', String(routeChatId));
+  }, [routeChatId]);
+
+  const [deleteChat] = useDeletePrivateChatMutation();
 
   const handleSelectedChat = useCallback(
     (chat: IChatResponse) => {
-      setActiveChat(chat);
       navigate(`/chats/user/${chat.id}`);
     },
     [navigate],
@@ -59,11 +68,24 @@ const MainChatPage: React.FC = () => {
 
   const handleDeleteChat = async (chat: IChatResponse) => {
     try {
-      setActiveChat(null);
       await deleteChat({ chatId: chat.id });
-    } catch (error) {
+      if (String(chat.id) === String(routeChatId)) {
+        navigate('/chats/user');
+      }
+    } catch {
       toast.error('Failed to delete chat');
     }
+  };
+
+  const handleStartVideoCall = () => {
+    if (!selectedCompanion || !routeChatId) return;
+
+    dispatch(
+      openCall({
+        receiverId: String(selectedCompanion.user.id),
+        chatId: String(routeChatId),
+      }),
+    );
   };
 
   const renderChatList = () => {
@@ -138,26 +160,27 @@ const MainChatPage: React.FC = () => {
               <div>
                 <p>{selectedCompanion?.user.firstName}</p>
                 <p className="text-[12px]">
-                  {selectedCompanion &&
-                    (onlineUsers.includes(selectedCompanion.user.id) ? (
-                      <span className="text-green-400">Online</span>
-                    ) : (
-                      'Offline'
-                    ))}
+                  {selectedCompanion && onlineUsers.includes(String(selectedCompanion.user.id)) ? (
+                    <span className="text-green-400">Online</span>
+                  ) : (
+                    'Offline'
+                  )}
                 </p>
               </div>
             </div>
-            {selectedCompanion && activeChat && (
-              <CallModal open={openVideoModal} setOpen={setOpenVideoModal}>
-                <VideoChat
-                  receiverId={selectedCompanion.user.id}
-                  chatId={activeChat.id.toString()}
-                  open={openVideoModal}
-                  setOpen={setOpenVideoModal}
-                />
-              </CallModal>
+
+            {selectedCompanion && routeChatId && (
+              <Button
+                className="rounded-none cut cut-left-5 cut-right-5 bg-[--main-button] active:scale-95"
+                onClick={handleStartVideoCall}
+                title="Start video call"
+              >
+                <VideoIcon className="mr-2 h-4 w-4" />
+                Call
+              </Button>
             )}
           </div>
+
           <Chat refetchChats={refetch} />
         </div>
       </div>

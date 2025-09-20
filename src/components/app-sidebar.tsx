@@ -18,6 +18,7 @@ import {
 import { navigationList } from '@/constants';
 import { ROUTES } from '@/router';
 import { logout } from '@/store';
+import { resetCall } from '@/store/call';
 
 const data = {
   navMain: navigationList,
@@ -29,6 +30,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const onLogoutClick = () => {
     dispatch(logout());
+    dispatch(resetCall());
     navigate(ROUTES.AUTH.ROOT);
   };
 

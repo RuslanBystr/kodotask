@@ -4,6 +4,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { baseApi } from '@/services/base';
 import { fileUploadApi } from '@/services/file';
 import { usersApi } from '@/services/users';
+import { callReducer } from '@/store/call';
 
 import { authReducer } from './auth';
 import { onlineUsersReducer } from './users';
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   [usersApi.reducerPath]: usersApi.reducer,
   [fileUploadApi.reducerPath]: fileUploadApi.reducer,
   auth: authReducer,
+  call: callReducer,
   onlineUsers: onlineUsersReducer,
 });
 export const setupStore = () =>

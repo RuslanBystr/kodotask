@@ -141,7 +141,7 @@ export function Chat({ refetchChats }: { refetchChats: () => void }) {
           </Button>
           <Input className="hidden" type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" />
           <Input
-            className="flex-1 rounded-full text-[12px] md:text-[14px]"
+            className="flex-1 rounded-full text-[16px]"
             placeholder="Type your message..."
             value={newMessage}
             onChange={handleChangeMessage}
