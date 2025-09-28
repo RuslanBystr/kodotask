@@ -32,7 +32,6 @@ export function useTurnCredentials() {
         const servers: RTCIceServer[] = [
           { urls: `turn:${TURN_HOST}:3478?transport=udp`, username, credential },
           { urls: `turn:${TURN_HOST}:3478?transport=tcp`, username, credential },
-          { urls: `turns:${TURN_HOST}:443?transport=tcp`, username, credential },
         ];
 
         setIceServers(servers);

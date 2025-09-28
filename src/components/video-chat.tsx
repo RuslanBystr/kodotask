@@ -158,10 +158,8 @@ const VideoChat = ({
       };
 
       pc.onicecandidate = (event) => {
-        if (event.candidate) {
-          const payload = event.candidate.toJSON?.() ?? event.candidate;
-          socket.emit('webrtc_signal', { toUserId: receiverId, chatId, signal: { candidate: payload } });
-        }
+        const payload = event.candidate?.toJSON?.() ?? event.candidate ?? null;
+        socket.emit('webrtc_signal', { toUserId: receiverId, chatId, signal: { candidate: payload } });
       };
 
       pc.onconnectionstatechange = () => {
