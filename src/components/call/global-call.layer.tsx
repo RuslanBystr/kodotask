@@ -7,7 +7,7 @@ import { selectCall, setOpen } from '@/store/call';
 
 export const GlobalCallLayer = () => {
   const dispatch = useDispatch();
-  const { open, receiverId, chatId, incoming } = useSelector(selectCall);
+  const { open, receiverId, chatId, incoming, initiator } = useSelector(selectCall);
   const onSetOpen = useCallback((v: boolean) => dispatch(setOpen(v)), [dispatch]);
 
   const lastRidRef = useRef<string | undefined>(receiverId);
@@ -34,6 +34,7 @@ export const GlobalCallLayer = () => {
           setOpen={onSetOpen}
           incomingOffer={incoming?.offer}
           incomingFromUserId={incoming?.fromUserId}
+          initiator={initiator}
         />
       ) : (
         <div className="p-4 text-sm opacity-70">Preparing call…</div>

@@ -12,11 +12,10 @@ export type CallState = {
   open: boolean;
   receiverId?: string;
   chatId?: string;
-
   incomingModalOpen: boolean;
   incoming?: IncomingPayload | null;
-
   callState: CallPhase;
+  initiator: boolean;
 };
 
 const initialState: CallState = {
@@ -24,6 +23,7 @@ const initialState: CallState = {
   incomingModalOpen: false,
   incoming: null,
   callState: 'idle',
+  initiator: false,
 };
 
 const slice = createSlice({
@@ -35,6 +35,7 @@ const slice = createSlice({
       state.receiverId = action.payload.receiverId;
       state.chatId = action.payload.chatId;
       state.callState = 'calling';
+      state.initiator = true;
     },
     acceptIncoming(state) {
       if (!state.incoming) return;
@@ -77,6 +78,7 @@ const slice = createSlice({
       state.chatId = undefined;
       state.incomingModalOpen = false;
       state.incoming = null;
+      state.initiator = false;
     },
     resetCall(state) {
       state.open = false;
@@ -85,6 +87,7 @@ const slice = createSlice({
       state.incomingModalOpen = false;
       state.incoming = null;
       state.callState = 'idle';
+      state.initiator = false;
     },
   },
 });

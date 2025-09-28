@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { useDraggableInContainer } from '@/hooks/useDraggableInContainer';
 import { useLocalMedia } from '@/hooks/useLocalMedia';
+import { useTurnCredentials } from '@/hooks/useTurnCredentials';
 import { endCall, setConnected } from '@/store/call';
 import { socket } from '@/utils/socket';
 
@@ -29,6 +30,7 @@ const VideoChat = ({
   setOpen,
   incomingOffer,
   incomingFromUserId,
+  initiator,
 }: {
   receiverId: string;
   chatId: string;
@@ -36,6 +38,7 @@ const VideoChat = ({
   setOpen: (value: boolean) => void;
   incomingOffer: RTCSessionDescriptionInit | undefined;
   incomingFromUserId: string | undefined;
+  initiator: boolean;
 }) => {
   const dispatch = useDispatch();
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -56,8 +59,6 @@ const VideoChat = ({
   const candidateQueueRef = useRef<(RTCIceCandidateInit | null)[]>([]);
   const remoteDescSetRef = useRef(false);
 
-  const [iceServers, setIceServers] = useState<RTCIceServer[]>([]);
-
   const areaRef = useRef<HTMLDivElement>(null);
   const {
     nodeRef: pipRef,
@@ -69,33 +70,15 @@ const VideoChat = ({
     // persistKey: 'pip-pos',
   });
 
-  async function hmacSha1Base64(secret: string, msg: string): Promise<string> {
-    const enc = new TextEncoder();
-    const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-1' }, false, [
-      'sign',
-    ]);
-    const sig = await crypto.subtle.sign('HMAC', key, enc.encode(msg));
-    return btoa(String.fromCharCode(...new Uint8Array(sig)));
-  }
-
-  const TURN_HOST = '91.98.70.58';
-  const TTL = 3600;
-  const SECRET = '9a79493b4c3c6cd249e5cda343336b48f77a5796a7cb81b1142ad4249fed27a2';
-
   useEffect(() => {
     callStateRef.current = callState;
   }, [callState]);
 
+  const { iceServers, error: turnErr, ensureReady } = useTurnCredentials();
+
   useEffect(() => {
-    const expiry = Math.floor(Date.now() / 1000) + TTL;
-    const username = `${expiry}:dev-user`;
-    hmacSha1Base64(SECRET, username).then((credential) => {
-      setIceServers([
-        { urls: `turn:${TURN_HOST}:3478?transport=udp`, username, credential },
-        { urls: `turn:${TURN_HOST}:3478?transport=tcp`, username, credential },
-      ]);
-    });
-  }, []);
+    if (turnErr) toast.error('TURN credentials error. Falling back to STUN.');
+  }, [turnErr]);
 
   const { stream: localStream, error: mediaError, acquire, attach, release } = useLocalMedia();
 
@@ -158,7 +141,12 @@ const VideoChat = ({
 
   const createPeerConnection = useCallback(
     (stream?: MediaStream) => {
-      const pc = new RTCPeerConnection({ iceServers, iceTransportPolicy: 'relay' });
+      const pc = new RTCPeerConnection({
+        iceServers: iceServers.length ? iceServers : [{ urls: 'stun:stun.l.google.com:19302' }],
+        iceTransportPolicy: 'all',
+        bundlePolicy: 'max-bundle',
+        rtcpMuxPolicy: 'require',
+      });
 
       pc.ontrack = (event) => {
         if (remoteVideoRef.current) {
@@ -170,8 +158,10 @@ const VideoChat = ({
       };
 
       pc.onicecandidate = (event) => {
-        const payload = event.candidate?.toJSON?.() ?? event.candidate ?? null;
-        socket.emit('webrtc_signal', { toUserId: receiverId, chatId, signal: { candidate: payload } });
+        if (event.candidate) {
+          const payload = event.candidate.toJSON?.() ?? event.candidate;
+          socket.emit('webrtc_signal', { toUserId: receiverId, chatId, signal: { candidate: payload } });
+        }
       };
 
       pc.onconnectionstatechange = () => {
@@ -198,8 +188,16 @@ const VideoChat = ({
       };
 
       const s = stream ?? localStream;
-      if (s) s.getTracks().forEach((track) => pc.addTrack(track, s));
-
+      if (s) {
+        s.getTracks().forEach((t) => pc.addTrack(t, s));
+      } else {
+        try {
+          pc.addTransceiver('audio', { direction: 'recvonly' });
+          pc.addTransceiver('video', { direction: 'recvonly' });
+        } catch {
+          /* empty */
+        }
+      }
       peerConnectionRef.current = pc;
       return pc;
     },
@@ -220,6 +218,8 @@ const VideoChat = ({
   }, []);
 
   const handleCallUser = useCallback(async () => {
+    if (!initiator) return;
+    await ensureReady();
     const stream = await acquire();
     if (!stream) return;
 
@@ -244,9 +244,11 @@ const VideoChat = ({
       chatId,
       signal: { sdp: offer },
     });
-  }, [acquire, setOpen, createPeerConnection, receiverId, chatId]);
+  }, [initiator, ensureReady, acquire, setOpen, createPeerConnection, receiverId, chatId]);
 
   const handleAcceptIncoming = useCallback(async () => {
+    if (initiator) return;
+    await ensureReady();
     const offer = pendingOfferRef.current;
     const from = pendingFromUserRef.current;
     if (!offer || !from) return;
@@ -282,7 +284,7 @@ const VideoChat = ({
 
     pendingOfferRef.current = null;
     acceptingRef.current = false;
-  }, [localStream, acquire, createPeerConnection, drainCandidateQueue, chatId]);
+  }, [initiator, ensureReady, localStream, createPeerConnection, drainCandidateQueue, chatId, acquire]);
 
   useEffect(() => {
     if (!open) return;
