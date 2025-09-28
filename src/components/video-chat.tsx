@@ -384,13 +384,8 @@ const VideoChat = ({
 
         {/* Remote video */}
         <div ref={areaRef} className="relative w-full bg-black/30">
-          <video
-            ref={remoteVideoRef}
-            autoPlay
-            playsInline
-            muted
-            className="h-[64vh] w-full object-contain md:object-cover"
-          />
+          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+          <video ref={remoteVideoRef} autoPlay playsInline className="h-[64vh] w-full object-contain md:object-cover" />
           {/* Local video */}
           <div ref={pipRef} style={pipStyle} onPointerDown={onPointerDown} className="z-20 select-none">
             <video
