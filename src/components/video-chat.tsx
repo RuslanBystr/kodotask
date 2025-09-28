@@ -158,7 +158,7 @@ const VideoChat = ({
 
   const createPeerConnection = useCallback(
     (stream?: MediaStream) => {
-      const pc = new RTCPeerConnection({ iceServers, iceTransportPolicy: 'all' });
+      const pc = new RTCPeerConnection({ iceServers, iceTransportPolicy: 'relay' });
 
       pc.ontrack = (event) => {
         if (remoteVideoRef.current) {
@@ -306,7 +306,11 @@ const VideoChat = ({
 
   useEffect(() => {
     const handler = async ({ signal, fromUserId }: WebRTCMessageMinimal) => {
-      if (signal?.type === 'ring') return;
+      if (signal?.type === 'ring') {
+        pendingFromUserRef.current = fromUserId;
+        if (callStateRef.current === 'idle') setCallState('incoming');
+        return;
+      }
 
       if (signal?.type === 'end') {
         endByPeerRef.current = true;
