@@ -103,7 +103,7 @@ export const useChatMessage = ({
       socket.connect();
     }
 
-    socket.emit('joinChat', String(chatId));
+    socket.emit('joinChat', chatId);
 
     Object.entries(eventHandlers).forEach(([event, handler]) => {
       socket.off(event, handler);
