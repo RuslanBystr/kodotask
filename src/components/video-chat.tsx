@@ -142,8 +142,8 @@ const VideoChat = ({
   const createPeerConnection = useCallback(
     (stream?: MediaStream) => {
       const pc = new RTCPeerConnection({
-        iceServers: iceServers.length ? iceServers : [{ urls: 'stun:stun.l.google.com:19302' }],
-        iceTransportPolicy: 'all',
+        iceServers,
+        iceTransportPolicy: 'relay',
         bundlePolicy: 'max-bundle',
         rtcpMuxPolicy: 'require',
       });
