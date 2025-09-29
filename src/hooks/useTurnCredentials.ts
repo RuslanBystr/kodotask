@@ -16,7 +16,7 @@ type Options = {
 };
 
 export function useTurnCredentials(opts: Options = {}) {
-  const { host = '91.98.70.58', addStun = true, enableTLS = false } = opts;
+  const { host = '91.98.70.58', addStun = false, enableTLS = false } = opts;
 
   const [iceServers, setIceServers] = useState<RTCIceServer[]>([]);
   const [ready, setReady] = useState(false);
