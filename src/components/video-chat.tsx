@@ -142,24 +142,36 @@ const VideoChat = ({
   const createPeerConnection = useCallback(
     (stream?: MediaStream) => {
       const pc = new RTCPeerConnection({
-        iceServers,
-        iceTransportPolicy: 'relay',
+        iceServers: [
+          ...iceServers,
+          { urls: 'stun:stun.l.google.com:19302' }, // fallback STUN
+        ],
+        iceTransportPolicy: 'all', // all = STUN + TURN
         bundlePolicy: 'max-bundle',
         rtcpMuxPolicy: 'require',
       });
+
+      const s = stream ?? localStream;
+      if (s) {
+        s.getTracks().forEach((t) => pc.addTrack(t, s));
+      } else {
+        pc.addTransceiver('audio', { direction: 'recvonly' });
+        pc.addTransceiver('video', { direction: 'recvonly' });
+      }
 
       pc.ontrack = (event) => {
         if (remoteVideoRef.current) {
           // eslint-disable-next-line prefer-destructuring
           remoteVideoRef.current.srcObject = event.streams[0];
-
           remoteVideoRef.current.play?.().catch(() => {});
         }
       };
 
       pc.onicecandidate = (event) => {
         const payload = event.candidate?.toJSON?.() ?? event.candidate ?? null;
-        socket.emit('webrtc_signal', { toUserId: receiverId, chatId, signal: { candidate: payload } });
+        if (payload) {
+          socket.emit('webrtc_signal', { toUserId: receiverId, chatId, signal: { candidate: payload } });
+        }
       };
 
       pc.onconnectionstatechange = () => {
@@ -167,12 +179,14 @@ const VideoChat = ({
           setCallState('connected');
           dispatch(setConnected());
         }
+        if (pc.connectionState === 'failed' || pc.connectionState === 'closed') {
+          handleHangUp(false);
+          dispatch(endCall());
+        }
       };
 
       pc.oniceconnectionstatechange = () => {
-        const st = pc.iceConnectionState;
-        if (st === 'failed' || st === 'closed') {
-          if (!endByPeerRef.current) toast.info('Call ended');
+        if (pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'closed') {
           handleHangUp(false);
           dispatch(endCall());
         }
@@ -185,17 +199,6 @@ const VideoChat = ({
         }
       };
 
-      const s = stream ?? localStream;
-      if (s) {
-        s.getTracks().forEach((t) => pc.addTrack(t, s));
-      } else {
-        try {
-          pc.addTransceiver('audio', { direction: 'recvonly' });
-          pc.addTransceiver('video', { direction: 'recvonly' });
-        } catch {
-          /* empty */
-        }
-      }
       peerConnectionRef.current = pc;
       return pc;
     },
@@ -306,24 +309,31 @@ const VideoChat = ({
 
   useEffect(() => {
     const handler = async ({ signal, fromUserId }: WebRTCMessageMinimal) => {
-      if (signal?.type === 'ring') {
-        pendingFromUserRef.current = fromUserId;
-        if (callStateRef.current === 'idle') setCallState('incoming');
+      const pc = peerConnectionRef.current;
+
+      if (!pc) return;
+
+      if ('candidate' in (signal ?? {})) {
+        const cand = signal.candidate as RTCIceCandidateInit | null;
+        if (!remoteDescSetRef.current || !pc.remoteDescription) {
+          candidateQueueRef.current.push(cand);
+        } else {
+          try {
+            await pc.addIceCandidate(cand ? new RTCIceCandidate(cand) : undefined);
+          } catch {
+            toast.error('Error adding ICE candidate');
+          }
+        }
         return;
       }
 
       if (signal?.type === 'end') {
         endByPeerRef.current = true;
-        toast.info('Call ended by peer');
         handleHangUp(false);
         return;
       }
 
       if (signal?.sdp?.type === 'offer') {
-        const alreadyAccepted = remoteDescSetRef.current || !!peerConnectionRef.current?.remoteDescription;
-        const inCall = callStateRef.current === 'calling' || callStateRef.current === 'connected';
-        if (alreadyAccepted || inCall) return;
-
         pendingOfferRef.current = signal.sdp;
         pendingFromUserRef.current = fromUserId;
 
@@ -331,6 +341,7 @@ const VideoChat = ({
       }
 
       if (signal?.sdp?.type === 'answer') {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         const pc = peerConnectionRef.current;
         if (!pc) return;
         await pc.setRemoteDescription(new RTCSessionDescription(signal.sdp));
@@ -352,6 +363,7 @@ const VideoChat = ({
         } catch {
           toast.error('Error adding ICE candidate');
         }
+        candidateQueueRef.current = [];
       }
     };
 
@@ -359,7 +371,7 @@ const VideoChat = ({
     return () => {
       socket.off('webrtc_signal', handler);
     };
-  }, [setOpen, handleHangUp, drainCandidateQueue]);
+  }, [localStream, acquire, createPeerConnection, handleHangUp, chatId, drainCandidateQueue]);
 
   return (
     <>

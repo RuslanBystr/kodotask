@@ -14,16 +14,15 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarMenuButton, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { AdminRoleEnum } from '@/enums';
 import { ChatTypeEnum } from '@/enums/chat-type.enum';
+import { useFilterChats } from '@/hooks/chat/useFilterChats';
+import { useMainChatsPage } from '@/hooks/chat/useMainChatsPage';
 import { Chat } from '@/pages/chat/common/Chat';
-import { useFilterChats } from '@/pages/chat/hooks/useFilterChats';
 import { useAddChatMembersMutation, useCreateGroupChatMutation } from '@/services/chat';
 import { useGetUsersQuery } from '@/services/users';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IChatResponse } from '@/types/responses/IChatResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { getEnv } from '@/utils';
-
-import { useMainChatsPage } from '../hooks/useMainChatsPage';
 
 const { api } = getEnv();
 

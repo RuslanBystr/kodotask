@@ -7,18 +7,17 @@ import { useParams } from 'react-router-dom';
 import { OpenFileModal } from '@/components/modals/open-file-modal/OpenFileModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useChatMessage } from '@/hooks/chat/useChatMessage';
+import { useChatMicro } from '@/hooks/chat/useChatMicro';
+import { useFetchMessages } from '@/hooks/chat/useFetchMessages';
+import { useInitMessages } from '@/hooks/chat/useInitMessages';
+import { useSendFileMessage } from '@/hooks/chat/useSendFileMessage';
 import Messages from '@/pages/chat/common/Messages';
-import { useChatMessage } from '@/pages/chat/hooks/useChatMessage';
-import { useFetchMessages } from '@/pages/chat/hooks/useFetchMessages';
-import { useInitMessages } from '@/pages/chat/hooks/useInitMessages';
-import { useSendFileMessage } from '@/pages/chat/hooks/useSendFileMessage';
 import { useGetMessagesQuery } from '@/services/chat';
 import { selectAuthenticatedUserSelector } from '@/store';
 import { IMessageResponse } from '@/types/responses/IMessageResponse';
 import { Loading } from '@/ui-kit/loading/Loading';
 import { socket } from '@/utils/socket';
-
-import { useChatMicro } from '../hooks/useChatMicro';
 
 export function Chat({ refetchChats }: { refetchChats: () => void }) {
   const { id } = useParams();

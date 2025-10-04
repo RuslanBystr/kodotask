@@ -12,4 +12,5 @@ export const API_ROUTES = {
   CHATS: `/chats`,
   MESSAGES: `/messages`,
   LLM: '/llm',
+  WEBRTC: '/webrtc',
 };
