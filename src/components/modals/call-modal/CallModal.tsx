@@ -20,7 +20,6 @@ export function CallModal({
   children,
   renderTrigger = false,
   keepMounted = false,
-
   peerName,
   peerAvatarUrl,
   callState = 'idle',
@@ -32,7 +31,6 @@ export function CallModal({
   children: ReactNode;
   renderTrigger?: boolean;
   keepMounted?: boolean;
-
   peerName?: string;
   peerAvatarUrl?: string;
   callState?: CallPhase;
@@ -61,11 +59,8 @@ export function CallModal({
     <Dialog open={open} onOpenChange={setOpen}>
       {renderTrigger && (
         <DialogTrigger asChild>
-          <Button
-            className="rounded-none bg-[--main-button] transition-all active:scale-90 hover:bg-[--main-button-hover] cut cut-left-5 cut-right-5"
-            onClick={() => setOpen(true)}
-          >
-            <PhoneCall className="mr-2 h-4 w-4" />
+          <Button className="rounded-xl bg-[--main-button] px-4 py-2 flex items-center gap-2 transition-all hover:bg-[--main-button-hover] active:scale-95">
+            <PhoneCall className="h-4 w-4" />
             Call
           </Button>
         </DialogTrigger>
@@ -73,12 +68,11 @@ export function CallModal({
 
       <DialogContent
         {...(keepMounted ? { forceMount: true } : {})}
-        className="w-full min-h-[240px] bg-gradient-to-b from-[#111827]/95 to-[#0b1220]/95
-                   border-x-0 p-0 md:p-4 rounded-none text-white"
+        className="w-full max-w-4xl h-[75vh] md:h-[80vh] bg-[#233a47] rounded-xl p-0 md:p-4 text-white pointer-events-auto flex flex-col"
       >
-        <DialogHeader className="flex flex-row items-center justify-between gap-3 p-4  border-b border-white/10">
+        <DialogHeader className="flex items-center justify-between gap-3 p-4 border-b border-white/10">
           <div className="flex items-center gap-3 min-w-0">
-            <Avatar className="h-9 w-9 md:h-10 md:w-10 ring-1 ring-white/10">
+            <Avatar className="h-10 w-10 ring-1 ring-white/10">
               {peerAvatarUrl ? (
                 <AvatarImage src={peerAvatarUrl} alt={peerName ?? 'Caller'} />
               ) : (
@@ -110,7 +104,7 @@ export function CallModal({
           </div>
         </DialogHeader>
 
-        <div className="p-2 md:p-3">{children}</div>
+        <div className="flex-1 p-2 md:p-3 pointer-events-auto">{children}</div>
       </DialogContent>
     </Dialog>
   );

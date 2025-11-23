@@ -1,4 +1,4 @@
 export interface IActivityResponse {
   date: string;
-  totaltime: string;
+  totalTime: number;
 }

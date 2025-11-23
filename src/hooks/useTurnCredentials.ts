@@ -31,12 +31,12 @@ export function useTurnCredentials() {
     }
   }, [data, queryError, isLoading]);
 
-  const ensureReady = useCallback(() => {
+  const ensureTurnReady = useCallback(() => {
     if (ready) return Promise.resolve();
     return new Promise<void>((res) => {
       resolversRef.current.push(res);
     });
   }, [ready]);
 
-  return { iceServers, ready, error, ensureReady };
+  return { iceServers, ready, error, ensureTurnReady };
 }

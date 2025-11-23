@@ -15,30 +15,19 @@ export const GlobalCallLayer = () => {
 
   useEffect(() => {
     if (receiverId) lastRidRef.current = receiverId;
-  }, [receiverId]);
-
-  useEffect(() => {
     if (chatId) lastCidRef.current = chatId;
-  }, [chatId]);
-
-  const effReceiverId = receiverId ?? incoming?.fromUserId ?? lastRidRef.current;
-  const effChatId = chatId ?? incoming?.chatId ?? lastCidRef.current;
+  }, [receiverId, chatId]);
 
   return (
     <CallModal open={open} setOpen={onSetOpen} renderTrigger={false} keepMounted>
-      {effReceiverId && effChatId ? (
-        <VideoChat
-          receiverId={effReceiverId}
-          chatId={effChatId}
-          open={open}
-          setOpen={onSetOpen}
-          incomingOffer={incoming?.offer}
-          incomingFromUserId={incoming?.fromUserId}
-          initiator={initiator}
-        />
-      ) : (
-        <div className="p-4 text-sm opacity-70">Preparing call…</div>
-      )}
+      <VideoChat
+        receiverId={lastRidRef.current!}
+        chatId={lastCidRef.current!}
+        open={open}
+        setOpen={onSetOpen}
+        incomingOffer={incoming?.offer}
+        initiator={initiator}
+      />
     </CallModal>
   );
 };

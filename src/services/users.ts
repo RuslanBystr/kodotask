@@ -4,6 +4,15 @@ import { IRequestParams, IResponse, IUserFormParams } from '@/types';
 import { IActivityResponse } from '@/types/responses/IActivityResponse';
 import { IUserResponse } from '@/types/responses/IUserResponse';
 
+const USER_ACTIVITY_GQL = `
+  query UserActivity($userId: Int!) {
+    userActivity(userId: $userId) {
+      date
+      totalTime
+    }
+  }
+`;
+
 export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUsers: builder.query<IResponse<IUserResponse>, IRequestParams>({
@@ -61,11 +70,23 @@ export const usersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Users'],
     }),
-    getUserActivity: builder.query<IActivityResponse[], { userId: number | undefined }>({
+    getUserActivity: builder.query<IActivityResponse[], { userId: number | null }>({
       query: ({ userId }) => ({
-        url: `${API_ROUTES.ACTIVITY}/${userId}`,
-        method: 'GET',
+        url: '/graphql',
+        method: 'POST',
+        body: {
+          query: USER_ACTIVITY_GQL,
+          variables: { userId: userId ?? null },
+        },
       }),
+      transformResponse: (response: { data: { userActivity: IActivityResponse[] } }) => {
+        const rows = response?.data?.userActivity ?? [];
+        return rows.map((r) => ({
+          date: r.date,
+          totalTime: Number(r.totalTime ?? 0),
+        })) as IActivityResponse[];
+      },
+      keepUnusedDataFor: 60,
     }),
   }),
 });

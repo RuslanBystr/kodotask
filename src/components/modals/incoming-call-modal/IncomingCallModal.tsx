@@ -49,7 +49,7 @@ export const IncomingCallModal = () => {
   if (!mounted || !isOpen || !incoming) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-auto">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
         role="dialog"

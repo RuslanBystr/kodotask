@@ -30,12 +30,12 @@ export const MainLayout = () => {
     <SidebarProvider>
       <ChatNotifier />
       <CallSocketBridge />
-      <IncomingCallModal />
       <GlobalCallLayer />
       <AppSidebar />
       <SidebarInset>
         <Outlet />
       </SidebarInset>
+      <IncomingCallModal />
     </SidebarProvider>
   );
 };
