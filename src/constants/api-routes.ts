@@ -13,5 +13,5 @@ export const API_ROUTES = {
   MESSAGES: `/messages`,
   LLM: '/llm',
   WEBRTC: '/webrtc',
-  SUPPORT: '/support',
+  SUPPORT: '/mail/support',
 };
