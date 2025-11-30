@@ -15,6 +15,7 @@ import { CreateProjectPage } from '@/pages/project/create-project-page';
 import { EditProjectPage } from '@/pages/project/edit-project-page';
 import { MainProjectPage } from '@/pages/project/main-project-page';
 import { ProjectInfoPage } from '@/pages/project/project-info-page';
+import { SupportPage } from '@/pages/support';
 import CreateTaskPage from '@/pages/task/create-task-page/CreateTaskPage';
 import MainTaskPage from '@/pages/task/main-task-page/MainTaskPage';
 import TaskInfoPage from '@/pages/task/task-info/TaskInfo';
@@ -113,7 +114,7 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
           element: <ActivityPage />,
         },
         {
-          path: `${ROUTES.CHATS}`,
+          path: ROUTES.CHATS,
           element: <MainChatPage />,
         },
         {
@@ -121,12 +122,16 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
           element: <MainChatPage />,
         },
         {
-          path: `${ROUTES.GROUPS}`,
+          path: ROUTES.GROUPS,
           element: <MainGroupChatPage />,
         },
         {
           path: `${ROUTES.GROUPS}/:id`,
           element: <MainGroupChatPage />,
+        },
+        {
+          path: ROUTES.SUPPORT,
+          element: <SupportPage />,
         },
       ],
     },

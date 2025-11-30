@@ -88,6 +88,13 @@ export const usersApi = baseApi.injectEndpoints({
       },
       keepUnusedDataFor: 60,
     }),
+    supportList: builder.mutation<{ success: boolean }, unknown>({
+      query: (body) => ({
+        url: `${API_ROUTES.SUPPORT}`,
+        body,
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -99,4 +106,5 @@ export const {
   useCreateUserMutation,
   useBlockUserMutation,
   useGetUserActivityQuery,
+  useSupportListMutation,
 } = usersApi;

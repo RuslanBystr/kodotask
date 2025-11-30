@@ -140,9 +140,8 @@ export class WebRTCConnection extends EventEmitter {
   async drainQueue() {
     // eslint-disable-next-line no-restricted-syntax
     for (const c of this.candidateQueue) {
-      // eslint-disable-next-line no-await-in-loop
       try {
-        await this.pc?.addIceCandidate(c);
+        this.pc?.addIceCandidate(c);
       } catch {
         /* empty */
       }

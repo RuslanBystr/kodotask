@@ -13,4 +13,5 @@ export const ROUTES = {
   PROJECTS: '/projects',
   CHATS: '/chats',
   GROUPS: '/groups',
+  SUPPORT: '/support',
 };
