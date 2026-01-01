@@ -353,7 +353,10 @@ export default function AIChat() {
                     {threads.items.map((t) => (
                       <div
                         key={t.id}
-                        className="flex items-start justify-between gap-4 py-3 cursor-pointer hover:bg-muted/30 px-2 cut cut-right-5 cut-left-5"
+                        className={cn(
+                          'flex items-start justify-between gap-4 py-3 cursor-pointer hover:bg-muted/30 px-2 cut cut-right-5 cut-left-5',
+                          threadId === t.id ? 'bg-[--main-button-shadow]' : 'bg-transparent/10',
+                        )}
                         onClick={() => setThreadId(t.id)}
                         role="button"
                         tabIndex={0}
