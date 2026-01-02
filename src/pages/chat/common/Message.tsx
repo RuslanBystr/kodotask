@@ -46,6 +46,7 @@ export const Message = ({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const messageRef = useRef(null);
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleReadMark = useMemo(
     () => !message?.readByUsers?.find((user) => user.id === userData?.id),
@@ -192,8 +193,40 @@ export const Message = ({
         >
           <div className="flex flex-col">
             {message?.file?.uuid && (
-              <img className="md:max-w-[420px]" height={48} width={48} src={imageSrc} alt={message?.file?.createdAt} />
+              // eslint-disable-next-line react/button-has-type
+              <button
+                className="cursor-pointer rounded p-0 border-0 bg-transparent"
+                onClick={() => setIsOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') setIsOpen(true);
+                }}
+              >
+                <img className="rounded" src={imageSrc} alt={message?.file?.createdAt} />
+              </button>
             )}
+
+            {isOpen && (
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+                role="dialog"
+                aria-modal="true"
+                onClick={() => setIsOpen(false)}
+                tabIndex={-1}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') setIsOpen(false);
+                }}
+              >
+                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
+                <img
+                  className="max-h-full max-w-[90%] md:max-w-[75%]"
+                  src={imageSrc}
+                  alt={message?.file?.createdAt}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            )}
+
             {message.linkToMessage && (
               <div className="flex justify-between text-[12px] bg-[#557080] border-l-4 border-[#4FA3B8] w-full rounded-[6px] p-2 my-2">
                 <div>
