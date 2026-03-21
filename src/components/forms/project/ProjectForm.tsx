@@ -73,8 +73,8 @@ const ProjectForm: React.FC<IFormProps<IProjectFormParams>> = ({
               <img className="w-full" src={`${api}/file/${initialValues.image}`} alt="Project" />
             </div>
           )}
-          <div className="grid grid-cols-2 gap-2 bg-blue-100">
-            <div className="row-span-2">
+          <div className="grid grid-cols-1 gap-2">
+            <div className="row-span-1">
               <FormField
                 control={form.control}
                 name="image"
@@ -83,7 +83,7 @@ const ProjectForm: React.FC<IFormProps<IProjectFormParams>> = ({
                     <FormLabel>Image</FormLabel>
 
                     <div className="h-full rounded-none flex items-center justify-center">
-                      <Input type="file" onChange={handleImageChange} />
+                      <Input type="file" className="w-full h-full" onChange={handleImageChange} />
                     </div>
 
                     <FormControl>

@@ -229,7 +229,7 @@ const MainGroupChatPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full h-full">
         <div className="flex items-center w-full min-h-16 pl-6 border-b">
           <p>{activeChat && activeChat.groupName}</p>
           <p className="text-[12px]">{activeChat && <p>Members</p>}</p>

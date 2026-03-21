@@ -38,12 +38,14 @@ const MainTaskPage: React.FC = () => {
 
   return (
     <div className="p-2">
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+      <header className="flex h-16 shrink-0 items-center gap-2 px-4">
         {isMobile && <SidebarTrigger className="-ml-1" />}
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="">Tasks</BreadcrumbLink>
+              <BreadcrumbLink href="" className="text-xl">
+                Tasks
+              </BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -96,7 +98,7 @@ const MainTaskPage: React.FC = () => {
                 key={project.id}
                 className={`w-full rounded-none justify-start items-center  ${
                   selectProject === project.id
-                    ? 'bg-transparent/20 hover:bg-transparent/10 cut cut-left-5'
+                    ? 'bg-accent hover:bg-transparent/10'
                     : 'bg-transparent hover:bg-transparent/10'
                 }`}
                 onClick={() => setSelectProject(project.id)}

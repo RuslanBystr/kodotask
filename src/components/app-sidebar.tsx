@@ -1,4 +1,4 @@
-import { HelpCircle, LogOut } from 'lucide-react';
+import { HelpCircle, LogOut, Settings } from 'lucide-react';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -49,6 +49,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter className="border-t pt-4">
         <NotificationsModal />
         <PaymentModal />
+        <SidebarMenuButton className="hover:bg-muted/50" tooltip="Logout" onClick={onSupportClick}>
+          <Settings />
+          <span className="select-none">Settings</span>
+        </SidebarMenuButton>
         <SidebarMenuButton className="hover:bg-muted/50" tooltip="Logout" onClick={onSupportClick}>
           <HelpCircle />
           <span className="select-none">Support</span>

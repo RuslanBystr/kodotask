@@ -40,7 +40,7 @@ export default function CreateProjectPage() {
         </Breadcrumb>
       </header>
       <div className="h-[10vh] p-5">
-        <Button className="rounded-none cut cut-left-5" onClick={() => navigate(-1)}>
+        <Button className="rounded-none" onClick={() => navigate(-1)}>
           <ArrowLeft />
           Cancel
         </Button>

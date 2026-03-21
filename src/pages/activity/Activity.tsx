@@ -30,7 +30,7 @@ const ActivityPage: React.FC = () => {
 
   return (
     <div className="p-2 flex flex-col h-[calc(100vh-64px)]">
-      <header className="flex h-16 shrink-0 items-center gap-3 border-b px-4">
+      <header className="flex h-16 shrink-0 items-center gap-3 px-4">
         {isMobile && <SidebarTrigger className="-ml-1" />}
         <Separator orientation="vertical" className="mr-2 h-5" />
         <div className="flex-1">

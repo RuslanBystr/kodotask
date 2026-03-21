@@ -189,7 +189,7 @@ const Sidebar = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        'group peer hidden md:block text-sidebar-foreground bg-transparent/10',
+        'group peer hidden md:block text-sidebar-foreground bg-transparent/30',
         state === 'collapsed' ? 'w-auto' : 'w-[15rem]',
       )}
       data-state={state}

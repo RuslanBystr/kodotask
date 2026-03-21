@@ -73,7 +73,7 @@ export default function HomePage() {
         <div className="flex gap-2">
           <Dialog open={openCreate} onOpenChange={setOpenCreate}>
             <DialogTrigger asChild>
-              <Button className="bg-[--main-button] hover:bg-[--main-button-hover] rounded-none cut cut-right-5 cut-left-5">
+              <Button className="bg-[--main-button] hover:bg-[--main-button-hover] rounded-none">
                 <PlusIcon className="w-4 h-4 mr-2" />
                 New project
               </Button>
@@ -154,12 +154,7 @@ export default function HomePage() {
             >
               Create project
             </Button>
-            <Button
-              className="bg-[--main-button] border-none rounded-none cut cut-right-5"
-              size="sm"
-              variant="outline"
-              asChild
-            >
+            <Button className="bg-[--main-button] border-none rounded-none" size="sm" variant="outline" asChild>
               <Link to="/projects">All projects</Link>
             </Button>
             {/* other quick actions */}

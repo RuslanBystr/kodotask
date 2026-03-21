@@ -117,7 +117,7 @@ const MainChatPage: React.FC = () => {
   return (
     <div className="md:pl-2 flex">
       <div className="flex flex-col h-[100vh] w-min-content border-r">
-        <header className="flex min-h-[72px] shrink-0 justify-center md:justify-start items-center border-b">
+        <header className="flex min-h-[72px] shrink-0 justify-center md:justify-start items-center">
           {isMobile && <SidebarTrigger className="-ml-1" />}
           <Separator orientation="vertical" className="mr-4 h-4 hidden md:block" />
           <Breadcrumb>
@@ -136,8 +136,8 @@ const MainChatPage: React.FC = () => {
       </div>
 
       <div className="flex flex-col w-full relative">
-        <div className="flex flex-col w-full">
-          <div className="flex h-[72px] border-b bg-transparent items-center justify-between gap-2 px-2">
+        <div className="flex flex-col w-full h-full">
+          <div className="flex bg-transparent items-center justify-between gap-2 px-2">
             <div className="flex">
               {selectedCompanion && (
                 <Avatar className="h-12 w-12 mr-2">
@@ -150,16 +150,18 @@ const MainChatPage: React.FC = () => {
                   <AvatarFallback className="h-12 w-12 rounded-full relative">NM</AvatarFallback>
                 </Avatar>
               )}
-              <div>
-                <p>{selectedCompanion?.user.firstName}</p>
-                <p className="text-[12px]">
-                  {selectedCompanion && onlineUsers.includes(String(selectedCompanion.user.id)) ? (
-                    <span className="text-green-400">Online</span>
-                  ) : (
-                    'Offline'
-                  )}
-                </p>
-              </div>
+              {selectedCompanion && (
+                <div className="h-[72px]">
+                  <p>{selectedCompanion?.user.firstName}</p>
+                  <p className="text-[12px]">
+                    {onlineUsers.includes(String(selectedCompanion.user.id)) ? (
+                      <span className="text-green-400">Online</span>
+                    ) : (
+                      'Offline'
+                    )}
+                  </p>
+                </div>
+              )}
             </div>
 
             {selectedCompanion && routeChatId && (

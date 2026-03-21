@@ -75,7 +75,7 @@
   .animated-bg {
     position: relative;
     overflow: hidden;
-    background: #132a3f;
+    background: #202f3c;
   }
 
   .animated-bg::before {
