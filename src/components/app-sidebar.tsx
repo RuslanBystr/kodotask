@@ -32,6 +32,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     navigate(ROUTES.SUPPORT);
   };
 
+  const onSettingsClick = () => {
+    navigate(ROUTES.SETTINGS);
+  };
+
   const onLogoutClick = () => {
     dispatch(logout());
     dispatch(resetCall());
@@ -49,7 +53,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter className="border-t pt-4">
         <NotificationsModal />
         <PaymentModal />
-        <SidebarMenuButton className="hover:bg-muted/50" tooltip="Logout" onClick={onSupportClick}>
+        <SidebarMenuButton className="hover:bg-muted/50" tooltip="Logout" onClick={onSettingsClick}>
           <Settings />
           <span className="select-none">Settings</span>
         </SidebarMenuButton>

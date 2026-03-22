@@ -114,13 +114,13 @@ export function PaymentModal() {
         </SidebarMenuButton>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[720px] bg-[--background] border-none rounded-none cut cut-left-10 cut-right-10">
+      <DialogContent className="sm:max-w-[720px] h-2/3 bg-[--background] border-none rounded-none cut cut-left-10 cut-right-10">
         <DialogHeader>
           <DialogTitle>Select a plan</DialogTitle>
           <DialogDescription>Choose the plan that fits your workflow.</DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 overflow-auto">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {PLANS.map((plan) => {
               const isSelected = selectedPlan === plan.id;
@@ -138,7 +138,7 @@ export function PaymentModal() {
                     }
                   }}
                   className={[
-                    'cursor-pointer transition-all border-none bg-[#465c70] rounded-none cut cut-left-5 cut-right-5',
+                    'cursor-pointer transition-all border-none bg-[#465c70] rounded-none',
                     isSelected ? 'ring-2 ring-[--main-button] shadow-lg' : 'hover:ring-1 hover:ring-[--border]',
                   ].join(' ')}
                 >

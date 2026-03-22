@@ -14,4 +14,5 @@ export const ROUTES = {
   CHATS: '/chats',
   GROUPS: '/groups',
   SUPPORT: '/support',
+  SETTINGS: '/settings',
 };

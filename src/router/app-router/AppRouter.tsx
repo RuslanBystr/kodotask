@@ -15,6 +15,7 @@ import { CreateProjectPage } from '@/pages/project/create-project-page';
 import { EditProjectPage } from '@/pages/project/edit-project-page';
 import { MainProjectPage } from '@/pages/project/main-project-page';
 import { ProjectInfoPage } from '@/pages/project/project-info-page';
+import { SettingsPage } from '@/pages/settings/settings';
 import { SupportPage } from '@/pages/support';
 import CreateTaskPage from '@/pages/task/create-task-page/CreateTaskPage';
 import MainTaskPage from '@/pages/task/main-task-page/MainTaskPage';
@@ -132,6 +133,10 @@ export const AppRouter: React.FC = (): React.ReactElement | null =>
         {
           path: ROUTES.SUPPORT,
           element: <SupportPage />,
+        },
+        {
+          path: ROUTES.SETTINGS,
+          element: <SettingsPage />,
         },
       ],
     },

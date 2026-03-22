@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 
+import { Button } from '@/components/ui/button';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { useSupportListMutation } from '@/services/users';
 
 export const SupportPage: React.FC = () => {
   const [supportList] = useSupportListMutation();
+  const { isMobile } = useSidebar();
+
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -15,41 +19,57 @@ export const SupportPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-[color:var(--card)] text-[color:var(--card-foreground)] p-6 rounded-[var(--radius)] shadow-lg">
-        <h1 className="text-3xl font-bold mb-6 text-center">Contact Us</h1>
+    <div className="p-2 md:p-8 w-full h-full">
+      {isMobile && <SidebarTrigger className="-ml-1" />}
+      <h1 className="text-2xl font-semibold">Support</h1>
+      <h3 className="text-sm">Please contact us if you&#39;re having trouble with your account</h3>
 
-        {submitted ? (
-          <p className="text-green-400 text-center font-medium">Thank you! Your message has been sent.</p>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <span className="font-medium mb-1">Email</span>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="you@example.com"
-              className="bg-[color:var(--input)] border border-[color:var(--border)] text-[color:var(--main-text)] rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[color:var(--main-button)]"
-            />
+      <div className="flex md:gap-6 mt-6 p-2 md:p-6 bg-transparent/10">
+        <main className="flex-1 mx-2">
+          <div className="w-full max-w-lg bg-[color:var(--card)] text-[color:var(--card-foreground)] p-6">
+            {submitted ? (
+              <p className="text-green-400 text-center font-medium">Thank you! Your message has been sent.</p>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+                <span className="font-medium mb-1">Email</span>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="you@example.com"
+                  className="
+                    border rounded-sm bg-accent/20 px-3 py-2
+                    outline-none
+                    focus:ring-1 focus:ring-[--main-button]
+                    focus:ring-offset-2
+                    transition
+                  "
+                />
 
-            <span className="font-medium mb-1">Message</span>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-              placeholder="Your message here..."
-              className="bg-[color:var(--input)] border border-[color:var(--border)] text-[color:var(--main-text)] rounded px-3 py-2 h-40 md:h-50 resize-none focus:outline-none focus:ring-2 focus:ring-[color:var(--main-button)]"
-            />
+                <span className="font-medium mb-1">Message</span>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  rows={6}
+                  placeholder="Your message here..."
+                  className="
+                    border rounded-sm bg-accent/20 px-3 py-2
+                    outline-none
+                    focus:ring-1 focus:ring-[--main-button]
+                    focus:ring-offset-2
+                    transition
+                  "
+                />
 
-            <button
-              type="submit"
-              className="md:w-40 bg-[color:var(--main-button)] text-[color:var(--main-button-text)] px-4 py-2 hover:bg-[color:var(--main-button-hover)] transition-shadow shadow-[var(--main-button-shadow)]"
-            >
-              Send Message
-            </button>
-          </form>
-        )}
+                <Button type="submit" className="self-start px-4 py-2 bg-[--main-button-dark] text-white rounded-lg">
+                  Send Message
+                </Button>
+              </form>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );

@@ -55,7 +55,7 @@ const ActivityPage: React.FC = () => {
             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label className="text-sm font-medium">Select date:</label>
             <select
-              className="border rounded px-2 py-1 text-sm"
+              className="border bg-accent outline-none cursor-pointer rounded px-2 py-1 text-sm"
               value={selectedDate ?? ''}
               onChange={(e) => setSelectedDate(e.target.value || null)}
             >

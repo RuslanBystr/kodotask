@@ -63,11 +63,11 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="w-full h-full p-4 space-y-4">
+    <div className="w-full h-full p-8 space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         {isMobile && <SidebarTrigger className="-ml-1" />}
-        <div>
+        <div className="pt-4">
           <h1 className="text-2xl md:text-3xl font-semibold">Dashboard</h1>
         </div>
         <div className="flex gap-2">
@@ -117,8 +117,8 @@ export default function HomePage() {
       </div>
 
       {/* Search + Quick actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="md:col-span-2 rounded-none bg-transparent/10">
+      <div className="grid container grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="md:col-span-2 bg-accent/10">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2">
               <Search className="w-4 h-4" /> Quick search
@@ -139,7 +139,7 @@ export default function HomePage() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-none bg-transparent/10">
+        <Card className="bg-accent/10">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2">
               <ListChecks className="w-4 h-4" /> Quick actions
@@ -165,7 +165,7 @@ export default function HomePage() {
       {/* Main grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Recent Projects */}
-        <Card className="lg:col-span-2 rounded-none bg-transparent/10">
+        <Card className="lg:col-span-2 bg-accent/10">
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle>Recent projects</CardTitle>
             <Button size="sm" variant="ghost" asChild>
@@ -197,7 +197,7 @@ export default function HomePage() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-none bg-transparent/10">
+        <Card className="bg-accent/10">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2">
               <Clock className="w-4 h-4" /> Activity
@@ -209,7 +209,7 @@ export default function HomePage() {
           </CardContent>
         </Card>
       </div>
-      <Card className="rounded-none bg-transparent/10">
+      <Card className="bg-accent/10">
         <CardHeader className="pb-2">
           <CardTitle>Assigned to me</CardTitle>
         </CardHeader>
