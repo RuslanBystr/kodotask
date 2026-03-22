@@ -188,7 +188,7 @@ export default function AIChat() {
   const fmtDate = (iso?: string) => (iso ? new Date(iso).toLocaleString() : '');
 
   return (
-    <div className="h-[100svh] bg-transparent/20">
+    <div className="h-[100svh] p-2 bg-transparent/10">
       <div
         className="
           mx-auto grid h-full max-w-screen-2xl
@@ -218,7 +218,7 @@ export default function AIChat() {
               <div className="mx-auto w-full min-w-0 max-w-none flex flex-col gap-3 py-3 sm:py-4">
                 {messages.length === 0 && (
                   <div className="flex min-h-[60dvh] items-center justify-center">
-                    <div className="mx-auto w-full max-w-sm sm:max-w-md rounded-xl border border-dashed bg-muted/10 p-6 text-center text-sm sm:text-base text-muted-foreground">
+                    <div className="mx-auto w-full max-w-sm sm:max-w-md rounded-sm border border-dashed bg-muted/10 p-6 text-center text-sm sm:text-base text-muted-foreground">
                       <h3 className="mb-2 font-medium text-foreground">Welcome to KodoPilot ✨</h3>
                       <p>Start a conversation to get insights, summaries, or help with your projects.</p>
                       <p className="mt-2 text-xs sm:text-sm">
@@ -238,7 +238,7 @@ export default function AIChat() {
               </div>
             </ScrollArea>
 
-            <div className="sticky bottom-0 border-t bg-transparent/20 p-2 sm:p-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] backdrop-blur supports-[backdrop-filter]:backdrop-blur-md">
+            <div className="sticky bottom-0 m-2 bg-muted/50 border-t p-2 sm:p-3 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] backdrop-blur supports-[backdrop-filter]:backdrop-blur-md">
               {!!files.length && (
                 <div className="mb-2 flex gap-2 overflow-x-auto pb-1">
                   {files.map((f) => (
@@ -262,11 +262,11 @@ export default function AIChat() {
                 </div>
               )}
 
-              <div className="mx-auto mb-2 flex w-full sm:max-w-full md:max-w-full items-end gap-2">
+              <div className="mx-auto mb-2 flex sm:max-w-full md:max-w-full items-end gap-2">
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label
                   className={cn(
-                    'inline-flex cursor-pointer items-center justify-center rounded-none border-none bg-muted hover:bg-muted/80 px-3 py-2 cut cut-left-5 cut-right-5',
+                    'inline-flex cursor-pointer items-center justify-center border border-gray-700 bg-transparent/10 px-3 py-2 rounded-sm hover:bg-accent-foreground',
                     files.length >= 4 && 'pointer-events-none opacity-50',
                   )}
                   title={files.length >= 4 ? 'Max. 4 files' : 'Pin file'}
@@ -283,12 +283,12 @@ export default function AIChat() {
                     onKeyDown={handleKeyDown}
                     placeholder="Enter message ..."
                     rows={1}
-                    className="block w-full resize-none rounded-none text-4 border bg-background px-3 py-2 leading-5 shadow-sm outline-none"
+                    className="block w-full resize-none rounded-none text-4 border-b bg-background px-3 py-2 leading-5 shadow-sm outline-none"
                     style={{ maxHeight: '20svh', minHeight: 'auto' }}
                   />
                 </div>
 
-                <Button className="border-none rounded-none cut cut-right-5" onClick={sendMessage} disabled={!canSend}>
+                <Button className="border-none bg-transparent rounded-none" onClick={sendMessage} disabled={!canSend}>
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
@@ -304,8 +304,8 @@ export default function AIChat() {
                   <CardTitle className="truncate text-lg">Threads</CardTitle>
                   <div className="flex items-center gap-2">
                     <Button
+                      className="bg-transparent rounded-none"
                       variant="default"
-                      size="sm"
                       onClick={async () => {
                         const t = await createThread().unwrap();
                         setThreadId(t.threadId);
@@ -314,7 +314,12 @@ export default function AIChat() {
                     >
                       New thread
                     </Button>
-                    <Button variant="outline" size="icon" onClick={() => refetch()} disabled={isFetching}>
+                    <Button
+                      className="bg-transparent rounded-none"
+                      variant="default"
+                      onClick={() => refetch()}
+                      disabled={isFetching}
+                    >
                       {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                     </Button>
                   </div>
@@ -344,7 +349,7 @@ export default function AIChat() {
                     ))}
                   </div>
                 ) : !threads || threads.items.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
+                  <div className="flex flex-col items-center justify-center rounded-sm border border-dashed p-8 text-center">
                     <MessageSquare className="mb-2 h-5 w-5 text-muted-foreground" />
                     <div className="text-sm text-muted-foreground">No threads yet</div>
                   </div>
@@ -354,7 +359,7 @@ export default function AIChat() {
                       <div
                         key={t.id}
                         className={cn(
-                          'flex items-start justify-between gap-4 py-3 cursor-pointer hover:bg-muted/30 px-2 cut cut-right-5 cut-left-5',
+                          'flex items-start justify-between gap-4 py-3 cursor-pointer hover:bg-muted/30 px-2',
                           threadId === t.id ? 'bg-[--main-button-shadow]' : 'bg-transparent/10',
                         )}
                         onClick={() => setThreadId(t.id)}
@@ -369,7 +374,8 @@ export default function AIChat() {
                         </div>
                         <div className="flex shrink-0 items-center gap-2">
                           <Button
-                            className="bg-transparent"
+                            className="bg-transparent rounded-none hover:bg-red-500"
+                            variant="destructive"
                             size="icon"
                             onClick={(e) => {
                               e.stopPropagation();
