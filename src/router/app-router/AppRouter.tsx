@@ -17,9 +17,9 @@ import { MainProjectPage } from '@/pages/project/main-project-page';
 import { ProjectInfoPage } from '@/pages/project/project-info-page';
 import { SettingsPage } from '@/pages/settings/settings.page';
 import { SupportPage } from '@/pages/support';
-import CreateTaskPage from '@/pages/task/create-task-page/CreateTaskPage';
-import MainTaskPage from '@/pages/task/main-task-page/MainTaskPage';
-import TaskInfoPage from '@/pages/task/task-info/TaskInfo';
+import { CreateTaskPage } from '@/pages/task/create-task-page';
+import { MainTaskPage } from '@/pages/task/main-task-page';
+import { TaskInfoPage } from '@/pages/task/task-info';
 import { VerificationPage } from '@/pages/verification';
 import { ROUTES } from '@/router/constants';
 

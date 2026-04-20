@@ -1,2 +1,2 @@
 export * from './regexp';
-export * from './zodSchemes';
+export * from './zod-schemes';

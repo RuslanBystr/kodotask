@@ -1,1 +1,1 @@
-export { default as ProjectInfoPage } from './ProjectInfoPage';
+export { default as ProjectInfoPage } from './project-info.page';

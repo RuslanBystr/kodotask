@@ -16,7 +16,7 @@ import { columns } from './TableConfig';
 
 const { api } = getEnv();
 
-const MainTaskPage: React.FC = () => {
+export const MainTaskPage: React.FC = () => {
   const { isMobile } = useSidebar();
 
   const {
@@ -117,5 +117,3 @@ const MainTaskPage: React.FC = () => {
     </div>
   );
 };
-
-export default MainTaskPage;

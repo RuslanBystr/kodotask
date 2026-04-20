@@ -1,1 +1,1 @@
-export { default as MainProjectPage } from './MainProjectPage';
+export { default as MainProjectPage } from './main-project.page';

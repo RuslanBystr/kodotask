@@ -1,1 +1,1 @@
-export { default as EditProjectPage } from './EditProjectPage';
+export { default as EditProjectPage } from './edit-project.page';

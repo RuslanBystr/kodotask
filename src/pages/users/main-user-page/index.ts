@@ -1,1 +1,1 @@
-export { default as MainUserPage } from './MainUserPage';
+export { default as MainUserPage } from './main-user.page';

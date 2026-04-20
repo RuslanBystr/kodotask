@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Bubble } from '@/pages/ai-chat/Buuble';
+import { Bubble } from '@/pages/ai-chat/Bubble';
 import {
   useChatWithThreadMutation,
   useCreateThreadMutation,
