@@ -3,7 +3,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { userCreateFormSchema } from '@/components/forms/user/schemas';
-import { Pathes } from '@/constants';
+import { Paths } from '@/constants';
 import { useToastMessageRequest } from '@/hooks';
 import { useCreateUserMutation } from '@/services/users';
 import type { IUserFormParams } from '@/types';
@@ -19,7 +19,7 @@ export const useCreateUserPage = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      navigate(Pathes.Users);
+      navigate(Paths.Users);
     } // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
 

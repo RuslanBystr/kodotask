@@ -14,7 +14,7 @@ const formatDate = (ms: string | null) =>
     ? new Intl.DateTimeFormat('uk-UA', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(Number(ms)))
     : '';
 
-const ActivityPage: React.FC = () => {
+export const ActivityPage: React.FC = () => {
   const { isMobile } = useSidebar();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
@@ -97,5 +97,3 @@ const ActivityPage: React.FC = () => {
     </div>
   );
 };
-
-export default ActivityPage;

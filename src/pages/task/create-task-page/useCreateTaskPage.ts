@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { taskCreateFormSchema } from '@/components/forms/task/schemas';
 import { ITaskFormParams } from '@/components/forms/task/TaskForm';
-import { Pathes } from '@/constants';
+import { Paths } from '@/constants';
 import { useToastMessageRequest } from '@/hooks';
 import { useCreateTaskMutation } from '@/services/task';
 import type { IFormProps } from '@/types';
@@ -20,7 +20,7 @@ export const useCreateTaskPage = (): IFormProps<ITaskFormParams> => {
 
   useEffect(() => {
     if (isSuccess) {
-      navigate(Pathes.Tasks);
+      navigate(Paths.Tasks);
     } // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
 

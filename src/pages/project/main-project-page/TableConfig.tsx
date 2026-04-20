@@ -1,9 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
+import { IconCell } from '@/pages/project/main-project-page/cells/IconCell';
 import { IProjectResponse } from '@/types/responses/IProjectResponse';
-
-import { IconCell } from './сells/IconCell';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

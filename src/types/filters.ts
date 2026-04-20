@@ -1,4 +1,4 @@
-import { FilterItem } from '@/types/tebles';
+import { FilterItem } from '@/types/tables';
 
 import { TSortingFields } from './sorting';
 

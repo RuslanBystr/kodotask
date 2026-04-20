@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { IProjectFormParams } from '@/components/forms/project/ProjectForm';
 import { projectCreateFormSchema } from '@/components/forms/project/schemas';
-import { Pathes } from '@/constants';
+import { Paths } from '@/constants';
 import { useToastMessageRequest } from '@/hooks';
 import { useCreateProjectMutation } from '@/services/project';
 
@@ -19,7 +19,7 @@ export const useCreateProjectPage = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      navigate(Pathes.Projects);
+      navigate(Paths.Projects);
     } // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
 

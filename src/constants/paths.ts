@@ -1,4 +1,4 @@
-export enum Pathes {
+export enum Paths {
   Users = '/users',
   Projects = '/projects',
   Tasks = '/tasks',

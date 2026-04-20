@@ -1,5 +1,5 @@
 import { FiltersChangeFunc } from '@/types';
-import { FilterItem } from '@/types/tebles';
+import { FilterItem } from '@/types/tables';
 
 export interface IDateFilterProps {
   filter: FilterItem;

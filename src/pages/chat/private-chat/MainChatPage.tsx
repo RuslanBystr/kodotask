@@ -13,7 +13,7 @@ import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { ChatTypeEnum } from '@/enums/chat-type.enum';
 import { useFilterChats } from '@/hooks/chat/useFilterChats';
 import { useMainChatsPage } from '@/hooks/chat/useMainChatsPage';
-import { mapChatToChatItemProps } from '@/pages/chat/chat-item.mappers';
+import { mapChatToChatItemProps } from '@/pages/chat/chat-item.mapper';
 import { Chat } from '@/pages/chat/common/Chat';
 import { ChatItem } from '@/pages/chat/private-chat/ChatItem';
 import { ChatList } from '@/pages/chat/sidebar/chat-list';
