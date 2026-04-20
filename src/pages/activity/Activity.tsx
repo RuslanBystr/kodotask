@@ -4,7 +4,6 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
-import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { ActivityChart } from '@/pages/activity/BarChart';
 import { useGetUserActivityQuery } from '@/services/users';
@@ -32,11 +31,10 @@ const ActivityPage: React.FC = () => {
     <div className="p-2 flex flex-col h-[calc(100vh-64px)]">
       <header className="flex h-16 shrink-0 items-center gap-3 px-4">
         {isMobile && <SidebarTrigger className="-ml-1" />}
-        <Separator orientation="vertical" className="mr-2 h-5" />
         <div className="flex-1">
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
+              <BreadcrumbItem className="hidden md:block text-xl">
                 <BreadcrumbLink href="">Activity</BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>

@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { getDefaultColumnHeader } from '@/components/table/CustomTable/TableHeader';
-import { AvatarCell, OptionsCell } from '@/pages/Users/main-user-page/cells';
+import { AvatarCell, OptionsCell } from '@/pages/users/main-user-page/cells';
 import { IUserResponse } from '@/types/responses/IUserResponse';
 
 export const columns: ColumnDef<IUserResponse>[] = [

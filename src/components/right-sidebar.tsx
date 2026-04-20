@@ -32,7 +32,6 @@ export function RightSidebar({
           )}
         </SheetTrigger>
         <SheetContent side="right" className="w-[90vw] max-w-[420px] p-0 bg-muted">
-          {/* Optional header bar inside the sheet */}
           <SheetHeader className="px-4 py-3 border-b">
             <SheetTitle className="text-base">{title}</SheetTitle>
           </SheetHeader>

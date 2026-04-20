@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { CustomDataTable } from '@/components/table/CustomTable';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { AdminRoleEnum } from '@/enums';
 import { useMainProjectPage } from '@/pages/project/main-project-page/useMainProjectPage';
@@ -34,10 +33,9 @@ const MainProjectPage: React.FC = () => {
     <div className="p-2">
       <header className="flex h-16 shrink-0 items-center gap-2 px-4">
         {isMobile && <SidebarTrigger className="-ml-1" />}
-        <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem className="hidden md:block">
+            <BreadcrumbItem className="hidden md:block text-xl">
               <BreadcrumbLink href="">Projects</BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>

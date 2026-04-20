@@ -1,7 +1,9 @@
 import { ArrowLeft } from 'lucide-react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { UserForm } from '@/components';
+import { userEditFormSchema } from '@/components/forms/user/schemas';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,12 +14,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
-import { useCreateUserPage } from '@/pages/Users/create-user-page/useCreateUserPage';
+import { useEditUserPage } from '@/pages/users/edit-user-page/useEditUserPage';
 
-export default function CreateUserPage() {
+const EditUserPage: React.FC = () => {
   const { isMobile } = useSidebar();
 
-  const props = useCreateUserPage();
+  const { initialUserValues, isEditUserLoading, onUserSubmit } = useEditUserPage();
 
   const navigate = useNavigate();
 
@@ -33,7 +35,7 @@ export default function CreateUserPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden md:block" />
             <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="">Create</BreadcrumbLink>
+              <BreadcrumbLink href="/">Update</BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -45,9 +47,16 @@ export default function CreateUserPage() {
         </Button>
       </div>
       <div className="flex flex-col content-center items-center w-full">
-        <h1 className="text-[20px]">Create user</h1>
-        <UserForm {...props} />
+        <h1 className="text-[20px]">Edit user</h1>
+        <UserForm
+          validationSchema={userEditFormSchema}
+          initialValues={initialUserValues}
+          isLoading={isEditUserLoading}
+          onSubmit={onUserSubmit}
+        />
       </div>
     </div>
   );
-}
+};
+
+export default EditUserPage;

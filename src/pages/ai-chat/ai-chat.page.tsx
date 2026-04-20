@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { RightSidebar } from '@/components/right-sidebar';
+import { EmphasizedText } from '@/components/typography';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -204,7 +205,7 @@ export default function AIChat() {
                 <SidebarTrigger className="-ml-1" />
               </div>
               <Sparkles className="h-5 w-5" />
-              <CardTitle className="text-base sm:text-lg">KodoPilot</CardTitle>
+              <CardTitle className="text-base sm:text-xl">KodoPilot</CardTitle>
             </div>
             {threadId && (
               <div className="text-[10px] sm:text-xs text-muted-foreground">thread: {shortId(threadId)}</div>
@@ -220,7 +221,10 @@ export default function AIChat() {
                   <div className="flex min-h-[60dvh] items-center justify-center">
                     <div className="mx-auto w-full max-w-sm sm:max-w-md rounded-sm border border-dashed bg-muted/10 p-6 text-center text-sm sm:text-base text-muted-foreground">
                       <h3 className="mb-2 font-medium text-foreground">Welcome to KodoPilot ✨</h3>
-                      <p>Start a conversation to get insights, summaries, or help with your projects.</p>
+                      <p>
+                        Start a conversation to get <EmphasizedText>insights</EmphasizedText>,{' '}
+                        <EmphasizedText>summaries</EmphasizedText>, or help with your projects.
+                      </p>
                       <p className="mt-2 text-xs sm:text-sm">
                         Try asking: <em>“Summarize this week&apos;s updates for Project Alpha”</em>
                       </p>
@@ -360,7 +364,7 @@ export default function AIChat() {
                         key={t.id}
                         className={cn(
                           'flex items-start justify-between gap-4 py-3 cursor-pointer hover:bg-muted/30 px-2',
-                          threadId === t.id ? 'bg-[--main-button-shadow]' : 'bg-transparent/10',
+                          threadId === t.id ? 'bg-[--active-button]' : 'bg-transparent/10',
                         )}
                         onClick={() => setThreadId(t.id)}
                         role="button"

@@ -23,7 +23,7 @@ import TaskInfoPage from '@/pages/task/task-info/TaskInfo';
 import { VerificationPage } from '@/pages/verification';
 import { ROUTES } from '@/router/constants';
 
-import { CreateUserPage, EditUserPage, MainUserPage } from '../../pages/Users';
+import { CreateUserPage, EditUserPage, MainUserPage } from '../../pages/users';
 
 export const AppRouter: React.FC = (): React.ReactElement | null =>
   useRoutes([

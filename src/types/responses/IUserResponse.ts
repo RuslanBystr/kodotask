@@ -1,3 +1,4 @@
+import { Workspace } from '@/store/workspace/types';
 import { IFileEntityResponse } from '@/types/responses/IFileEntityResponse';
 
 export interface IUserResponse {
@@ -13,4 +14,5 @@ export interface IUserResponse {
   avatar?: IFileEntityResponse;
   phone: string;
   isBlocked?: boolean;
+  workspaces: Workspace[]; // TODO
 }

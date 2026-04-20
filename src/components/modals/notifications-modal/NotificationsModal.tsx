@@ -102,7 +102,7 @@ export function NotificationsModal() {
       <DialogContent className="sm:max-w-[720px] bg-[--background] border-none rounded-none cut cut-left-10 cut-right-10">
         <DialogHeader>
           <DialogTitle>Notifications</DialogTitle>
-          <DialogDescription>Box with notifications.</DialogDescription>
+          <DialogDescription>System Notifications and events</DialogDescription>
         </DialogHeader>
 
         <div className="mt-4 max-h-[60vh] overflow-y-auto space-y-3 pr-1">

@@ -9,20 +9,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { ContextMenu, ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { ChatTypeEnum } from '@/enums/chat-type.enum';
 import { useFilterChats } from '@/hooks/chat/useFilterChats';
 import { useMainChatsPage } from '@/hooks/chat/useMainChatsPage';
+import { mapChatToChatItemProps } from '@/pages/chat/chat-item.mappers';
 import { Chat } from '@/pages/chat/common/Chat';
 import { ChatItem } from '@/pages/chat/private-chat/ChatItem';
+import { ChatList } from '@/pages/chat/sidebar/chat-list';
+import { ChatSidebarControls } from '@/pages/chat/sidebar/chat-sidebar-controls';
+import { SidebarChatLayout } from '@/pages/chat/sidebar/sidebar-chat-layout';
 import { useDeletePrivateChatMutation } from '@/services/chat';
 import { selectAuthenticatedUserSelector, useAppSelector } from '@/store';
 import { openCall } from '@/store/call';
 import { selectOnlineUsers } from '@/store/users/selectors';
 import { IChatResponse, IUserChat } from '@/types/responses/IChatResponse';
-import { Loading } from '@/ui-kit/loading/Loading';
 import { getEnv } from '@/utils';
 import { socket } from '@/utils/socket';
 
@@ -38,23 +39,34 @@ const MainChatPage: React.FC = () => {
   const userId = userData?.id;
 
   const { chats, refetch } = useMainChatsPage({ chatTypeQuery: ChatTypeEnum.PRIVATE });
+
   const onlineUsers = useAppSelector(selectOnlineUsers);
+
   const { filterValue, filteredChats } = useFilterChats(chats?.items);
 
-  const activeChat: IChatResponse | null = useMemo(() => {
-    if (!filteredChats || !routeChatId) return null;
-    return filteredChats.find((c) => String(c.id) === String(routeChatId)) ?? null;
-  }, [filteredChats, routeChatId]);
+  const activeChat = useMemo(() => {
+    if (!chats?.items || !routeChatId) return null;
 
-  const selectedCompanion: IUserChat | undefined = useMemo(() => {
+    return chats.items.find((chat: IChatResponse) => String(chat.id) === String(routeChatId)) ?? null;
+  }, [chats?.items, routeChatId]);
+
+  const selectedCompanion = useMemo(() => {
     if (!activeChat || !userId) return undefined;
-    const myId = String(userId);
-    return activeChat.userChats?.find((uc) => String(uc.user.id) !== myId);
+
+    return activeChat.userChats?.find((userChat: IUserChat) => String(userChat.user.id) !== String(userId));
   }, [activeChat, userId]);
 
   useEffect(() => {
     if (!routeChatId) return;
-    socket.emit('joinChat', String(routeChatId));
+
+    const chatId = String(routeChatId);
+
+    socket.emit('joinChat', chatId);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      socket.emit('leaveChat', chatId);
+    };
   }, [routeChatId]);
 
   const [deleteChat] = useDeletePrivateChatMutation();
@@ -66,13 +78,16 @@ const MainChatPage: React.FC = () => {
     [navigate],
   );
 
+  if (!userId) return null;
+
   const handleDeleteChat = async (chat: IChatResponse) => {
     try {
-      await deleteChat({ chatId: chat.id });
+      await deleteChat({ chatId: chat.id }).unwrap();
+
       if (String(chat.id) === String(routeChatId)) {
         navigate('/chats/user');
       }
-    } catch {
+    } catch (e) {
       toast.error('Failed to delete chat');
     }
   };
@@ -88,71 +103,70 @@ const MainChatPage: React.FC = () => {
     );
   };
 
-  const renderChatList = () => {
-    if (!filteredChats) {
-      return (
-        <div className="w-full h-full flex justify-center">
-          <Loading size={32} />
-        </div>
-      );
-    }
-    return filteredChats.map((chat) => (
-      <ContextMenu key={`chat-button-${chat.id}`}>
-        <ContextMenuTrigger className="w-full">
-          <ChatItem
-            chat={chat}
-            userId={userId}
-            activeChat={activeChat}
-            onlineUsers={onlineUsers}
-            handleSelectedChat={handleSelectedChat}
-          />
-        </ContextMenuTrigger>
-        <ContextMenuContent className="bg-card rounded-none border-none cut cut-left-5 cut-right-5">
-          <ContextMenuItem onClick={() => handleDeleteChat(chat)}>Delete chat</ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
-    ));
-  };
-
   return (
     <div className="md:pl-2 flex">
-      <div className="flex flex-col h-[100vh] w-min-content border-r">
-        <header className="flex min-h-[72px] shrink-0 justify-center md:justify-start items-center">
-          {isMobile && <SidebarTrigger className="-ml-1" />}
-          <Separator orientation="vertical" className="mr-4 h-4 hidden md:block" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="">Chats</BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </header>
+      {/* SIDEBAR */}
+      <SidebarChatLayout
+        header={
+          <header className="flex items-center justify-center md:justify-start">
+            {isMobile && <SidebarTrigger className="-ml-1" />}
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block md:text-lg">
+                  <BreadcrumbLink href="">Chats</BreadcrumbLink>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </header>
+        }
+        list={
+          <>
+            <ChatSidebarControls onSearch={filterValue} />
+            <ChatList
+              items={filteredChats ?? []}
+              isLoading={!filteredChats}
+              renderItem={(chat) => {
+                const props = mapChatToChatItemProps(chat, userId?.toString(), activeChat, onlineUsers);
 
-        <div className="flex items-center gap-1 w-14 md:w-[14em] flex-col px-1 pt-2 md:p-2 bg-muted/10">
-          <Input className="md:w-full p-2 text-[10px]" placeholder="Search" onChange={filterValue} />
-          <div className="h-[85vh] w-full overflow-auto custom-scrollbar">{renderChatList()}</div>
-        </div>
-      </div>
+                return (
+                  <ContextMenu key={chat.id}>
+                    <ContextMenuTrigger asChild>
+                      <div>
+                        <ChatItem {...props} onClick={() => handleSelectedChat(chat)} />
+                      </div>
+                    </ContextMenuTrigger>
 
+                    <ContextMenuContent>
+                      <ContextMenuItem onClick={() => handleDeleteChat(chat)}>Delete chat</ContextMenuItem>
+                    </ContextMenuContent>
+                  </ContextMenu>
+                );
+              }}
+            />
+          </>
+        }
+      />
+
+      {/* MAIN CHAT */}
       <div className="flex flex-col w-full relative">
         <div className="flex flex-col w-full h-full">
-          <div className="flex bg-transparent items-center justify-between gap-2 px-2">
-            <div className="flex">
+          <div className="flex h-full bg-transparent items-center justify-between gap-2 px-2">
+            <div className="flex justify-center items-center gap-2 my-2">
               {selectedCompanion && (
                 <Avatar className="h-12 w-12 mr-2">
                   <AvatarImage
                     src={`${api}/file/${selectedCompanion.user.avatar}`}
-                    alt={selectedCompanion?.user.firstName}
+                    alt={selectedCompanion?.user?.firstName}
                     height={48}
                     width={48}
                   />
-                  <AvatarFallback className="h-12 w-12 rounded-full relative">NM</AvatarFallback>
+                  <AvatarFallback>NM</AvatarFallback>
                 </Avatar>
               )}
+
               {selectedCompanion && (
-                <div className="h-[72px]">
-                  <p>{selectedCompanion?.user.firstName}</p>
+                <div className="">
+                  <p>{selectedCompanion.user.firstName}</p>
                   <p className="text-[12px]">
                     {onlineUsers.includes(String(selectedCompanion.user.id)) ? (
                       <span className="text-green-400">Online</span>
@@ -165,11 +179,7 @@ const MainChatPage: React.FC = () => {
             </div>
 
             {selectedCompanion && routeChatId && (
-              <Button
-                className="rounded-none cut cut-left-5 cut-right-5 bg-[--main-button] active:scale-95"
-                onClick={handleStartVideoCall}
-                title="Start video call"
-              >
+              <Button className="rounded-none bg-[--main-button] active:scale-95" onClick={handleStartVideoCall}>
                 <VideoIcon className="mr-2 h-4 w-4" />
                 Call
               </Button>

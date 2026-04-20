@@ -1,9 +1,12 @@
+'use client';
+
 import { ArrowRight, Clock, ListChecks, PlusIcon, Search } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { IProjectFormParams } from '@/components/forms/project/ProjectForm';
+import { UnderlinedText } from '@/components/typography';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -13,129 +16,186 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { useCreateProjectMutation, useGetProjectsQuery } from '@/services/project';
 
+// simple debounce hook
+function useDebounce<T>(value: T, delay = 250): T {
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+
+  return debounced;
+}
+
 export default function HomePage() {
   const navigate = useNavigate();
   const { isMobile } = useSidebar();
-  // Recent projects
-  const { data: projectsResp, isLoading } = useGetProjectsQuery({ limit: 6, page: 1, sortBy: '-createdAt' });
+
+  const [q, setQ] = useState('');
+  const debouncedQ = useDebounce(q);
+
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const {
+    data: projectsResp,
+    isLoading,
+    isFetching,
+  } = useGetProjectsQuery({ limit: 6, page: 1, sortBy: '-createdAt' }, { refetchOnMountOrArgChange: true });
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const recentProjects = projectsResp?.items ?? [];
 
-  const [q, setQ] = useState('');
-  const searchRef = useRef<HTMLInputElement>(null);
   const filteredProjects = useMemo(() => {
-    const s = q.trim().toLowerCase();
+    const s = debouncedQ.trim().toLowerCase();
     if (!s) return recentProjects;
-    return recentProjects.filter((p) => [p.name, p.description].some((v) => (v ?? '').toLowerCase().includes(s)));
-  }, [q, recentProjects]);
 
-  // Create project
+    return recentProjects.filter((p) => [p.name, p.description].some((v) => (v ?? '').toLowerCase().includes(s)));
+  }, [debouncedQ, recentProjects]);
+
   const [openCreate, setOpenCreate] = useState(false);
-  const [createBody, setCreateBody] = useState<Partial<IProjectFormParams>>({ name: '', description: '' });
+  const [createBody, setCreateBody] = useState<Partial<IProjectFormParams>>({
+    name: '',
+    description: '',
+  });
+
   const [createProject, { isLoading: creating }] = useCreateProjectMutation();
 
-  // eslint-disable-next-line consistent-return
+  const resetForm = () => setCreateBody({ name: '', description: '' });
+
   const onCreate = async () => {
-    if (!createBody.name?.trim()) return toast.error('Name is required');
+    const name = createBody.name?.trim();
+
+    if (!name) {
+      toast.error('Name is required');
+      return;
+    }
+
     try {
-      const res = await createProject(createBody as IProjectFormParams).unwrap();
+      const res = await createProject({
+        name,
+        description: createBody.description?.trim() || '',
+      }).unwrap();
+
       toast.success('Project created');
+
+      resetForm();
       setOpenCreate(false);
-      setCreateBody({ name: '', description: '' });
+
       navigate(`/projects/${res.id}`);
     } catch (err) {
       toast.error('Failed to create project');
     }
   };
 
+  // scoped keyboard shortcuts
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
+    const handler = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+
+      const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+
+      if (isTyping) return;
+
       if (e.key === '/') {
         e.preventDefault();
         searchRef.current?.focus();
       }
+
       if (e.key.toLowerCase() === 'c') {
         setOpenCreate(true);
       }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, []);
 
+  const formatDate = (value?: string) => {
+    if (!value) return '—';
+
+    const d = new Date(value);
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(d.getTime())) return '—';
+
+    return d.toLocaleString();
+  };
+
   return (
-    <div className="w-full h-full p-8 space-y-4">
+    <div className="w-full h-screen p-6 md:p-8 space-y-4 overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         {isMobile && <SidebarTrigger className="-ml-1" />}
-        <div className="pt-4">
-          <h1 className="text-2xl md:text-3xl font-semibold">Dashboard</h1>
-        </div>
-        <div className="flex gap-2">
-          <Dialog open={openCreate} onOpenChange={setOpenCreate}>
-            <DialogTrigger asChild>
-              <Button className="bg-[--main-button] hover:bg-[--main-button-hover] rounded-none">
-                <PlusIcon className="w-4 h-4 mr-2" />
-                New project
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[480px] bg-[#465c70]">
-              <DialogHeader>
-                <DialogTitle>Create project</DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-4 py-2">
-                <div className="grid gap-2">
-                  <Label htmlFor="pname">Name</Label>
-                  <Input
-                    id="pname"
-                    placeholder="Project name"
-                    value={createBody.name ?? ''}
-                    onChange={(e) => setCreateBody((s) => ({ ...s, name: e.target.value }))}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="pdesc">Description</Label>
-                  <Input
-                    id="pdesc"
-                    placeholder="Short description"
-                    value={createBody.description ?? ''}
-                    onChange={(e) => setCreateBody((s) => ({ ...s, description: e.target.value }))}
-                  />
-                </div>
+
+        <h1 className="text-2xl md:text-3xl font-semibold">Dashboard</h1>
+
+        <Dialog open={openCreate} onOpenChange={setOpenCreate}>
+          <DialogTrigger asChild>
+            <Button className="bg-[--main-button] hover:bg-[--main-button-hover] rounded-none">
+              <PlusIcon className="w-4 h-4 mr-2" />
+              New project
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent className="sm:max-w-[480px] bg-[#465c70]">
+            <DialogHeader>
+              <DialogTitle>Create project</DialogTitle>
+            </DialogHeader>
+
+            <div className="grid gap-4 py-2">
+              <div className="grid gap-2">
+                <Label>Name</Label>
+                <Input
+                  value={createBody.name ?? ''}
+                  onChange={(e) =>
+                    setCreateBody((s) => ({
+                      ...s,
+                      name: e.target.value,
+                    }))
+                  }
+                />
               </div>
-              <DialogFooter>
-                <Button
-                  onClick={onCreate}
-                  disabled={creating}
-                  className="bg-[--main-button] hover:bg-[--main-button-hover]"
-                >
-                  {creating ? 'Creating…' : 'Create'}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
+
+              <div className="grid gap-2">
+                <Label>Description</Label>
+                <Input
+                  value={createBody.description ?? ''}
+                  onChange={(e) =>
+                    setCreateBody((s) => ({
+                      ...s,
+                      description: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                onClick={onCreate}
+                disabled={creating}
+                className="bg-[--main-button] hover:bg-[--main-button-hover]"
+              >
+                {creating ? 'Creating…' : 'Create'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Search + Quick actions */}
-      <div className="grid container grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="md:col-span-2 bg-accent/10">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2">
               <Search className="w-4 h-4" /> Quick search
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <Input
-              ref={searchRef}
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search recent projects…  ( / )"
-              className="rounded-xl"
-            />
-            <p className="text-xs opacity-60">
-              Press <kbd className="px-1 py-0.5 rounded bg-white/10">/</kbd> to focus,{' '}
-              <kbd className="px-1 py-0.5 rounded bg-white/10">c</kbd> to create
-            </p>
+
+          <CardContent>
+            <Input ref={searchRef} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search… (/)" />
+
+            {(isFetching || isLoading) && <div className="text-xs opacity-60 mt-1">Searching…</div>}
           </CardContent>
         </Card>
 
@@ -145,35 +205,32 @@ export default function HomePage() {
               <ListChecks className="w-4 h-4" /> Quick actions
             </CardTitle>
           </CardHeader>
+
           <CardContent className="flex flex-wrap gap-2">
-            <Button
-              className="bg-[--main-button] border-none rounded-none"
-              size="sm"
-              variant="outline"
-              onClick={() => setOpenCreate(true)}
-            >
+            <Button size="sm" onClick={() => setOpenCreate(true)} className="bg-[--main-button]">
               Create project
             </Button>
-            <Button className="bg-[--main-button] border-none rounded-none" size="sm" variant="outline" asChild>
+
+            <Button size="sm" asChild>
               <Link to="/projects">All projects</Link>
             </Button>
-            {/* other quick actions */}
           </CardContent>
         </Card>
       </div>
 
-      {/* Main grid */}
+      {/* Projects */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Recent Projects */}
         <Card className="lg:col-span-2 bg-accent/10">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+          <CardHeader className="flex justify-between">
             <CardTitle>Recent projects</CardTitle>
+
             <Button size="sm" variant="ghost" asChild>
-              <Link to="/projects" className="flex items-center gap-1">
-                View all <ArrowRight className="w-4 h-4" />
+              <Link to="/projects">
+                View all <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
             </Button>
           </CardHeader>
+
           <CardContent>
             {/* eslint-disable-next-line no-nested-ternary */}
             {isLoading ? (
@@ -183,10 +240,13 @@ export default function HomePage() {
                 {filteredProjects.map((p) => (
                   <li key={p.id} className="rounded-xl border hover:bg-white/5 transition">
                     <Link to={`/projects/${p.id}`} className="block p-3">
-                      <div className="text-base font-medium truncate">{p.name}</div>
+                      <div className="font-medium truncate">{p.name}</div>
+
                       <div className="text-xs opacity-70 line-clamp-2">{p.description}</div>
+
                       <Separator className="my-2" />
-                      <div className="text-xs opacity-60">Updated: {new Date(p.createdAt).toLocaleString()}</div>
+
+                      <div className="text-xs opacity-60">Updated: {formatDate(p.createdAt)}</div>
                     </Link>
                   </li>
                 ))}
@@ -198,22 +258,24 @@ export default function HomePage() {
         </Card>
 
         <Card className="bg-accent/10">
-          <CardHeader className="pb-2">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="w-4 h-4" /> Activity
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2 text-sm opacity-80">
-            <p>Activity feed coming soon.</p>
-            <p className="opacity-60">Later...</p>
-          </CardContent>
+
+          <CardContent className="text-sm opacity-80">Coming soon…</CardContent>
         </Card>
       </div>
+
       <Card className="bg-accent/10">
-        <CardHeader className="pb-2">
-          <CardTitle>Assigned to me</CardTitle>
+        <CardHeader>
+          <CardTitle>
+            <UnderlinedText>Assigned to me</UnderlinedText>
+          </CardTitle>
         </CardHeader>
-        <CardContent>{}</CardContent>
+
+        <CardContent>{/* future */}</CardContent>
       </Card>
     </div>
   );

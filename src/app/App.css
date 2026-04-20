@@ -34,6 +34,7 @@
     --main-button-hover: #5fa8a9;
     --main-button-text: #e0f7f7;
     --main-button-shadow: rgba(120, 234, 236, 0.35);
+    --active-button: 210 20% 60%;
     --color-chart-1: #a5d2dc;
   }
 
@@ -76,6 +77,13 @@
     position: relative;
     overflow: hidden;
     background: #202f3c;
+  }
+
+  .text-underline-primary {
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--primary));
+    text-underline-offset: 3px;
+    text-decoration-thickness: 2px;
   }
 
   .animated-bg::before {

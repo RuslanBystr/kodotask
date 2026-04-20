@@ -10,7 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
 import { SidebarMenuButton, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { AdminRoleEnum } from '@/enums';
 import { ChatTypeEnum } from '@/enums/chat-type.enum';
@@ -153,10 +152,9 @@ const MainGroupChatPage: React.FC = () => {
       <div className="flex flex-col h-[100vh] w-min-content border-r">
         <header className="flex h-16 shrink-0 justify-center md:justify-start items-center border-b">
           {isMobile && <SidebarTrigger className="-ml-1" />}
-          <Separator orientation="vertical" className="mr-4 h-4 hidden md:block" />
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
+              <BreadcrumbItem className="hidden md:block md:text-lg">
                 <BreadcrumbLink href="">Group Chats</BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>

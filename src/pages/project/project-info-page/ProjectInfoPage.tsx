@@ -16,7 +16,6 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import {
   useAddMemberMutation,
@@ -71,15 +70,14 @@ export default function ProjectInfoPage() {
     <div className="w-full h-full p-2">
       <header className="flex h-16 shrink-0 items-center gap-2 px-4">
         {isMobile && <SidebarTrigger className="-ml-1" />}
-        <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="/projects">Project</BreadcrumbLink>
+            <BreadcrumbItem className="hidden md:block md:text-lg">
+              <BreadcrumbLink href="/projects">Projects</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden md:block" />
             <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="" />
+              <BreadcrumbLink href="">{data?.name}</BreadcrumbLink>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -89,7 +87,7 @@ export default function ProjectInfoPage() {
         <div className="h-full w-full px-4 py-3 space-y-4">
           {/* Overview */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="lg:col-span-2 rounded-xl border p-4 space-y-3">
+            <div className="lg:col-span-2 rounded-xl border p-4 space-y-3 bg-accent/10">
               <div className="flex items-start justify-between">
                 <div>
                   <div className="text-xl font-semibold">{data?.name ?? 'Untitled project'}</div>
@@ -121,7 +119,7 @@ export default function ProjectInfoPage() {
             </div>
 
             {/* Quick Stats */}
-            <div className="rounded-xl border p-4 space-y-3">
+            <div className="rounded-xl border p-4 space-y-3 bg-accent/10">
               <div className="text-base font-medium">Quick stats</div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="rounded-lg border p-3">
@@ -145,7 +143,7 @@ export default function ProjectInfoPage() {
           </div>
 
           {/* Milestones / Roadmap */}
-          <div className="rounded-xl border p-4">
+          <div className="rounded-xl border p-4 bg-accent/10">
             <div className="flex items-center justify-between mb-2">
               <div className="text-base font-medium">Roadmap & Milestones</div>
               <Button
@@ -179,7 +177,7 @@ export default function ProjectInfoPage() {
           </div>
 
           {/* Links / Docs / Repos */}
-          <div className="rounded-xl border p-4">
+          <div className="rounded-xl border p-4 bg-accent/10">
             <div className="flex items-center justify-between mb-2">
               <div className="text-base font-medium">Links & Docs</div>
               <Button size="sm" variant="outline" className="rounded-none cut cut-right-4 cut-left-4">
@@ -194,7 +192,7 @@ export default function ProjectInfoPage() {
           </div>
 
           {/* Activity */}
-          <div className="rounded-xl border p-4">
+          <div className="rounded-xl border p-4 bg-accent/10">
             <div className="text-base font-medium mb-2">Recent activity</div>
             {/* {data?.activity?.length ? ( */}
             {/*  <div className="space-y-2"> */}
@@ -220,7 +218,7 @@ export default function ProjectInfoPage() {
 
           {/* Tags / Category & Integrations */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="rounded-xl border p-4">
+            <div className="rounded-xl border p-4 bg-accent/10">
               <div className="flex items-center justify-between mb-2">
                 <div className="text-base font-medium">Tags & Category</div>
                 <Button size="sm" variant="outline" className="rounded-none cut cut-right-4 cut-left-4">
@@ -235,7 +233,7 @@ export default function ProjectInfoPage() {
               </div>
             </div>
 
-            <div className="rounded-xl border p-4">
+            <div className="rounded-xl border p-4 bg-accent/10">
               <div className="text-base font-medium mb-2">Integrations</div>
               <div className="flex flex-wrap gap-2">
                 {['GitHub', 'Notion', 'Drive'].map((i: string) => (

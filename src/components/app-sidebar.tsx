@@ -47,10 +47,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <NavUser />
       </SidebarHeader>
-      <SidebarContent className="pr-2 pb-4">
+      <SidebarContent className="flex-1">
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter className="border-t pt-4">
+      <SidebarFooter className="border-t py-4">
         <NotificationsModal />
         <PaymentModal />
         <SidebarMenuButton className="hover:bg-muted/50" tooltip="Logout" onClick={onSettingsClick}>
